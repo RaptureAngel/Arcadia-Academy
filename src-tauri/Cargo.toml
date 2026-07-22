@@ -1,12 +1,12 @@
 [package]
-name = "arcadia-desk"
-version = "1.5.2"
-description = "Arcadia Desk desktop shell"
-authors = ["Arcadia Desk"]
+name = "arcadia-academy"
+version = "0.1.0"
+description = "Arcadia Academy desktop application"
+authors = ["Arcadia Academy"]
 edition = "2021"
 
 [lib]
-name = "arcadia_desk_lib"
+name = "arcadia_academy_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [build-dependencies]

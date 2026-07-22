@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Arcadia Desk",
-  "version": "1.5.2",
-  "identifier": "com.arcadiadesk.app",
+  "productName": "Arcadia Academy",
+  "version": "0.1.0",
+  "identifier": "com.arcadiaacademy.desktop",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:5173",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Arcadia Desk",
+        "title": "Arcadia Academy",
         "width": 1280,
         "height": 820,
         "minWidth": 960,
