@@ -1,0 +1,987 @@
+﻿
+/* Deep Work */
+
+.deepWorkOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 20% 18%, rgba(56, 189, 248, 0.16), transparent 30%),
+    radial-gradient(circle at 82% 78%, rgba(25, 230, 161, 0.12), transparent 28%),
+    rgba(4, 12, 18, 0.9);
+  backdrop-filter: blur(14px);
+}
+
+.deepWorkPanel {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(420px, 1.18fr);
+  gap: 24px;
+  align-items: stretch;
+  width: min(1120px, 100%);
+  height: min(920px, 92vh);
+  min-height: min(700px, 92vh);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 28px;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(17, 26, 34, 0.98), rgba(7, 13, 19, 0.96)),
+    rgba(17, 26, 34, 0.96);
+  box-shadow: 0 34px 110px rgba(0, 0, 0, 0.56);
+}
+
+.deepWorkVisual {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: 2 / 3;
+  border: 1px solid rgba(25, 230, 161, 0.2);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.12), rgba(25, 230, 161, 0.07)),
+    rgba(4, 12, 18, 0.44);
+}
+
+.deepWorkVisual img {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  display: block;
+  border-radius: inherit;
+}
+
+.deepWorkVisual.focusImageFrame--landscape img {
+  object-fit: contain;
+}
+
+.deepWorkVisualFallback {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(25, 230, 161, 0.32);
+  border-radius: 28px;
+  color: #19e6a1;
+  font-size: 3rem;
+  font-weight: 900;
+  background: rgba(25, 230, 161, 0.08);
+}
+
+.deepWorkContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 8px 0 8px 4px;
+  text-align: left;
+}
+
+.deepWorkContent h2 {
+  margin: 8px 0 8px;
+  color: #e5f2f0;
+  font-size: clamp(2rem, 4vw, 4rem);
+  line-height: 1;
+}
+
+.deepWorkMeta {
+  margin: 0;
+  color: #9fb3b8;
+  font-size: 1rem;
+}
+
+.deepWorkStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.deepWorkStats div {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 12, 18, 0.38);
+}
+
+.deepWorkStats span {
+  color: #9fb3b8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.deepWorkStats strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #e5f2f0;
+}
+
+.deepWorkStatus {
+  margin: 16px 0 0;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.deepWorkStatus.running {
+  color: #19e6a1;
+}
+
+.deepWorkStatus.paused {
+  color: #fbbf24;
+}
+
+.deepWorkActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.deepWorkActions .detailsButton,
+.deepWorkActions .completeButton,
+.deepWorkActions .deleteButton {
+  width: auto;
+  min-width: 132px;
+  height: 42px;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .deepWorkPanel,
+  .projectFocusPanel {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 0;
+    max-height: 92vh;
+    overflow: auto;
+  }
+
+  .deepWorkVisual,
+  .projectFocusVisual {
+    min-height: 320px;
+  }
+
+  .deepWorkVisual {
+    height: auto;
+    width: min(100%, 320px);
+  }
+
+  .projectFocusVisual {
+    height: auto;
+  }
+
+  .projectFocusPortrait {
+    height: auto;
+    width: min(100%, 320px);
+  }
+
+  .meetingModeGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .meetingNotesField textarea {
+    min-height: 320px;
+  }
+}
+
+/* Project Focus */
+
+.projectFocusOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 46;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.04) 1px, transparent 1px),
+    radial-gradient(circle at 18% 22%, rgba(56, 189, 248, 0.18), transparent 32%),
+    radial-gradient(circle at 88% 72%, rgba(25, 230, 161, 0.12), transparent 30%),
+    rgba(2, 8, 14, 0.92);
+  background-size: 100% 100%, 28px 28px, 100% 100%, 100% 100%, 100% 100%;
+  backdrop-filter: blur(15px);
+}
+
+.projectFocusPanel {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(420px, 1.18fr);
+  gap: 24px;
+  align-items: stretch;
+  width: min(1120px, 100%);
+  height: min(920px, 92vh);
+  min-height: min(700px, 92vh);
+  border: 1px solid rgba(56, 189, 248, 0.26);
+  border-radius: 24px;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(11, 21, 30, 0.98), rgba(4, 12, 18, 0.97)),
+    rgba(4, 12, 18, 0.96);
+  box-shadow: 0 34px 110px rgba(0, 0, 0, 0.58);
+}
+
+.projectFocusVisual {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+}
+
+.projectFocusPortrait {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  aspect-ratio: 2 / 3;
+  border: 1px solid rgba(25, 230, 161, 0.22);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.13), rgba(25, 230, 161, 0.07)),
+    rgba(4, 12, 18, 0.48);
+}
+
+.projectFocusPortrait img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  border-radius: inherit;
+}
+
+.projectFocusPortrait.focusImageFrame--landscape img {
+  object-fit: contain;
+}
+
+.projectFocusVisualFallback {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(25, 230, 161, 0.32);
+  border-radius: 28px;
+  color: #19e6a1;
+  font-size: 3rem;
+  font-weight: 900;
+  background: rgba(25, 230, 161, 0.08);
+}
+
+.projectFocusContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  padding: 8px 0 8px 4px;
+  text-align: left;
+}
+
+.projectFocusHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.projectFocusHeader h2 {
+  margin: 6px 0 0;
+  color: #e5f2f0;
+  font-size: clamp(1.65rem, 3.2vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.projectFocusCloseButton {
+  display: inline-grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 999px;
+  color: #9fb3b8;
+  background: rgba(4, 12, 18, 0.48);
+  font-size: 1.15rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.projectFocusCloseButton:hover {
+  border-color: rgba(56, 189, 248, 0.34);
+  color: #e5f2f0;
+  background: rgba(56, 189, 248, 0.1);
+}
+
+.projectFocusMetaBlock {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.projectFocusMeta {
+  margin: 0;
+  color: #9fb3b8;
+  font-size: 0.95rem;
+}
+
+.projectFocusInlineMeta {
+  margin: 0;
+  color: #7dd3fc;
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.projectFocusProgressBlock {
+  display: grid;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.projectFocusEmployee {
+  display: grid;
+  gap: 5px;
+  margin-top: 18px;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 12, 18, 0.38);
+}
+
+.projectFocusEmployee span {
+  color: #9fb3b8;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.projectFocusEmployee strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #e5f2f0;
+}
+
+.projectFocusProgressText {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: #9fb3b8;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.projectFocusProgressText strong {
+  color: #19e6a1;
+}
+
+.projectFocusProgressBar {
+  height: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.projectFocusProgressBar div {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #38bdf8, #19e6a1);
+}
+
+.projectFocusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.projectFocusActions .completeButton,
+.projectFocusActions .deleteButton {
+  width: auto;
+  min-width: 144px;
+  height: 42px;
+  margin: 0;
+}
+
+/* Meeting Mode */
+
+.meetingModeOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background:
+    linear-gradient(rgba(125, 211, 252, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 211, 252, 0.035) 1px, transparent 1px),
+    rgba(4, 12, 18, 0.92);
+  background-size: 28px 28px, 28px 28px, 100% 100%;
+  backdrop-filter: blur(15px);
+}
+
+.meetingModePanel {
+  display: flex;
+  flex-direction: column;
+  width: min(1120px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  border: 1px solid rgba(56, 189, 248, 0.26);
+  border-radius: 24px;
+  padding: 22px;
+  background:
+    linear-gradient(135deg, rgba(11, 21, 30, 0.98), rgba(4, 12, 18, 0.97)),
+    rgba(4, 12, 18, 0.96);
+  box-shadow: 0 34px 110px rgba(0, 0, 0, 0.58);
+}
+
+.meetingModeHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.meetingModeHeader h2 {
+  margin: 6px 0 0;
+  color: #e5f2f0;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.meetingModeMeta {
+  margin: 8px 0 0;
+  color: #9fb3b8;
+  font-size: 0.95rem;
+}
+
+.meetingModeGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.32fr) minmax(300px, 0.68fr);
+  align-items: stretch;
+  gap: 18px;
+  min-height: 460px;
+}
+
+.meetingNotesField {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 100%;
+  padding: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 18px;
+  background: rgba(4, 12, 18, 0.36);
+}
+
+.meetingNotesField textarea {
+  min-height: 390px;
+  height: 100%;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.meetingActionPanel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 16px;
+  min-width: 0;
+  min-height: 100%;
+  padding: 14px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 18px;
+  background: rgba(4, 12, 18, 0.36);
+}
+
+.meetingActionForm {
+  display: grid;
+  gap: 12px;
+}
+
+.meetingActionForm .primaryButton {
+  width: 100%;
+  height: 44px;
+  margin: 0;
+}
+
+.meetingPriorityRow {
+  align-items: center;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.meetingActionList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+}
+
+.meetingActionListHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: #9fb3b8;
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meetingActionListHeader strong {
+  color: #19e6a1;
+}
+
+.meetingActionItem {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 14px;
+  background: rgba(4, 12, 18, 0.42);
+}
+
+.meetingActionItem strong,
+.meetingActionItem span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.meetingActionItem strong {
+  color: #e5f2f0;
+}
+
+.meetingActionItem span {
+  color: #9fb3b8;
+  font-size: 0.82rem;
+}
+
+.priorityMeetingAction {
+  border-color: rgba(251, 191, 36, 0.36);
+  background: rgba(251, 191, 36, 0.08);
+}
+
+.meetingExportStatus {
+  margin: 16px 0 0;
+  color: #19e6a1;
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.meetingExportStatus.error {
+  color: #fca5a5;
+}
+
+.meetingModeActions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.meetingModeActions--complete {
+  grid-template-columns: minmax(150px, 240px);
+}
+
+.meetingModeActions .primaryButton,
+.meetingModeActions .detailsButton,
+.meetingModeActions .deleteButton {
+  width: 100%;
+  min-width: 0;
+  height: 42px;
+  margin: 0;
+}
+
+/* End of Day Summary */
+
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(4, 12, 18, 0.76);
+  backdrop-filter: blur(12px);
+}
+
+.endDayModal {
+  width: min(760px, 100%);
+  max-height: min(86vh, 760px);
+  overflow: auto;
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 24px;
+  padding: 20px;
+  background: rgba(17, 26, 34, 0.96);
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+}
+
+.endDayHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.endDayHeader h2 {
+  margin: 6px 0 0;
+}
+
+.modalCloseButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 10px;
+  background: rgba(56, 189, 248, 0.06);
+  color: #d8f7ff;
+  font-size: 1.2rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.outfitSelectorModal {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  width: min(1120px, calc(100vw - 44px));
+  max-height: min(92vh, 760px);
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 24px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 72% 18%, rgba(25, 230, 161, 0.14), transparent 34%),
+    linear-gradient(135deg, rgba(4, 12, 18, 0.98), rgba(12, 24, 33, 0.96));
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+}
+
+.outfitSelectorHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.outfitSelectorHeader h2 {
+  margin: 0 0 4px;
+  color: #f2fbff;
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.outfitSelectorHeader p:last-child {
+  margin: 0;
+  color: #9fb3b8;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.outfitSelectorStage {
+  display: grid;
+  grid-template-columns: minmax(64px, 96px) minmax(0, 1fr) minmax(64px, 96px);
+  gap: 14px;
+  align-items: stretch;
+  min-height: 0;
+}
+
+.outfitSelectorStage > .outfitSelectorBody:first-child {
+  grid-column: 1 / -1;
+}
+
+.outfitSelectorStep {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 18px;
+  background: rgba(4, 12, 18, 0.26);
+  color: #38bdf8;
+  font-size: 1.35rem;
+  font-weight: 900;
+}
+
+.outfitSelectorStep:hover,
+.outfitSelectorStep:focus-visible {
+  border-color: rgba(25, 230, 161, 0.44);
+  background: rgba(20, 34, 43, 0.6);
+  outline: none;
+}
+
+.outfitSelectorBody {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.25fr) minmax(260px, 0.95fr);
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 18px;
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(25, 230, 161, 0.04)),
+    rgba(4, 12, 18, 0.32);
+}
+
+.outfitSelectorPreview {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: clamp(380px, 62vh, 560px);
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid rgba(25, 230, 161, 0.22);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(25, 230, 161, 0.08)),
+    rgba(2, 8, 12, 0.74);
+}
+
+.outfitSelectorPreviewImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.outfitSelectorInfo {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  min-width: 0;
+  text-align: left;
+}
+
+.outfitSelectorInfo h3,
+.outfitSelectorInfo p {
+  margin: 0;
+}
+
+.outfitSelectorInfo h3 {
+  max-width: 100%;
+  color: #f2fbff;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.outfitSelectorInfo span {
+  color: #19e6a1;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.outfitSelectorCount {
+  color: #9fb3b8;
+  font-weight: 800;
+}
+
+.outfitSelectorActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.outfitSelectorActions .primaryButton,
+.outfitSelectorActions .detailsButton {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  margin: 0;
+}
+
+.endDayEmployee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(25, 230, 161, 0.18);
+  border-radius: 16px;
+  background: rgba(25, 230, 161, 0.06);
+}
+
+.endDayEmployee span,
+.endDayStat span {
+  color: #9fb3b8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.endDayEmployee strong,
+.endDayStat strong {
+  color: #e5f2f0;
+  font-size: 0.98rem;
+}
+
+.endDayTimes,
+.endDayStatsGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.endDayTimes {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 10px;
+}
+
+.endDaySessions {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 12, 18, 0.28);
+}
+
+.endDaySessionList {
+  display: grid;
+  gap: 8px;
+}
+
+.endDaySessionRow {
+  display: grid;
+  grid-template-columns: minmax(140px, auto) minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+  color: #9fb3b8;
+  font-size: 0.9rem;
+}
+
+.endDaySessionRow strong {
+  min-width: 0;
+  color: #e5f2f0;
+  overflow-wrap: anywhere;
+}
+
+.endDayStatsGrid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.endDayStat {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 12, 18, 0.38);
+}
+
+.endDayStat strong {
+  overflow-wrap: anywhere;
+}
+
+.endDayNotice {
+  margin: 12px 0 0;
+  color: #fbbf24;
+  font-weight: 800;
+}
+
+.endDayCarryOverNotice {
+  color: #9fb3b8;
+}
+
+.archiveTaskList {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.archiveHistoryItem {
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 11px 12px;
+  border-radius: 14px;
+}
+
+.archiveTaskItem {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 16px;
+  background: rgba(4, 12, 18, 0.38);
+}
+
+.archiveTaskItem h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.archiveTaskMeta,
+.archiveTaskProjectMeta {
+  color: #9fb3b8;
+}
+
+.archiveTaskMeta {
+  margin: 4px 0 0;
+}
+
+.archiveTaskProjectMeta {
+  display: block;
+  margin-top: 6px;
+}
+
+.endDayActions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.endDayExportStatus {
+  color: #9fb3b8;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.endDayActions .detailsButton,
+.endDayActions .primaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 180px;
+  min-width: 180px;
+  min-height: 42px;
+  margin-top: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+

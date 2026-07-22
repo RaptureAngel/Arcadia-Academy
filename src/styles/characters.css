@@ -1,0 +1,982 @@
+.characterRosterPanel {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.charactersView {
+  grid-template-columns: 1fr;
+  align-items: start;
+}
+
+.charactersView .characterRosterPanel {
+  grid-column: 1 / -1;
+}
+
+.employeeAvatarButton {
+  padding: 0;
+  border: 1px solid rgba(25, 230, 161, 0.18);
+  cursor: pointer;
+}
+
+.employeeAvatarButton:hover {
+  border-color: rgba(56, 189, 248, 0.55);
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.18);
+  transform: translateY(-1px);
+}
+
+.employeeAvatarButton:focus-visible {
+  outline: 3px solid rgba(56, 189, 248, 0.45);
+  outline-offset: 3px;
+}
+
+.dossierOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 18px 24px;
+  background:
+    linear-gradient(rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56, 189, 248, 0.035) 1px, transparent 1px),
+    radial-gradient(circle at 18% 22%, rgba(25, 230, 161, 0.12), transparent 34%),
+    radial-gradient(circle at 74% 28%, rgba(56, 189, 248, 0.1), transparent 34%),
+    rgba(1, 5, 10, 0.92);
+  background-size: 30px 30px, 30px 30px, 100% 100%, 100% 100%, 100% 100%;
+  backdrop-filter: blur(12px);
+}
+
+.characterDossierModal {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(420px, 0.9fr) minmax(360px, 0.72fr);
+  align-items: stretch;
+  gap: 10px;
+  width: min(1180px, 100%);
+  height: min(700px, 92vh);
+  overflow: hidden;
+  border: 1px solid rgba(216, 247, 255, 0.26);
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(2, 24, 27, 0.94), rgba(2, 13, 18, 0.74) 55%, rgba(1, 5, 10, 0.18)),
+    rgba(1, 5, 10, 0.74);
+  box-shadow:
+    inset 0 0 60px rgba(56, 189, 248, 0.055),
+    0 34px 100px rgba(0, 0, 0, 0.62);
+}
+
+.characterDossierModal::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      180deg,
+      rgba(216, 247, 255, 0.026) 0,
+      rgba(216, 247, 255, 0.026) 1px,
+      transparent 1px,
+      transparent 6px
+    );
+  opacity: 0.4;
+}
+
+.characterDossierModal > * {
+  position: relative;
+}
+
+.dossierCloseButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(248, 113, 113, 0.42);
+  border-radius: 8px;
+  background: rgba(248, 113, 113, 0.08);
+  color: #ffd5d5;
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.dossierCloseButton:hover {
+  border-color: rgba(248, 113, 113, 0.72);
+  background: rgba(248, 113, 113, 0.16);
+}
+
+.dossierVisualPanel,
+.dossierInfoPanel {
+  min-width: 0;
+}
+
+.dossierVisualPanel {
+  display: grid;
+  place-items: end center;
+  min-height: 0;
+  padding: 42px 8px 0 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.dossierInfoPanel {
+  --dossier-column-gap: 18px;
+  --dossier-label-column: minmax(140px, 0.75fr);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: start;
+  gap: 10px;
+  padding: 36px 26px 30px 30px;
+  overflow: hidden;
+}
+
+.dossierHeader {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  max-width: 620px;
+}
+
+.dossierTitleRow {
+  display: block;
+  min-width: 0;
+  padding-right: 38px;
+}
+
+.dossierTitleRow > div {
+  min-width: 0;
+}
+
+.dossierHeader h2 {
+  margin: 0;
+  color: #f2fbff;
+  font-size: clamp(1.7rem, 3.1vw, 2.85rem);
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.dossierTitleRow p {
+  margin: 5px 0 0;
+  color: rgba(216, 247, 255, 0.78);
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.characterDossierModal .dossierPortraitFrame {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  min-height: 0;
+  aspect-ratio: unset;
+  justify-self: stretch;
+}
+
+.dossierPortraitFrame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
+}
+
+.dossierPortraitFrame img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(100%, 520px);
+  max-height: min(86vh, 700px);
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(-22px 28px 34px rgba(0, 0, 0, 0.58));
+}
+
+.dossierPortraitFrame span {
+  display: grid;
+  place-items: center;
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(25, 230, 161, 0.35);
+  border-radius: 24px;
+  background: rgba(25, 230, 161, 0.08);
+  color: rgba(216, 247, 255, 0.78);
+  font-size: 4rem;
+  font-weight: 950;
+}
+
+.dossierClassification {
+  margin: 0;
+  color: rgba(248, 113, 113, 0.92);
+  font-size: 0.68rem;
+  font-weight: 950;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dossierTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
+  max-width: 620px;
+}
+
+.dossierTabs button {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  min-height: 34px;
+  border: 1px solid rgba(216, 247, 255, 0.22);
+  border-radius: 7px;
+  padding: 6px 10px;
+  background: rgba(1, 5, 10, 0.34);
+  color: rgba(216, 247, 255, 0.74);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.dossierTabs button.active,
+.dossierTabs button:hover {
+  border-color: rgba(216, 247, 255, 0.58);
+  background: rgba(25, 230, 161, 0.1);
+  color: #d8f7ff;
+}
+
+.dossierTabPanel {
+  min-height: 0;
+  overflow: auto;
+  max-width: 620px;
+  padding-right: 4px;
+}
+
+.dossierInfoTable {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid rgba(216, 247, 255, 0.32);
+  border-bottom: 1px solid rgba(216, 247, 255, 0.18);
+}
+
+.dossierInfoRow {
+  display: grid;
+  grid-template-columns: var(--dossier-label-column) minmax(0, 1fr);
+  align-items: baseline;
+  gap: var(--dossier-column-gap);
+  min-width: 0;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(216, 247, 255, 0.12);
+}
+
+.dossierInfoRow:last-child {
+  border-bottom: 0;
+}
+
+.dossierInfoRow span {
+  display: block;
+  color: rgba(216, 247, 255, 0.88);
+  font-size: 0.78rem;
+  font-weight: 850;
+  line-height: 1.25;
+}
+
+.dossierInfoRow strong {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: #f2fbff;
+  font-size: 0.88rem;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.dossierProfileBlock {
+  min-width: 0;
+  padding: 12px 0 0;
+  border-top: 1px solid rgba(216, 247, 255, 0.32);
+}
+
+.dossierProfileBlock p {
+  margin: 0;
+  color: rgba(216, 247, 255, 0.86);
+  font-size: 0.9rem;
+  line-height: 1.58;
+}
+
+.dossierProfileBlock p + p {
+  margin-top: 12px;
+}
+
+.characterRosterGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 10px;
+  align-content: start;
+  min-width: 0;
+}
+
+.characterLibraryRosterLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 14px;
+  min-width: 0;
+}
+
+.characterLibraryShowcase {
+  display: grid;
+  gap: 16px;
+  margin-top: 14px;
+  min-width: 0;
+}
+
+.characterShowcaseStage {
+  display: grid;
+  grid-template-columns: minmax(86px, 132px) minmax(520px, 860px) minmax(86px, 132px);
+  gap: 14px;
+  align-items: stretch;
+  justify-content: center;
+  min-width: 0;
+}
+
+.characterShowcaseStep {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 9px;
+  min-width: 0;
+  min-height: 360px;
+  padding: 12px 10px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 20px;
+  background: rgba(4, 12, 18, 0.28);
+  color: #9fb3b8;
+  text-align: center;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.characterShowcaseStep:hover:not(:disabled),
+.characterShowcaseStep:focus-visible:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(25, 230, 161, 0.5);
+  background: rgba(20, 34, 43, 0.64);
+  outline: none;
+}
+
+.characterShowcaseStep > span:first-child {
+  color: #38bdf8;
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.characterShowcaseStep strong {
+  width: 100%;
+  min-width: 0;
+  color: #d8f7ff;
+  font-size: 0.82rem;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.showcaseStepPortrait {
+  width: 78px;
+  height: 78px;
+  margin: 0;
+  border-radius: 16px;
+}
+
+.characterRosterStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 20px;
+  background: rgba(4, 12, 18, 0.22);
+}
+
+.activeCharacterCard {
+  border-color: rgba(25, 230, 161, 0.72);
+  box-shadow: 0 0 28px rgba(25, 230, 161, 0.12);
+}
+
+.dossierCharacterCard {
+  border-color: rgba(56, 189, 248, 0.58);
+}
+
+.compactCharacterTile {
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  min-width: 0;
+  min-height: 0;
+  padding: 10px 8px;
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 18px;
+  background: rgba(4, 12, 18, 0.34);
+  color: #e5f2f0;
+  text-align: center;
+  transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;
+}
+
+.compactCharacterTile:hover,
+.compactCharacterTile:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(25, 230, 161, 0.58);
+  background: rgba(20, 34, 43, 0.78);
+  outline: none;
+}
+
+.selectedCharacterTile {
+  border-color: rgba(25, 230, 161, 0.72);
+  background:
+    linear-gradient(180deg, rgba(25, 230, 161, 0.12), rgba(4, 12, 18, 0.36)),
+    rgba(4, 12, 18, 0.42);
+}
+
+.compactCharacterTile .compactCharacterPortrait {
+  width: 72px;
+  height: 72px;
+  margin: 0;
+  border-radius: 16px;
+}
+
+.compactCharacterTile strong {
+  width: 100%;
+  min-width: 0;
+  color: #f2fbff;
+  font-size: 0.82rem;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.compactCharacterContext {
+  max-width: 100%;
+  padding: 3px 7px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #9fdcf7;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.characterPreviewPanel {
+  display: grid;
+  grid-template-columns: minmax(240px, 0.95fr) minmax(260px, 0.8fr);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 16px 18px;
+  align-items: stretch;
+  min-width: 0;
+  min-height: min(620px, calc(100vh - 210px));
+  padding: 18px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(56, 189, 248, 0.1), rgba(25, 230, 161, 0.05) 48%, rgba(4, 12, 18, 0.32)),
+    rgba(4, 12, 18, 0.48);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+}
+
+.characterPreviewHeader {
+  display: grid;
+  align-self: end;
+  gap: 4px;
+  align-items: start;
+  min-width: 0;
+}
+
+.characterPreviewPortrait {
+  grid-row: 1 / -1;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  aspect-ratio: 3 / 4;
+  max-height: 560px;
+  margin: 0;
+  border-radius: 22px;
+}
+
+.characterPreviewPortrait .featuredCharacterImage {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center center;
+}
+
+.characterPreviewHeader h2 {
+  margin: 5px 0 4px;
+  color: #f2fbff;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  line-height: 1.08;
+  overflow-wrap: anywhere;
+}
+
+.characterPreviewHeader .role {
+  margin: 0;
+  line-height: 1.25;
+}
+
+.characterPreviewSkills {
+  align-self: start;
+  margin: 0;
+  color: #9fb3b8;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.characterPreviewStats {
+  margin-top: 0;
+}
+
+.characterPreviewActions {
+  align-self: end;
+  margin-top: 0;
+}
+
+.characterLibraryHeader {
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.characterLibraryHeader > div {
+  min-width: 0;
+}
+
+.characterLibraryHeader .secondaryButton {
+  width: auto;
+  min-width: 150px;
+  margin: 0;
+}
+
+.characterLibraryForm {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+  min-width: 0;
+}
+
+.characterEditorSection {
+  min-width: 0;
+  padding: 0;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 14px;
+  background: rgba(4, 12, 18, 0.28);
+  overflow: hidden;
+}
+
+.characterEditorSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 44px;
+  padding: 12px 14px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.characterEditorSectionHeader::-webkit-details-marker {
+  display: none;
+}
+
+.characterEditorSectionHeader::after {
+  content: "+";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(56, 189, 248, 0.18);
+  border-radius: 999px;
+  color: #c9f3ff;
+  font-size: 0.9rem;
+  line-height: 1;
+  background: rgba(56, 189, 248, 0.07);
+}
+
+.characterEditorSection[open] .characterEditorSectionHeader {
+  border-bottom: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+.characterEditorSection[open] .characterEditorSectionHeader::after {
+  content: "-";
+}
+
+.characterEditorSection > :not(summary) {
+  margin: 12px;
+}
+
+.characterEditorSection > :not(summary) + :not(summary) {
+  margin-top: 0;
+}
+
+.characterImageField {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+  min-width: 0;
+}
+
+.characterImageField label {
+  min-width: 0;
+}
+
+.characterImageField .detailsButton {
+  width: auto;
+  min-width: 132px;
+  min-height: 42px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.characterDossierFields {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 14px;
+  background: rgba(4, 12, 18, 0.28);
+}
+
+.characterDossierFieldsHeader {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.characterDossierFieldsHeader h3 {
+  margin: 0;
+  color: #f2fbff;
+  font-size: 0.95rem;
+}
+
+.characterDossierFieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  min-width: 0;
+}
+
+.characterOutfitToolbar,
+.characterOutfitHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: end;
+  min-width: 0;
+}
+
+.characterOutfitToolbar .detailsButton,
+.characterOutfitActions .detailsButton,
+.characterOutfitActions .deleteButton,
+.characterOutfitImageField .detailsButton {
+  width: auto;
+  min-width: 112px;
+  min-height: 38px;
+  margin: 0;
+}
+
+.characterOutfitList {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.characterOutfitItem {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.12);
+  border-radius: 12px;
+  background: rgba(4, 12, 18, 0.24);
+}
+
+.characterOutfitActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.characterOutfitImageField {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+  min-width: 0;
+}
+
+.characterLibraryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.characterLibraryActions .primaryButton,
+.characterLibraryActions .detailsButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  min-width: 150px;
+  min-height: 42px;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.characterLibraryCard {
+  display: grid;
+  align-content: start;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.characterLibraryCard h2,
+.characterLibraryCard p,
+.characterLibraryCard .role,
+.characterLibraryCard .miniStats {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.characterLibraryCardActions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+  min-width: 0;
+}
+
+.characterLibraryCardActions .detailsButton,
+.characterLibraryCardActions .deleteButton {
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  min-height: 38px;
+  margin: 0;
+  padding: 8px 10px;
+  white-space: normal;
+}
+
+.topStats {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.rankBadge,
+.taskSummary span {
+  padding: 6px 9px;
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.04);
+  color: #d8f7ff;
+  font-size: 0.78rem;
+}
+
+.topStats > span {
+  color: #9fb3b8;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.topWorkdayControls {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 29px;
+  padding: 2px;
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 10px;
+  background: rgba(4, 12, 18, 0.32);
+}
+
+.topWorkdayStatus {
+  padding: 0 5px;
+  color: #9fb3b8;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.topWorkdayControls.working .topWorkdayStatus {
+  color: #19e6a1;
+}
+
+.topWorkdayControls.onLunch .topWorkdayStatus {
+  color: #fbbf24;
+}
+
+.topWorkdayControls.punchedOut .topWorkdayStatus {
+  color: #7dd3fc;
+}
+
+.topWorkdayButton {
+  min-height: 25px;
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 8px;
+  padding: 4px 8px;
+  background: rgba(56, 189, 248, 0.06);
+  color: #d8f7ff;
+  font-weight: 800;
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.topWorkdayButton:hover {
+  border-color: rgba(25, 230, 161, 0.42);
+  background: rgba(25, 230, 161, 0.1);
+}
+
+.topWorkdayButton.primary {
+  border-color: transparent;
+  background: linear-gradient(135deg, #38bdf8, #19e6a1);
+  color: #041017;
+}
+
+/* Workday Compact Bar */
+
+.workdayCompact {
+  display: grid;
+  grid-template-columns: minmax(360px, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 14px 18px;
+  position: relative;
+}
+
+.workdayMain {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-width: 0;
+}
+
+.workdayMain > div {
+  display: grid;
+  gap: 4px;
+  padding-right: 18px;
+  border-right: 1px solid rgba(56, 189, 248, 0.18);
+}
+
+.workdayMain h2 {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.workdayMain h2::before {
+  content: "Status: ";
+  color: #9fb3b8;
+  font-weight: 500;
+}
+
+.workdayMain p {
+  margin: 0;
+  color: #9fb3b8;
+  font-size: 0.9rem;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.workdayCompact.working h2 {
+  color: #19e6a1;
+}
+
+.workdayCompact.onLunch h2 {
+  color: #fbbf24;
+}
+
+.workdayCompact.notPunchedIn h2,
+.workdayCompact.punchedOut h2 {
+  color: #f87171;
+}
+
+.workdayCompact.working {
+  border-color: rgba(25, 230, 161, 0.32);
+}
+
+.workdayCompact.onLunch {
+  border-color: rgba(251, 191, 36, 0.38);
+}
+
+.workdayCompact.notPunchedIn,
+.workdayCompact.punchedOut {
+  border-color: rgba(248, 113, 113, 0.28);
+}
+
+.compactActions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compactActions .primaryButton,
+.compactActions .secondaryButton,
+.detailsButton {
+  width: auto;
+  min-width: 118px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  margin: 0;
+}
+
+.detailsButton {
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(56, 189, 248, 0.08);
+  color: #d8f7ff;
+  font-weight: 800;
+}
+
+.workdayDetails {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(130px, 1fr));
+  gap: 10px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(56, 189, 248, 0.12);
+}
+
+.workdayDetails span {
+  padding: 10px 12px;
+  border: 1px solid rgba(56, 189, 248, 0.14);
+  border-radius: 14px;
+  background: rgba(4, 12, 18, 0.42);
+  color: #9fb3b8;
+  font-size: 0.86rem;
+}

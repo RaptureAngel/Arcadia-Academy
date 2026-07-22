@@ -1,0 +1,211 @@
+﻿
+/* Confirm Dialog */
+
+.confirmDialog {
+  width: min(480px, 100%);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  border-radius: 24px;
+  padding: 24px;
+  background: rgba(17, 26, 34, 0.96);
+  color: #e5f2f0;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+}
+
+.confirmDialogHeader {
+  margin-bottom: 14px;
+}
+
+.confirmDialogHeader h2 {
+  margin: 6px 0 0;
+  color: #f2fbff;
+}
+
+.confirmDialogMessage {
+  color: #b8cdd4;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+.confirmDialogActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.confirmDialogActions .detailsButton,
+.confirmDialogActions .deleteButton,
+.confirmDialogActions .primaryButton {
+  width: auto;
+  min-width: 110px;
+  margin-top: 0;
+}
+
+.confirmDialogActions .detailsButton {
+  color: #d8f7ff;
+}
+
+.confirmDialogActions .deleteButton:disabled {
+  color: #fca5a5;
+}
+
+.meetingDraftRecoveryDialog {
+  width: min(560px, 100%);
+}
+
+.meetingDraftSummary {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+  color: #cfe4e8;
+}
+
+.meetingDraftSummary strong {
+  color: #f2fbff;
+  font-size: 1.05rem;
+}
+
+.meetingDraftSummary span {
+  color: #9fb8bf;
+  font-size: 0.88rem;
+}
+
+.meetingDraftSummary dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.meetingDraftSummary dl div {
+  min-width: 0;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 12px;
+  padding: 10px;
+  background: rgba(8, 15, 21, 0.42);
+}
+
+.meetingDraftSummary dt {
+  color: #93aab2;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
+.meetingDraftSummary dd {
+  margin: 0;
+  color: #e5f2f0;
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.meetingDraftWarnings {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.meetingDraftWarnings p {
+  margin: 0;
+  border: 1px solid rgba(251, 191, 36, 0.28);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(251, 191, 36, 0.08);
+  color: #fde68a;
+  font-size: 0.86rem;
+  line-height: 1.45;
+}
+
+.confirmDialogForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.confirmDialogLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #9fb3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.confirmDialogLabel strong {
+  color: #d8f7ff;
+  font-family: monospace;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.confirmDialogInput {
+  padding: 10px 14px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-radius: 12px;
+  background: rgba(56, 189, 248, 0.06);
+  color: #d8f7ff;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+.confirmDialogInput:focus {
+  outline: none;
+  border-color: rgba(56, 189, 248, 0.6);
+}
+
+/* Data Notice */
+
+.dataNotice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.dataNotice p {
+  margin: 0;
+  flex: 1;
+}
+
+.dataNotice--error {
+  border: 1px solid rgba(248, 113, 113, 0.34);
+  background: rgba(248, 113, 113, 0.08);
+  color: #fca5a5;
+}
+
+.dataNotice--success {
+  border: 1px solid rgba(25, 230, 161, 0.28);
+  background: rgba(25, 230, 161, 0.06);
+  color: #6ee7b7;
+}
+
+.dataNoticeDismiss {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.dataNoticeDismiss:hover {
+  opacity: 1;
+}

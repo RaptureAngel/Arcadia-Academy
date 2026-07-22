@@ -1,0 +1,436 @@
+﻿/* Responsive */
+
+@media (max-width: 980px) {
+  .employeeGrid,
+  .dashboardGrid,
+  .charactersView {
+    grid-template-columns: 1fr;
+  }
+
+  .topBar,
+  .taskListHeader {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .appIdentity {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .appLogo {
+    max-width: min(220px, 100%);
+    height: 42px;
+  }
+
+  .topStats,
+  .taskSummary {
+    justify-content: flex-start;
+  }
+
+  .appShell,
+  .selectScreen {
+    padding: 18px;
+  }
+
+  .appShell {
+    padding-bottom: 50px;
+  }
+
+  .appTabs {
+    width: 100%;
+    margin-inline: -2px;
+  }
+
+  .dashboardHeaderAction {
+    width: 100%;
+  }
+
+  .dashboardInsightsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dashboardAttentionList {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboardAttentionPlot,
+  .dashboardAttentionLabels {
+    gap: 10px;
+    padding-inline: 8px;
+  }
+
+  .workPreviewItem {
+    grid-template-columns: 30px minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 9px;
+  }
+
+  .workPreviewRegularTask {
+    grid-template-columns: 30px minmax(0, 1fr) 52px 28px;
+  }
+
+  .workPreviewMeetingTask {
+    grid-template-columns: 30px minmax(0, 1fr) 52px 64px 28px;
+  }
+
+  .workPreviewProjectStep {
+    grid-template-columns: 30px minmax(0, 1fr) 52px;
+  }
+
+  .workPreviewItem span {
+    white-space: normal;
+  }
+
+  .employeeProfileHeader {
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .employeeAvatar {
+    width: 108px;
+    height: 108px;
+    border-radius: 18px;
+  }
+
+  .workdayCompact {
+    grid-template-columns: 1fr;
+  }
+
+  .workdayMain {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .workdayMain > div {
+    padding-right: 0;
+    border-right: 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(56, 189, 248, 0.14);
+  }
+
+  .workdayMain p {
+    white-space: normal;
+  }
+
+  .compactActions {
+    justify-content: flex-start;
+  }
+
+  .workdayDetails {
+    grid-template-columns: 1fr;
+  }
+
+  .taskSectionHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .taskItem {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .taskItem:has(.overdueText),
+  .priorityTask:not(:has(.overdueText)),
+  .priorityTask:has(.overdueText) {
+    grid-template-columns: 1fr;
+  }
+
+  .taskItem:has(.overdueText)::before,
+  .priorityTask:not(:has(.overdueText))::before,
+  .priorityTask:has(.overdueText)::before {
+    justify-self: start;
+  }
+
+  .taskActions {
+    grid-template-columns: 1fr;
+    justify-content: stretch;
+  }
+
+  .taskActions .completeButton,
+  .taskActions .detailsButton,
+  .taskActions .deleteButton {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .timerTaskActions {
+    grid-template-columns: 1fr;
+  }
+
+  .inlineEditActions {
+    grid-template-columns: 1fr;
+  }
+
+  .inlineEditActions .completeButton,
+  .inlineEditActions .detailsButton {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .projectSummaryActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .customTemplateStepRow,
+  .customTemplateItem,
+  .characterImageField,
+  .characterOutfitToolbar,
+  .characterOutfitHeader,
+  .characterOutfitImageField,
+  .characterDossierFieldGrid,
+  .clientColourField,
+  .clientManagerItem {
+    grid-template-columns: 1fr;
+  }
+
+  .clientColourControl {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .clientColourControl .detailsButton {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .projectHeaderActions {
+    justify-content: flex-start;
+  }
+
+  .projectHeaderActions .secondaryButton {
+    width: 100%;
+  }
+
+  .customTemplateActions,
+  .clientManagerActions,
+  .characterLibraryActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .customTemplateActions .primaryButton,
+  .customTemplateActions .detailsButton,
+  .customTemplateItemActions .detailsButton,
+  .customTemplateItemActions .deleteButton,
+  .clientManagerActions .primaryButton,
+  .clientManagerActions .detailsButton,
+  .clientManagerItemActions .detailsButton,
+  .clientManagerItemActions .deleteButton,
+  .characterLibraryActions .primaryButton,
+  .characterLibraryActions .detailsButton {
+    width: 100%;
+  }
+
+  .customTemplateItemActions,
+  .clientManagerItemActions {
+    align-items: stretch;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .clientManagerHeader .secondaryButton {
+    width: 100%;
+  }
+
+  .characterLibraryHeader .secondaryButton {
+    width: 100%;
+  }
+
+  .characterImageField .detailsButton {
+    width: 100%;
+  }
+
+  .dossierOverlay {
+    align-items: stretch;
+    padding: 12px;
+  }
+
+  .characterDossierModal {
+    grid-template-columns: 1fr;
+    height: auto;
+    max-height: 94vh;
+    gap: 0;
+    overflow: auto;
+  }
+
+  .dossierVisualPanel {
+    min-height: min(420px, 48vh);
+    padding: 0 14px 18px;
+    order: 2;
+    place-items: center;
+  }
+
+  .dossierInfoPanel {
+    order: 1;
+    overflow: visible;
+    padding: 22px;
+  }
+
+  .dossierTitleRow {
+    padding-right: 42px;
+  }
+
+  .characterDossierModal .dossierPortraitFrame {
+    width: 100%;
+  }
+
+  .dossierPortraitFrame {
+    width: 100%;
+  }
+
+  .dossierPortraitFrame img {
+    max-height: 48vh;
+  }
+
+  .dossierInfoRow {
+    grid-template-columns: 1fr;
+    gap: 3px;
+  }
+
+  .dossierInfoRow strong {
+    text-align: left;
+  }
+
+  .characterLibraryRosterLayout {
+    grid-template-columns: 1fr;
+  }
+
+  .characterShowcaseStage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .characterShowcaseStage .characterPreviewPanel {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .characterPreviewPanel {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    min-height: 0;
+  }
+
+  .characterPreviewPortrait {
+    grid-row: auto;
+    max-height: 440px;
+  }
+
+  .characterShowcaseStep {
+    min-height: 112px;
+  }
+
+  .characterLibraryCardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .projectDetailsButton,
+  .projectCancelButton {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .characterRosterGrid,
+  .characterRosterStrip {
+    grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  }
+
+  .characterShowcaseStage {
+    gap: 10px;
+  }
+
+  .characterShowcaseStep {
+    min-height: 86px;
+    padding: 10px 8px;
+  }
+
+  .showcaseStepPortrait {
+    display: none;
+  }
+
+  .compactCharacterTile {
+    padding: 9px 7px;
+    border-radius: 16px;
+  }
+
+  .compactCharacterTile .compactCharacterPortrait {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+  }
+
+  .characterPreviewPortrait {
+    max-height: 320px;
+    border-radius: 16px;
+  }
+
+  .characterLibraryCardActions {
+    grid-template-columns: 1fr;
+  }
+
+  .characterLibraryHeader {
+    gap: 10px;
+  }
+
+  .characterLibraryHeader h2 {
+    font-size: 1.25rem;
+  }
+}
+
+.projectStepTask .taskActions {
+  grid-template-columns: 112px;
+}
+
+@media (max-width: 980px) {
+  .projectStepTask .taskActions {
+    grid-template-columns: 1fr;
+  }
+}
+
+.projectTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.projectTitleRow h3 {
+  margin: 0;
+}
+
+.projectPriorityBadge {
+  padding: 5px 9px;
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  border-radius: 999px;
+  background: rgba(25, 230, 161, 0.1);
+  color: #7dd3fc;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.priorityProject {
+  border-color: rgba(56, 189, 248, 0.42);
+  background:
+    linear-gradient(135deg, rgba(56, 189, 248, 0.11), rgba(25, 230, 161, 0.06) 42%, rgba(4, 12, 18, 0.42)),
+    rgba(4, 12, 18, 0.42);
+  box-shadow: 0 0 24px rgba(56, 189, 248, 0.08);
+}
+
+.priorityProjectStepTask:not(.completed) {
+  border-color: rgba(56, 189, 248, 0.42);
+  background:
+    linear-gradient(90deg, rgba(56, 189, 248, 0.12), rgba(129, 140, 248, 0.08) 38%, rgba(4, 12, 18, 0.42)),
+    rgba(4, 12, 18, 0.42);
+}
+
+.priorityProjectStepTask .projectStepBadge {
+  border-color: rgba(56, 189, 248, 0.42);
+  background: rgba(25, 230, 161, 0.1);
+  color: #7dd3fc;
+}

@@ -1,0 +1,843 @@
+@import "./base.css";
+@import "./layout.css";
+@import "./dashboard.css";
+@import "./characters.css";
+@import "./dashboard-panels.css";
+@import "./forms.css";
+@import "./tasks.css";
+@import "./responsive.css";
+@import "./overlays.css";
+@import "./overlays-responsive.css";
+@import "./dialogs.css";
+@import "./calendar.css";
+
+/* Arcadia v1 classified dossier theme foundation */
+
+body {
+  color: var(--text-hi);
+}
+
+.selectScreen,
+.appShell {
+  color: var(--text-hi);
+}
+
+h1,
+h2,
+h3,
+.employeeSelectCard h2,
+.employeePanel h2,
+.progressDetails h2,
+.taskListHeader h2,
+.employeeProfileInfo h2,
+.dashboardWorkPreview h2,
+.dashboardCenterPanel h2,
+.projectSummaryTop h3,
+.confirmDialogHeader h2 {
+  color: var(--text-hi);
+  font-family: var(--font-display);
+  letter-spacing: 0;
+}
+
+p,
+small,
+.bio,
+.emptyState,
+.taskItem p,
+.taskItem small,
+.heroText,
+.bottomStatusBar,
+.projectSummaryTop p,
+.projectSummaryCard p,
+.confirmDialogMessage,
+.meetingDraftSummary,
+.meetingDraftSummary span,
+.dashboardAttentionTopline span,
+.dashboardAttentionItem small,
+.dashboardAttentionEmpty,
+.dashboardAttentionLabel small,
+.dashboardInsightStat span,
+.employeePanel .bio,
+.levelProgressTop span,
+.ringLabel,
+.quotaControl span {
+  color: var(--text);
+}
+
+.eyebrow,
+.panelLabel,
+.miniStats,
+.desktopSaveStatusLabel,
+.dashboardInsightsRange,
+.workPreviewMoreIndicator,
+.dashboardHeaderAction,
+.detailsButton,
+.secondaryButton,
+.workPreviewTimerButton,
+.workPreviewMeetingButton,
+.dashboardPanelCycleButton {
+  color: var(--accent-strong);
+}
+
+.panelLabel,
+.eyebrow,
+.desktopSaveStatusLabel,
+.dashboardInsightStat span,
+.quotaControl span,
+.confirmDialogLabel,
+.meetingDraftSummary dt {
+  font-family: var(--font-meta);
+  letter-spacing: 0.14em;
+}
+
+.panel,
+.employeeSelectCard,
+.confirmDialog,
+.deepWorkModal,
+.projectFocusModal,
+.dossierModal,
+.outfitModal,
+.meetingModeModal,
+.desktopSaveStatus,
+.dashboardAttentionPanel,
+.dashboardInsightsPanel,
+.dashboardInsightStat,
+.dashboardAttentionItem,
+.projectSummaryCard,
+.projectDetailsPanel,
+.taskItem,
+.taskForm,
+.taskListPanel,
+.characterCard,
+.archiveDetailPanel {
+  border-color: var(--border-cyan);
+  border-radius: var(--radius-panel);
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-rim);
+}
+
+.topBar,
+.appTabs,
+.workPreviewItem,
+.dashboardWorkEmpty,
+.levelProgress,
+.scratchpadTextarea,
+.formGrid input,
+.formGrid textarea,
+.formGrid select,
+.taskForm input,
+.taskForm textarea,
+.taskForm select,
+.confirmDialogInput,
+.meetingDraftSummary dl div,
+.dataNotice,
+.dashboardAttentionPlot {
+  border-color: rgba(95, 198, 232, 0.18);
+  border-radius: var(--radius-card);
+  background:
+    linear-gradient(180deg, rgba(13, 22, 34, 0.7), rgba(7, 12, 20, 0.78));
+}
+
+.topBar,
+.bottomStatusBar {
+  background:
+    linear-gradient(180deg, rgba(13, 22, 34, 0.92), rgba(5, 8, 16, 0.94));
+  border-color: rgba(95, 198, 232, 0.22);
+}
+
+input,
+textarea,
+select,
+.scratchpadTextarea,
+.confirmDialogInput {
+  color: var(--text-hi);
+  caret-color: var(--accent-strong);
+}
+
+select {
+  color-scheme: dark;
+}
+
+select option,
+select optgroup {
+  background-color: #f8fbff;
+  color: #07111d;
+}
+
+select option:checked {
+  background-color: #d9edf7;
+  color: #050810;
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.scratchpadTextarea:focus,
+.confirmDialogInput:focus {
+  outline: none;
+  border-color: var(--border-cyan-strong);
+  box-shadow: var(--shadow-glow);
+}
+
+.primaryButton,
+.secondaryButton,
+.completeButton,
+.deleteButton,
+.detailsButton,
+.dashboardHeaderAction,
+.dashboardPanelCycleButton,
+.appTab,
+.workPreviewCompleteButton,
+.workPreviewTimerButton,
+.workPreviewDeepWorkButton,
+.workPreviewLunchReminder button,
+.projectDetailsButton,
+.projectFocusButton,
+.projectCancelButton {
+  border-radius: var(--radius-control);
+  font-family: var(--font-display);
+}
+
+.primaryButton {
+  border: 1px solid rgba(142, 216, 238, 0.62);
+  background:
+    linear-gradient(180deg, rgba(142, 216, 238, 0.22), rgba(95, 198, 232, 0.1)),
+    rgba(5, 8, 16, 0.72);
+  color: var(--text-hi);
+  box-shadow: inset 0 1px 0 rgba(232, 244, 250, 0.16);
+}
+
+.secondaryButton,
+.detailsButton,
+.dashboardHeaderAction,
+.dashboardPanelCycleButton,
+.workPreviewTimerButton,
+.workPreviewMeetingButton {
+  border: 1px solid rgba(95, 198, 232, 0.32);
+  background: rgba(95, 198, 232, 0.07);
+  color: var(--accent-strong);
+}
+
+.secondaryButton:hover,
+.detailsButton:hover,
+.dashboardHeaderAction:hover,
+.dashboardPanelCycleButton:hover,
+.workPreviewTimerButton:hover,
+.workPreviewMeetingButton:hover,
+.appTab:hover {
+  border-color: var(--border-cyan-strong);
+  background: rgba(95, 198, 232, 0.13);
+  color: var(--text-hi);
+}
+
+.completeButton,
+.workPreviewCompleteButton,
+.workPreviewDeepWorkButton,
+.projectFocusButton,
+.rankBadge,
+.dailyRankBadge,
+.appTab.active {
+  border: 1px solid rgba(95, 198, 232, 0.34);
+  background: rgba(95, 198, 232, 0.08);
+  color: var(--accent-strong);
+}
+
+.deleteButton,
+.dataNotice--error,
+.meetingDraftWarnings p,
+.workPreviewLunchReminder,
+.workPreviewDeadlineMarker,
+.deadlineBadge,
+.urgentBadge,
+.overdueBadge {
+  border-color: rgba(255, 178, 74, 0.42);
+  background: rgba(255, 178, 74, 0.08);
+  color: var(--warn);
+}
+
+.deleteButton:hover {
+  border-color: rgba(255, 178, 74, 0.68);
+  background: rgba(255, 178, 74, 0.13);
+}
+
+.role,
+.employeeWorkdayStatus.working,
+.dashboardInsightStat small,
+.dataNotice--success,
+.completeButton {
+  color: var(--accent-strong);
+}
+
+.workPreviewItem .workPreviewClientName {
+  color: color-mix(
+    in srgb,
+    var(--client-accent-color) 84%,
+    var(--text-hi)
+  );
+  text-shadow: 0 0 10px color-mix(
+    in srgb,
+    var(--client-accent-color) 24%,
+    transparent
+  );
+}
+
+.employeeWorkdayStatus.onLunch,
+.employeeWorkdayStatus.notPunchedIn,
+.employeeWorkdayStatus.punchedOut,
+.workPreviewTimerRunning .workPreviewTimerButton,
+.workPreviewLunchReminder strong,
+.workPreviewLunchReminder span,
+.workPreviewLunchReminder button {
+  color: var(--warn);
+}
+
+.levelProgressBar,
+.miniProgressBar,
+.dashboardAttentionTrack,
+.dashboardAttentionTrack div,
+.levelProgressBar div,
+.miniProgressBar div,
+.dashboardAttentionBar {
+  border-radius: 999px;
+}
+
+.levelProgressBar,
+.miniProgressBar,
+.dashboardAttentionTrack {
+  background: rgba(232, 244, 250, 0.08);
+}
+
+.levelProgressBar div,
+.miniProgressBar div,
+.dashboardAttentionTrack div,
+.dashboardAttentionBar {
+  background: linear-gradient(90deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 0 16px rgba(95, 198, 232, 0.14);
+}
+
+.workPreviewDeadlineMarker::before,
+.workPreviewDeadlineMarker::after {
+  background: rgba(255, 178, 74, 0.76);
+}
+
+.dashboardWorkPreview .workPreviewPriority,
+.dashboardWorkPreview .workPreviewProjectStep,
+.dashboardWorkPreview .workPreviewDueSoon,
+.dashboardWorkPreview .workPreviewOverdue,
+.taskItem.dueSoonTask,
+.taskItem.priority,
+.taskItem.overdue {
+  background:
+    linear-gradient(90deg, rgba(95, 198, 232, 0.08), rgba(7, 12, 20, 0.58) 42%),
+    rgba(7, 12, 20, 0.56);
+}
+
+.dashboardWorkPreview .workPreviewDueSoon,
+.taskItem.dueSoonTask {
+  border-color: rgba(255, 178, 74, 0.34);
+  background:
+    linear-gradient(90deg, rgba(255, 178, 74, 0.09), rgba(95, 198, 232, 0.05) 42%, rgba(7, 12, 20, 0.58)),
+    rgba(7, 12, 20, 0.56);
+}
+
+.dashboardWorkPreview .workPreviewOverdue,
+.taskItem.overdue {
+  border-color: rgba(255, 178, 74, 0.42);
+  background:
+    linear-gradient(90deg, rgba(255, 178, 74, 0.11), rgba(7, 12, 20, 0.58) 42%),
+    rgba(7, 12, 20, 0.56);
+}
+
+.dashboardWorkPreview .workPreviewCritical,
+.taskItem.critical {
+  border-color: rgba(248, 113, 113, 0.52);
+  background:
+    linear-gradient(90deg, rgba(248, 113, 113, 0.16), rgba(7, 12, 20, 0.58) 42%),
+    rgba(7, 12, 20, 0.56);
+}
+
+.portraitPlaceholder,
+.largePortrait,
+.employeeAvatar {
+  border-color: rgba(95, 198, 232, 0.28);
+  background:
+    linear-gradient(180deg, rgba(13, 22, 34, 0.75), rgba(7, 12, 20, 0.86));
+  color: var(--accent-strong);
+}
+
+.overlayBackdrop,
+.deepWorkBackdrop,
+.projectFocusBackdrop,
+.dossierBackdrop,
+.outfitBackdrop {
+  background:
+    linear-gradient(rgba(95, 198, 232, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 198, 232, 0.026) 1px, transparent 1px),
+    radial-gradient(circle at 20% 18%, rgba(95, 198, 232, 0.12), transparent 32%),
+    rgba(5, 8, 16, 0.9);
+  background-size: 44px 44px, 44px 44px, auto, auto;
+}
+
+/* ── Prep Heraldic Academy theme overrides ──────────────────────────────── */
+
+/* Major framed panels */
+[data-theme="academy"] .panel,
+[data-theme="academy"] .employeeSelectCard,
+[data-theme="academy"] .confirmDialog,
+[data-theme="academy"] .deepWorkPanel,
+[data-theme="academy"] .projectFocusPanel,
+[data-theme="academy"] .characterDossierModal,
+[data-theme="academy"] .outfitSelectorModal,
+[data-theme="academy"] .meetingModePanel,
+[data-theme="academy"] .desktopSaveStatus,
+[data-theme="academy"] .dashboardAttentionPanel,
+[data-theme="academy"] .dashboardInsightsPanel,
+[data-theme="academy"] .dashboardInsightStat,
+[data-theme="academy"] .dashboardAttentionItem,
+[data-theme="academy"] .projectSummaryCard,
+[data-theme="academy"] .projectDetailsPanel,
+[data-theme="academy"] .taskItem,
+[data-theme="academy"] .taskForm,
+[data-theme="academy"] .taskListPanel,
+[data-theme="academy"] .characterCard,
+[data-theme="academy"] .archiveDetailPanel {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(201, 166, 98, 0.32);
+  background: var(--surface-panel);
+  box-shadow:
+    inset 0 0 0 4px rgba(10, 31, 18, 0.6),
+    inset 0 0 0 5px rgba(201, 166, 98, 0.14),
+    inset 0 1px 0 rgba(245, 236, 214, 0.05),
+    0 16px 46px rgba(0, 0, 0, 0.36);
+}
+
+/* Secondary surfaces — bars, inputs, items */
+[data-theme="academy"] .topBar,
+[data-theme="academy"] .bottomStatusBar,
+[data-theme="academy"] .appTabs,
+[data-theme="academy"] .workPreviewItem,
+[data-theme="academy"] .dashboardWorkEmpty,
+[data-theme="academy"] .levelProgress,
+[data-theme="academy"] .scratchpadTextarea,
+[data-theme="academy"] .formGrid input,
+[data-theme="academy"] .formGrid textarea,
+[data-theme="academy"] .formGrid select,
+[data-theme="academy"] .taskForm input,
+[data-theme="academy"] .taskForm textarea,
+[data-theme="academy"] .taskForm select,
+[data-theme="academy"] .meetingActionForm input,
+[data-theme="academy"] .meetingActionForm select,
+[data-theme="academy"] .confirmDialogInput,
+[data-theme="academy"] .meetingDraftSummary dl div,
+[data-theme="academy"] .dataNotice,
+[data-theme="academy"] .dashboardAttentionPlot {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(201, 166, 98, 0.22);
+  background:
+    linear-gradient(180deg, rgba(22, 53, 36, 0.72), rgba(14, 38, 24, 0.82));
+}
+
+/* Primary button — brass-gold gradient, embossed */
+[data-theme="academy"] .primaryButton {
+  border: 1px solid rgba(184, 149, 76, 0.8);
+  background:
+    linear-gradient(180deg, #d4b87a 0%, #c9a662 55%, #b8954c 100%);
+  color: #0a1f12;
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+  box-shadow:
+    inset 0 1px 0 rgba(245, 236, 214, 0.3),
+    0 3px 0 rgba(0, 0, 0, 0.26),
+    0 1px 6px rgba(0, 0, 0, 0.18);
+  text-shadow: none;
+}
+
+[data-theme="academy"] .primaryButton:hover {
+  background:
+    linear-gradient(180deg, #dcc487 0%, #d4b87a 55%, #c9a662 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(245, 236, 214, 0.36),
+    0 4px 0 rgba(0, 0, 0, 0.28),
+    0 2px 8px rgba(0, 0, 0, 0.22);
+}
+
+/* Secondary / tertiary buttons and active tab — brass hairline */
+[data-theme="academy"] .secondaryButton,
+[data-theme="academy"] .detailsButton,
+[data-theme="academy"] .dashboardHeaderAction,
+[data-theme="academy"] .dashboardPanelCycleButton,
+[data-theme="academy"] .workPreviewTimerButton,
+[data-theme="academy"] .workPreviewMeetingButton,
+[data-theme="academy"] .completeButton,
+[data-theme="academy"] .workPreviewCompleteButton,
+[data-theme="academy"] .workPreviewDeepWorkButton,
+[data-theme="academy"] .projectFocusButton,
+[data-theme="academy"] .rankBadge,
+[data-theme="academy"] .dailyRankBadge,
+[data-theme="academy"] .appTab.active {
+  border: 1px solid rgba(201, 166, 98, 0.44);
+  background: rgba(201, 166, 98, 0.08);
+  color: var(--accent-strong);
+}
+
+[data-theme="academy"] .secondaryButton:hover,
+[data-theme="academy"] .detailsButton:hover,
+[data-theme="academy"] .dashboardHeaderAction:hover,
+[data-theme="academy"] .dashboardPanelCycleButton:hover,
+[data-theme="academy"] .workPreviewTimerButton:hover,
+[data-theme="academy"] .workPreviewMeetingButton:hover,
+[data-theme="academy"] .appTab:hover {
+  border-color: rgba(212, 184, 122, 0.68);
+  background: rgba(201, 166, 98, 0.14);
+  color: var(--text-hi);
+}
+
+/* Destructive actions and errors — heraldic red */
+[data-theme="academy"] .deleteButton,
+[data-theme="academy"] .dataNotice--error,
+[data-theme="academy"] .meetingDraftWarnings p {
+  border-color: rgba(139, 26, 26, 0.58);
+  background: rgba(139, 26, 26, 0.1);
+  color: #d4785a;
+}
+
+[data-theme="academy"] .deleteButton:hover {
+  border-color: rgba(139, 26, 26, 0.82);
+  background: rgba(139, 26, 26, 0.16);
+}
+
+/* Warning / deadline indicators — warm amber */
+[data-theme="academy"] .workPreviewLunchReminder,
+[data-theme="academy"] .workPreviewDeadlineMarker,
+[data-theme="academy"] .deadlineBadge,
+[data-theme="academy"] .urgentBadge,
+[data-theme="academy"] .overdueBadge {
+  border-color: rgba(178, 110, 28, 0.52);
+  background: rgba(178, 110, 28, 0.09);
+  color: #c8903a;
+}
+
+/* Progress bars — brass gradient */
+[data-theme="academy"] .levelProgressBar div,
+[data-theme="academy"] .miniProgressBar div,
+[data-theme="academy"] .dashboardAttentionTrack div,
+[data-theme="academy"] .dashboardAttentionBar {
+  background: linear-gradient(90deg, #b8954c, #d4b87a);
+  box-shadow: none;
+}
+
+/* Progress track backgrounds */
+[data-theme="academy"] .levelProgressBar,
+[data-theme="academy"] .miniProgressBar,
+[data-theme="academy"] .dashboardAttentionTrack {
+  background: rgba(245, 236, 214, 0.08);
+}
+
+/* Priority task items — institutional blue (distinct from brass overdue) */
+[data-theme="academy"] .dashboardWorkPreview .workPreviewPriority,
+[data-theme="academy"] .taskItem.priority {
+  border-color: rgba(111, 159, 200, 0.52);
+  background:
+    linear-gradient(90deg, rgba(111, 159, 200, 0.10), rgba(14, 38, 24, 0.62) 42%),
+    rgba(14, 38, 24, 0.62);
+}
+
+/* Overdue task items — warm amber, distinct from critical */
+/* Due-soon task items - brass warning, softer than overdue */
+[data-theme="academy"] .dashboardWorkPreview .workPreviewDueSoon,
+[data-theme="academy"] .taskItem.dueSoonTask {
+  border-color: rgba(201, 166, 98, 0.46);
+  background:
+    linear-gradient(90deg, rgba(201, 166, 98, 0.11), rgba(14, 38, 24, 0.62) 42%),
+    rgba(14, 38, 24, 0.62);
+}
+
+[data-theme="academy"] .dashboardWorkPreview .workPreviewOverdue,
+[data-theme="academy"] .taskItem.overdue {
+  border-color: rgba(178, 110, 28, 0.56);
+  background:
+    linear-gradient(90deg, rgba(178, 110, 28, 0.13), rgba(14, 38, 24, 0.62) 42%),
+    rgba(14, 38, 24, 0.62);
+}
+
+/* Critical task items — heraldic red/crimson, strongest state */
+[data-theme="academy"] .dashboardWorkPreview .workPreviewCritical,
+[data-theme="academy"] .taskItem.critical {
+  border-color: rgba(139, 26, 26, 0.68);
+  background:
+    linear-gradient(90deg, rgba(139, 26, 26, 0.18), rgba(14, 38, 24, 0.62) 42%),
+    rgba(14, 38, 24, 0.62);
+}
+
+/* Deadline clock-hand pseudo-elements — brass in academy */
+[data-theme="academy"] .workPreviewDeadlineMarker::before,
+[data-theme="academy"] .workPreviewDeadlineMarker::after {
+  background: rgba(201, 166, 98, 0.82);
+}
+
+/* Portrait / avatar frames */
+[data-theme="academy"] .portraitPlaceholder,
+[data-theme="academy"] .largePortrait,
+[data-theme="academy"] .employeeAvatar {
+  border-color: rgba(201, 166, 98, 0.36);
+  background:
+    linear-gradient(180deg, rgba(22, 53, 36, 0.8), rgba(14, 38, 24, 0.9));
+  color: var(--accent-strong);
+}
+
+/* Overlay backdrops — deep ivy, warm brass bloom, no cyan grid */
+[data-theme="academy"] .deepWorkOverlay,
+[data-theme="academy"] .projectFocusOverlay,
+[data-theme="academy"] .meetingModeOverlay,
+[data-theme="academy"] .dossierOverlay {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(201, 166, 98, 0.1), transparent 32%),
+    radial-gradient(circle at 82% 80%, rgba(201, 166, 98, 0.07), transparent 28%),
+    rgba(10, 31, 18, 0.92);
+  background-size: auto, auto, auto;
+}
+
+/* Task form inner padding — prevents content from pressing against picture-frame border */
+[data-theme="academy"] .taskForm {
+  padding: 16px;
+  box-shadow:
+    inset 0 0 0 4px rgba(10, 31, 18, 0.6),
+    inset 0 0 0 5px rgba(201, 166, 98, 0.14),
+    inset 0 1px 0 rgba(245, 236, 214, 0.05);
+}
+
+/* ── Overlay content overrides ─────────────────────────────────────────── */
+
+/* Dossier internals */
+[data-theme="academy"] .characterDossierModal::before {
+  background: repeating-linear-gradient(
+    180deg,
+    rgba(245, 236, 214, 0.02) 0,
+    rgba(245, 236, 214, 0.02) 1px,
+    transparent 1px,
+    transparent 6px
+  );
+}
+
+[data-theme="academy"] .dossierInfoTable {
+  border-top-color: rgba(201, 166, 98, 0.4);
+  border-bottom-color: rgba(201, 166, 98, 0.24);
+}
+
+[data-theme="academy"] .dossierInfoRow {
+  border-bottom-color: rgba(201, 166, 98, 0.18);
+}
+
+[data-theme="academy"] .dossierInfoRow span {
+  color: rgba(245, 236, 214, 0.7);
+}
+
+[data-theme="academy"] .dossierInfoRow strong {
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .dossierProfileBlock {
+  border-top-color: rgba(201, 166, 98, 0.4);
+}
+
+[data-theme="academy"] .dossierProfileBlock p {
+  color: rgba(245, 236, 214, 0.82);
+}
+
+[data-theme="academy"] .dossierTabs button {
+  border-color: rgba(201, 166, 98, 0.3);
+  background: rgba(10, 31, 18, 0.34);
+  color: rgba(245, 236, 214, 0.64);
+}
+
+[data-theme="academy"] .dossierTabs button.active,
+[data-theme="academy"] .dossierTabs button:hover {
+  border-color: rgba(201, 166, 98, 0.62);
+  background: rgba(201, 166, 98, 0.1);
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .dossierTitleRow p {
+  color: rgba(245, 236, 214, 0.72);
+}
+
+[data-theme="academy"] .dossierPortraitFrame span {
+  border-color: rgba(201, 166, 98, 0.32);
+  background: rgba(201, 166, 98, 0.08);
+  color: rgba(245, 236, 214, 0.78);
+}
+
+/* Deep Work overlay internals */
+[data-theme="academy"] .deepWorkVisual {
+  border-color: rgba(201, 166, 98, 0.26);
+  background:
+    linear-gradient(180deg, rgba(22, 53, 36, 0.64), rgba(14, 38, 24, 0.52));
+}
+
+[data-theme="academy"] .deepWorkVisualFallback {
+  border-color: rgba(201, 166, 98, 0.32);
+  background: rgba(201, 166, 98, 0.08);
+  color: var(--accent);
+}
+
+[data-theme="academy"] .deepWorkStats div {
+  border-color: rgba(201, 166, 98, 0.18);
+  background: rgba(10, 31, 18, 0.38);
+}
+
+[data-theme="academy"] .deepWorkStats span {
+  color: rgba(245, 236, 214, 0.62);
+}
+
+[data-theme="academy"] .deepWorkStats strong {
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .deepWorkContent h2 {
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .deepWorkMeta {
+  color: var(--text);
+}
+
+/* Project Focus overlay internals */
+[data-theme="academy"] .projectFocusPortrait {
+  border-color: rgba(201, 166, 98, 0.26);
+  background:
+    linear-gradient(180deg, rgba(22, 53, 36, 0.64), rgba(14, 38, 24, 0.52));
+}
+
+[data-theme="academy"] .projectFocusVisualFallback {
+  border-color: rgba(201, 166, 98, 0.32);
+  background: rgba(201, 166, 98, 0.08);
+  color: var(--accent);
+}
+
+[data-theme="academy"] .projectFocusProgressBar {
+  border-color: rgba(201, 166, 98, 0.16);
+}
+
+[data-theme="academy"] .projectFocusProgressBar div {
+  background: linear-gradient(135deg, #b8954c, #d4b87a);
+}
+
+[data-theme="academy"] .projectFocusProgressText strong {
+  color: var(--accent);
+}
+
+[data-theme="academy"] .projectFocusEmployee {
+  border-color: rgba(201, 166, 98, 0.18);
+  background: rgba(10, 31, 18, 0.38);
+}
+
+[data-theme="academy"] .projectFocusEmployee span {
+  color: rgba(245, 236, 214, 0.62);
+}
+
+[data-theme="academy"] .projectFocusEmployee strong {
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .projectFocusInlineMeta {
+  color: var(--accent);
+}
+
+[data-theme="academy"] .projectFocusMeta {
+  color: var(--text);
+}
+
+[data-theme="academy"] .projectFocusCloseButton {
+  border-color: rgba(201, 166, 98, 0.28);
+  background: rgba(10, 31, 18, 0.48);
+  color: var(--text);
+}
+
+[data-theme="academy"] .projectFocusCloseButton:hover {
+  border-color: rgba(201, 166, 98, 0.52);
+  background: rgba(201, 166, 98, 0.1);
+  color: var(--text-hi);
+}
+
+/* Meeting Mode overlay internals */
+[data-theme="academy"] .meetingNotesField,
+[data-theme="academy"] .meetingActionPanel {
+  border-color: rgba(201, 166, 98, 0.22);
+  background: linear-gradient(180deg, rgba(22, 53, 36, 0.72), rgba(14, 38, 24, 0.82));
+}
+
+[data-theme="academy"] .meetingActionItem {
+  border-color: rgba(201, 166, 98, 0.2);
+  background: rgba(10, 31, 18, 0.42);
+}
+
+[data-theme="academy"] .meetingActionItem strong {
+  color: var(--text-hi);
+}
+
+[data-theme="academy"] .meetingActionItem span {
+  color: var(--text);
+}
+
+[data-theme="academy"] .meetingActionListHeader {
+  color: var(--text);
+}
+
+[data-theme="academy"] .meetingActionListHeader strong {
+  color: var(--accent);
+}
+
+[data-theme="academy"] .meetingExportStatus {
+  color: var(--accent);
+}
+
+[data-theme="academy"] .priorityMeetingAction {
+  border-color: rgba(201, 166, 98, 0.4);
+  background: rgba(201, 166, 98, 0.1);
+}
+
+/* Outfit selector internals */
+[data-theme="academy"] .outfitSelectorBody {
+  border-color: rgba(201, 166, 98, 0.2);
+  background:
+    linear-gradient(135deg, rgba(201, 166, 98, 0.06), rgba(22, 53, 36, 0.06)),
+    rgba(10, 31, 18, 0.32);
+}
+
+[data-theme="academy"] .outfitSelectorStep {
+  border-color: rgba(201, 166, 98, 0.2);
+  background: rgba(10, 31, 18, 0.26);
+  color: var(--accent);
+}
+
+[data-theme="academy"] .outfitSelectorStep:hover,
+[data-theme="academy"] .outfitSelectorStep:focus-visible {
+  border-color: rgba(201, 166, 98, 0.52);
+  background: rgba(22, 53, 36, 0.6);
+}
+
+[data-theme="academy"] .outfitSelectorPreview {
+  border-color: rgba(201, 166, 98, 0.26);
+  background:
+    linear-gradient(135deg, rgba(22, 53, 36, 0.64), rgba(14, 38, 24, 0.72));
+}
+
+[data-theme="academy"] .outfitSelectorInfo span {
+  color: var(--accent);
+}
+
+/* XP rule pill — brass border to match Academy palette */
+[data-theme="academy"] .xpRuleHelper {
+  border-color: rgba(201, 166, 98, 0.22);
+  background: linear-gradient(180deg, rgba(22, 53, 36, 0.72), rgba(14, 38, 24, 0.82));
+}
+
+/* Daily quota ring — brass/gold gradient in Academy */
+[data-theme="academy"] #progressGradient stop:first-child {
+  stop-color: #b8954c;
+}
+[data-theme="academy"] #progressGradient stop:last-child {
+  stop-color: #d4b87a;
+}

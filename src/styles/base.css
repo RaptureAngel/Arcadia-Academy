@@ -1,0 +1,240 @@
+@font-face {
+  font-family: "Cinzel";
+  src: url("/fonts/Cinzel/Cinzel-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spectral";
+  src: url("/fonts/Spectral/Spectral-Regular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spectral";
+  src: url("/fonts/Spectral/Spectral-SemiBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spectral";
+  src: url("/fonts/Spectral/Spectral-Bold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spectral";
+  src: url("/fonts/Spectral/Spectral-ExtraBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 800 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Spectral";
+  src: url("/fonts/Spectral/Spectral-Italic.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrains_Mono/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("/fonts/JetBrains_Mono/JetBrainsMono-Italic-VariableFont_wght.ttf") format("truetype");
+  font-style: italic;
+  font-weight: 100 800;
+  font-display: swap;
+}
+
+:root {
+  --bg-app: #050810;
+  --surface-1-top: #0d1622;
+  --surface-1-bot: #070c14;
+  --text-hi: #e8f4fa;
+  --text: #a4becc;
+  --accent: #5fc6e8;
+  --accent-strong: #8ed8ee;
+  --warn: #ffb24a;
+  --font-display: "Cinzel", "Spectral", Georgia, serif;
+  --font-body: "Spectral", Georgia, serif;
+  --font-meta: "JetBrains Mono", ui-monospace, monospace;
+  --surface-panel:
+    linear-gradient(180deg, var(--surface-1-top), var(--surface-1-bot));
+  --surface-panel-soft:
+    linear-gradient(180deg, rgba(13, 22, 34, 0.88), rgba(7, 12, 20, 0.9));
+  --border-cyan: rgba(95, 198, 232, 0.24);
+  --border-cyan-strong: rgba(142, 216, 238, 0.5);
+  --shadow-rim:
+    inset 0 1px 0 rgba(232, 244, 250, 0.06),
+    inset 0 0 34px rgba(95, 198, 232, 0.035),
+    0 18px 60px rgba(0, 0, 0, 0.42);
+  --shadow-glow: 0 0 22px rgba(95, 198, 232, 0.16);
+  --radius-panel: 6px;
+  --radius-card: 4px;
+  --radius-control: 4px;
+  color: var(--text-hi);
+  background: var(--bg-app);
+  font-family: var(--font-body);
+}
+
+:root[data-theme="academy"],
+[data-theme="academy"] {
+  --bg-app: #0a1f12;
+  --surface-1-top: #163524;
+  --surface-1-bot: #0e2618;
+  --text-hi: #f5ecd6;
+  --text: #d4c9a8;
+  --accent: #c9a662;
+  --accent-strong: #d4b87a;
+  --brass-dark: #b8954c;
+  --warn: #8b1a1a;
+  --font-display: "Cinzel", "Spectral", Georgia, serif;
+  --font-body: "Spectral", Georgia, serif;
+  --font-meta: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  /* panel: deep ivy gradient with 1px brass border */
+  --surface-panel:
+    linear-gradient(180deg, var(--surface-1-top), var(--surface-1-bot));
+  --surface-panel-soft:
+    linear-gradient(180deg, rgba(22, 53, 36, 0.88), rgba(14, 38, 24, 0.92));
+  --border-cyan: rgba(201, 166, 98, 0.3);
+  --border-cyan-strong: rgba(212, 184, 122, 0.62);
+  --shadow-rim:
+    inset 0 0 0 4px rgba(10, 31, 18, 0.72),
+    inset 0 0 0 5px rgba(201, 166, 98, 0.18),
+    inset 0 1px 0 rgba(245, 236, 214, 0.06),
+    0 18px 52px rgba(0, 0, 0, 0.42);
+  --shadow-glow: 0 0 18px rgba(201, 166, 98, 0.12);
+  --radius-panel: 4px;
+  --radius-card: 2px;
+  --radius-control: 2px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(95, 198, 232, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(95, 198, 232, 0.026) 1px, transparent 1px),
+    radial-gradient(circle at 16% 8%, rgba(95, 198, 232, 0.14), transparent 34%),
+    radial-gradient(circle at 86% 18%, rgba(142, 216, 238, 0.08), transparent 30%),
+    radial-gradient(circle at 54% 96%, rgba(95, 198, 232, 0.08), transparent 36%),
+    var(--bg-app);
+  background-size: 44px 44px, 44px 44px, auto, auto, auto, auto;
+}
+
+:root[data-theme="academy"] body,
+html[data-theme="academy"] body,
+body[data-theme="academy"],
+[data-theme="academy"] body,
+[data-theme="academy"].app,
+[data-theme="academy"].appShell,
+[data-theme="academy"] .selectScreen {
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(201, 166, 98, 0.09), transparent 52%),
+    radial-gradient(ellipse at 50% 100%, rgba(201, 166, 98, 0.07), transparent 48%),
+    radial-gradient(ellipse at 0% 50%, rgba(0, 0, 0, 0.32), transparent 40%),
+    radial-gradient(ellipse at 100% 50%, rgba(0, 0, 0, 0.32), transparent 40%),
+    #0a1f12;
+  background-size: auto, auto, auto, auto, auto;
+}
+
+html[data-theme="academy"] body,
+body[data-theme="academy"],
+.app[data-theme="academy"] {
+  background-color: #0a1f12 !important;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.selectScreen,
+.appShell {
+  min-height: 100vh;
+  padding: 16px 22px 24px;
+}
+
+.appShell {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  padding-bottom: 48px;
+  color: var(--text-hi);
+}
+
+/* General Text */
+
+.employeeSelectCard h2,
+.employeePanel h2,
+.progressDetails h2,
+.taskListHeader h2 {
+  margin: 12px 0 6px;
+  color: #e5f2f0;
+}
+
+.employeeProfileInfo h2,
+.progressDetails h2,
+.taskListHeader h2,
+.dashboardWorkPreview h2,
+.dashboardCenterPanel h2 {
+  color: #f2fbff;
+}
+
+.employeeSelectCard p,
+.bio,
+.progressDetails p,
+.emptyState,
+.taskItem p,
+.taskItem small {
+  color: #9fb3b8;
+}
+
+.role {
+  color: #19e6a1;
+  font-weight: 700;
+}
+
+.miniStats {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 22px;
+  color: #38bdf8;
+  font-size: 0.9rem;
+}

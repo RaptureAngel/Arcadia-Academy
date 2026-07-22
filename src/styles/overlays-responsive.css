@@ -1,0 +1,170 @@
+﻿@media (max-width: 720px) {
+  .outfitSelectorModal {
+    padding: 16px;
+  }
+
+  .outfitSelectorStage,
+  .outfitSelectorBody {
+    grid-template-columns: 1fr;
+  }
+
+  .outfitSelectorStep {
+    min-height: 46px;
+  }
+
+  .outfitSelectorPreview {
+    height: clamp(300px, 52vh, 440px);
+  }
+
+  .outfitSelectorInfo {
+    align-content: start;
+    text-align: center;
+  }
+
+  .outfitSelectorActions {
+    grid-template-columns: 1fr;
+  }
+
+  .outfitSelectorActions .primaryButton,
+  .outfitSelectorActions .detailsButton {
+    width: 100%;
+  }
+
+  .employeePanelActions.hasOutfitAction {
+    grid-template-columns: 1fr;
+  }
+
+  .bottomStatusBar {
+    flex-wrap: wrap;
+    min-height: 30px;
+    padding: 5px 12px;
+    font-size: 0.72rem;
+  }
+
+  .deepWorkOverlay {
+    padding: 14px;
+  }
+
+  .deepWorkPanel {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .deepWorkVisual {
+    min-height: 180px;
+  }
+
+  .deepWorkStats {
+    grid-template-columns: 1fr;
+    margin-top: 16px;
+  }
+
+  .deepWorkActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .deepWorkActions .detailsButton,
+  .deepWorkActions .completeButton,
+  .deepWorkActions .deleteButton {
+    width: 100%;
+  }
+
+  .projectFocusOverlay {
+    padding: 14px;
+  }
+
+  .projectFocusPanel {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .projectFocusVisual {
+    min-height: 180px;
+  }
+
+  .projectFocusPortrait {
+    width: min(100%, 320px);
+    height: auto;
+    min-height: 0;
+  }
+
+  .projectFocusHeader {
+    align-items: flex-start;
+  }
+
+  .projectFocusActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .projectFocusActions .completeButton,
+  .projectFocusActions .deleteButton {
+    width: 100%;
+  }
+
+  .meetingModeOverlay {
+    padding: 14px;
+  }
+
+  .meetingModePanel {
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .meetingModeGrid {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .meetingNotesField textarea {
+    min-height: 280px;
+  }
+
+  .meetingModeHeader,
+  .meetingModeActions {
+    align-items: stretch;
+  }
+
+  .meetingModeHeader {
+    flex-direction: column;
+  }
+
+  .meetingModeActions,
+  .meetingModeActions--complete {
+    grid-template-columns: 1fr;
+  }
+
+  .meetingModeActions .primaryButton,
+  .meetingModeActions .detailsButton,
+  .meetingModeActions .deleteButton {
+    width: 100%;
+  }
+
+  .endDayTimes,
+  .endDayStatsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .endDaySessionRow {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .endDayEmployee,
+  .endDayActions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .endDayExportStatus {
+    text-align: center;
+  }
+
+  .endDayActions .detailsButton,
+  .endDayActions .primaryButton {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: 100%;
+  }
+}
