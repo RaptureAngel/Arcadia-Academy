@@ -49,7 +49,7 @@ function DataManagementPanel({
       </div>
 
       <p className="emptyState">
-        Export or restore the local Arcadia Desk save data stored in this
+        Export or restore the local Arcadia Academy save data stored in this
         browser. Reset Work clears tasks, projects, history/work logs,
         workday state, active date, and active character selection while
         preserving character XP. Season Reset also resets character XP while
@@ -132,7 +132,7 @@ function DataManagementPanel({
             </p>
             <p className="desktopSavePath">
               Before running, copy your active save folder, including
-              arcadia-desk-save.json and Character Images/.
+              arcadia-academy-save.json and Character Images/.
             </p>
             {migrationSummary && (
               <p>

@@ -456,7 +456,7 @@ export function useCharacterLibrary({
       window.alert(
         result.status === "unsupportedType"
           ? "Choose a PNG, JPG, JPEG, or WebP image."
-          : "Arcadia Desk could not import that image."
+          : "Arcadia Academy could not import that image."
       );
       return;
     }

@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Default desktop permissions for Arcadia Desk.",
+  "description": "Default desktop permissions for Arcadia Academy.",
   "windows": ["main"],
   "permissions": [
     "core:default",

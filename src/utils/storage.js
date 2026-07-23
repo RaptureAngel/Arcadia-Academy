@@ -18,33 +18,33 @@ import {
 import { buildWorkLogText, getWorkLogFileName } from "./workLogExport";
 
 export const STORAGE_KEYS = {
-  activeEmployeeId: "arcadia-desk-active-employee-id",
-  employees: "arcadia-desk-employees",
-  tasks: "arcadia-desk-tasks",
-  projects: "arcadia-desk-projects",
-  activeDate: "arcadia-desk-active-date",
-  history: "arcadia-desk-history",
-  workday: "arcadia-desk-workday",
-  dailyQuota: "arcadia-desk-daily-quota",
-  customProjectTemplates: "arcadia-desk-custom-project-templates",
-  clientLibrary: "arcadia-desk-client-library",
-  characterLibrary: "arcadia-desk-character-library",
-  scratchpad: "arcadia-desk-scratchpad",
-  calendarEvents: "arcadia-desk-calendar-events",
+  activeEmployeeId: "arcadia-academy-active-employee-id",
+  employees: "arcadia-academy-employees",
+  tasks: "arcadia-academy-tasks",
+  projects: "arcadia-academy-projects",
+  activeDate: "arcadia-academy-active-date",
+  history: "arcadia-academy-history",
+  workday: "arcadia-academy-workday",
+  dailyQuota: "arcadia-academy-daily-quota",
+  customProjectTemplates: "arcadia-academy-custom-project-templates",
+  clientLibrary: "arcadia-academy-client-library",
+  characterLibrary: "arcadia-academy-character-library",
+  scratchpad: "arcadia-academy-scratchpad",
+  calendarEvents: "arcadia-academy-calendar-events",
 };
 
-export const MEETING_DRAFT_STORAGE_KEY = "arcadia-desk-meeting-draft";
+export const MEETING_DRAFT_STORAGE_KEY = "arcadia-academy-meeting-draft";
 export const MEETING_DRAFT_VERSION = 1;
 export const SAVE_FILE_VERSION = 1;
-export const DESKTOP_SAVE_FILE_NAME = "arcadia-desk-save.json";
+export const DESKTOP_SAVE_FILE_NAME = "arcadia-academy-save.json";
 export const DESKTOP_BACKUP_DIR_NAME = "Backups";
 export const DESKTOP_WORK_LOG_DIR_NAME = "Work Logs";
 export const DESKTOP_MEETING_NOTES_DIR_NAME = "Meeting Notes";
 export const DESKTOP_CHARACTER_IMAGE_DIR_NAME = "Character Images";
 export const DESKTOP_STORAGE_CONFIG_FILE_NAME =
-  "arcadia-desk-storage-config.json";
-export const DESKTOP_MEETING_DRAFT_FILE_NAME = "arcadia-desk-meeting-draft.json";
-export const DESKTOP_BACKUP_LIMIT = 5;
+  "arcadia-academy-storage-config.json";
+export const DESKTOP_MEETING_DRAFT_FILE_NAME = "arcadia-academy-meeting-draft.json";
+export const DESKTOP_BACKUP_LIMIT = 3;
 export const DESKTOP_BACKUP_THROTTLE_MS = 10 * 60 * 1000;
 export const MANAGED_CHARACTER_IMAGE_PREFIX = "arcadia-character-image:";
 
@@ -194,7 +194,7 @@ export function readMeetingDraft() {
 
     return normalizeMeetingDraft(JSON.parse(savedValue));
   } catch (error) {
-    console.warn("Could not read Arcadia Desk meeting draft.", error);
+    console.warn("Could not read Arcadia Academy meeting draft.", error);
     return null;
   }
 }
@@ -217,7 +217,7 @@ export function writeMeetingDraft(draft) {
     );
     return { ok: true, draft: normalizedDraft, error: null };
   } catch (error) {
-    console.warn("Could not save Arcadia Desk meeting draft.", error);
+    console.warn("Could not save Arcadia Academy meeting draft.", error);
     return { ok: false, error };
   }
 }
@@ -227,7 +227,7 @@ export function clearMeetingDraft() {
     localStorage.removeItem(MEETING_DRAFT_STORAGE_KEY);
     return { ok: true, error: null };
   } catch (error) {
-    console.warn("Could not clear Arcadia Desk meeting draft.", error);
+    console.warn("Could not clear Arcadia Academy meeting draft.", error);
     return { ok: false, error };
   }
 }
@@ -257,7 +257,7 @@ export async function readDesktopMeetingDraft() {
 
     return { ok: true, status: "active", draft, error: null };
   } catch (error) {
-    console.warn("Could not read Arcadia Desk desktop meeting draft.", error);
+    console.warn("Could not read Arcadia Academy desktop meeting draft.", error);
     return { ok: false, status: "error", draft: null, error };
   }
 }
@@ -290,7 +290,7 @@ export async function writeDesktopMeetingDraft(draft) {
 
     return { ok: true, status: "active", error: null };
   } catch (error) {
-    console.warn("Could not save Arcadia Desk desktop meeting draft.", error);
+    console.warn("Could not save Arcadia Academy desktop meeting draft.", error);
     return { ok: false, status: "error", error };
   }
 }
@@ -313,7 +313,7 @@ export async function clearDesktopMeetingDraft() {
 
     return { ok: true, status: "cleared", error: null };
   } catch (error) {
-    console.warn("Could not clear Arcadia Desk desktop meeting draft.", error);
+    console.warn("Could not clear Arcadia Academy desktop meeting draft.", error);
     return { ok: false, status: "error", error };
   }
 }
@@ -339,7 +339,7 @@ export function readSaveFromLocalStorage() {
 export function buildSavePayload(data, exportedAt = new Date().toISOString()) {
   return {
     metadata: {
-      appName: "Arcadia Desk",
+      appName: "Arcadia Academy",
       exportedAt,
       version: SAVE_FILE_VERSION,
     },
@@ -355,7 +355,7 @@ export function createSavePayloadFromLocalStorage(
 
 export function validateSavePayload(payload) {
   return (
-    payload?.metadata?.appName === "Arcadia Desk" &&
+    payload?.metadata?.appName === "Arcadia Academy" &&
     payload?.metadata?.version === SAVE_FILE_VERSION &&
     Boolean(payload.data) &&
     typeof payload.data === "object"
@@ -513,7 +513,7 @@ export async function readDesktopStorageConfig() {
           : null,
     };
   } catch (error) {
-    console.warn("Could not read Arcadia Desk desktop storage config.", error);
+    console.warn("Could not read Arcadia Academy desktop storage config.", error);
     return { saveFolderPath: null };
   }
 }
@@ -545,7 +545,7 @@ export async function writeDesktopStorageConfig(config) {
 
     return { ok: true, error: null };
   } catch (error) {
-    console.warn("Could not write Arcadia Desk desktop storage config.", error);
+    console.warn("Could not write Arcadia Academy desktop storage config.", error);
     return { ok: false, error };
   }
 }
@@ -557,7 +557,7 @@ export async function chooseDesktopSaveFolder() {
 
   try {
     const selectedFolder = await open({
-      title: "Choose Arcadia Desk Save Folder",
+      title: "Choose Arcadia Academy Save Folder",
       directory: true,
       multiple: false,
       recursive: true,
@@ -569,7 +569,7 @@ export async function chooseDesktopSaveFolder() {
 
     return { status: "selected", folderPath: selectedFolder, error: null };
   } catch (error) {
-    console.warn("Could not choose Arcadia Desk save folder.", error);
+    console.warn("Could not choose Arcadia Academy save folder.", error);
     return { status: "error", folderPath: null, error };
   }
 }
@@ -728,7 +728,7 @@ export async function desktopCharacterImageExists(relativePath) {
       error: null,
     };
   } catch (error) {
-    console.warn("Could not inspect Arcadia Desk character image.", error);
+    console.warn("Could not inspect Arcadia Academy character image.", error);
     return { ok: false, exists: false, status: "error", error };
   }
 }
@@ -783,7 +783,7 @@ export async function getAvailableDesktopCharacterImagePath(relativePath) {
 
     return { ok: false, status: "collisionLimit", relativePath: "", error: null };
   } catch (error) {
-    console.warn("Could not find an available Arcadia Desk character image path.", error);
+    console.warn("Could not find an available Arcadia Academy character image path.", error);
     return { ok: false, status: "error", relativePath: "", error };
   }
 }
@@ -852,7 +852,7 @@ export async function copyDesktopCharacterImageFile(sourceRelativePath, destinat
       error: null,
     };
   } catch (error) {
-    console.warn("Could not copy Arcadia Desk character image.", error);
+    console.warn("Could not copy Arcadia Academy character image.", error);
     return { ok: false, status: "error", error };
   }
 }
@@ -935,7 +935,7 @@ export async function moveDesktopCharacterImageFile(sourceRelativePath, destinat
       error: null,
     };
   } catch (error) {
-    console.warn("Could not move Arcadia Desk character image.", error);
+    console.warn("Could not move Arcadia Academy character image.", error);
     return { ok: false, status: "error", error };
   }
 }
@@ -985,7 +985,7 @@ export async function listDesktopCharacterImageFiles() {
       error: null,
     };
   } catch (error) {
-    console.warn("Could not scan Arcadia Desk character image folder.", error);
+    console.warn("Could not scan Arcadia Academy character image folder.", error);
     return { ok: false, status: "error", files: [], error };
   }
 }
@@ -1112,7 +1112,7 @@ export async function importDesktopCharacterImage({
       error: null,
     };
   } catch (error) {
-    console.warn("Could not import Arcadia Desk character image.", error);
+    console.warn("Could not import Arcadia Academy character image.", error);
     return { ok: false, status: "error", imageReference: "", error };
   }
 }
@@ -1155,7 +1155,7 @@ export async function readDesktopCharacterImage(imageReference) {
       error: null,
     };
   } catch (error) {
-    console.warn("Could not read Arcadia Desk character image.", error);
+    console.warn("Could not read Arcadia Academy character image.", error);
     return { ok: false, status: "missing", url: "", error };
   }
 }
@@ -1188,7 +1188,7 @@ export async function getDesktopSaveLocation() {
       };
     }
   } catch (error) {
-    console.warn("Configured Arcadia Desk save folder is unavailable.", error);
+    console.warn("Configured Arcadia Academy save folder is unavailable.", error);
     return {
       status: "folderUnavailable",
       location: createAppDataSaveLocation(chosenLocation.folderPath),
@@ -1222,7 +1222,7 @@ function getDesktopBackupTimestamp(date = new Date()) {
 }
 
 function getDesktopBackupFileName(date = new Date()) {
-  return `arcadia-desk-save-${getDesktopBackupTimestamp(date)}.json`;
+  return `arcadia-academy-save-${getDesktopBackupTimestamp(date)}.json`;
 }
 
 function getDesktopBackupPath(fileName) {
@@ -1252,7 +1252,7 @@ async function readCurrentDesktopSaveText(location) {
 
     return { status: "active", fileText, payload, error: null };
   } catch (error) {
-    console.warn("Could not read Arcadia Desk desktop save file.", error);
+    console.warn("Could not read Arcadia Academy desktop save file.", error);
     return { status: "corrupt", fileText: null, payload: null, error };
   }
 }
@@ -1288,7 +1288,7 @@ async function pruneDesktopBackups(location) {
       .filter(
         (entry) =>
           entry.isFile &&
-          entry.name?.startsWith("arcadia-desk-save-") &&
+          entry.name?.startsWith("arcadia-academy-save-") &&
           entry.name.endsWith(".json")
       )
       .sort((firstEntry, secondEntry) =>
@@ -1302,7 +1302,7 @@ async function pruneDesktopBackups(location) {
       )
     );
   } catch (error) {
-    console.warn("Could not prune Arcadia Desk desktop save backups.", error);
+    console.warn("Could not prune Arcadia Academy desktop save backups.", error);
   }
 }
 
@@ -1358,7 +1358,7 @@ export async function writeDesktopSavePayload(payload, options = {}) {
   try {
     await mkdirInDesktopLocation(location, ".");
   } catch (error) {
-    console.warn("Could not ensure Arcadia Desk save directory.", error);
+    console.warn("Could not ensure Arcadia Academy save directory.", error);
   }
 
   try {
@@ -1381,7 +1381,7 @@ export async function writeDesktopSavePayload(payload, options = {}) {
       try {
         await createDesktopSaveBackup(location, currentSave.fileText);
       } catch (error) {
-        console.warn("Could not create Arcadia Desk desktop save backup.", error);
+        console.warn("Could not create Arcadia Academy desktop save backup.", error);
         return { ok: false, status: "backupError", error };
       }
     }
@@ -1407,7 +1407,7 @@ export async function writeDesktopSavePayload(payload, options = {}) {
       fallback: locationResult.fallback,
     };
   } catch (error) {
-    console.warn("Could not write Arcadia Desk desktop save file.", error);
+    console.warn("Could not write Arcadia Academy desktop save file.", error);
     return { ok: false, status: "writeError", error };
   }
 }
@@ -1441,7 +1441,7 @@ export async function inspectDesktopSaveFolder(folderPath) {
       folderPath,
     };
   } catch (error) {
-    console.warn("Could not inspect Arcadia Desk save folder.", error);
+    console.warn("Could not inspect Arcadia Academy save folder.", error);
     return { status: "unavailable", location, payload: null, error };
   }
 }
@@ -1482,7 +1482,7 @@ export async function writeDesktopWorkLogFile(
       error: null,
     };
   } catch (error) {
-    console.warn("Could not auto-save Arcadia Desk work log.", error);
+    console.warn("Could not auto-save Arcadia Academy work log.", error);
     return { ok: false, status: "writeError", error };
   }
 }
@@ -1528,7 +1528,7 @@ export async function writeDesktopMeetingNotesFile(
       error: null,
     };
   } catch (error) {
-    console.warn("Could not auto-save Arcadia Desk meeting notes.", error);
+    console.warn("Could not auto-save Arcadia Academy meeting notes.", error);
     return { ok: false, status: "writeError", error };
   }
 }
@@ -1590,7 +1590,7 @@ export function downloadSavePayload(payload, dateKey) {
   const downloadLink = document.createElement("a");
 
   downloadLink.href = url;
-  downloadLink.download = `arcadia-desk-save-${dateKey}.json`;
+  downloadLink.download = `arcadia-academy-save-${dateKey}.json`;
   downloadLink.click();
   URL.revokeObjectURL(url);
 }

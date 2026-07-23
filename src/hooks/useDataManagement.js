@@ -51,7 +51,7 @@ function createNewSeasonCharacterLibrary(characters) {
 const DESKTOP_SAVE_STATUS_COPY = {
   checking: {
     label: "Checking desktop save",
-    description: "Looking for an Arcadia Desk desktop save file.",
+    description: "Looking for an Arcadia Academy desktop save file.",
   },
   unavailable: {
     label: "Browser save active",
@@ -63,11 +63,11 @@ const DESKTOP_SAVE_STATUS_COPY = {
   },
   folderUnavailable: {
     label: "Save folder unavailable",
-    description: "Arcadia Desk is using app data fallback until the chosen folder is available.",
+    description: "Arcadia Academy is using app data fallback until the chosen folder is available.",
   },
   folderConflict: {
     label: "Folder save found",
-    description: "The selected folder already has an Arcadia Desk save. Choose how to continue.",
+    description: "The selected folder already has an Arcadia Academy save. Choose how to continue.",
   },
   folderCorrupt: {
     label: "Folder save needs attention",
@@ -75,7 +75,7 @@ const DESKTOP_SAVE_STATUS_COPY = {
   },
   active: {
     label: "Desktop save active",
-    description: "Arcadia Desk is mirroring this save to the desktop JSON file.",
+    description: "Arcadia Academy is mirroring this save to the desktop JSON file.",
   },
   corrupt: {
     label: "Desktop save needs attention",
@@ -83,7 +83,7 @@ const DESKTOP_SAVE_STATUS_COPY = {
   },
   writing: {
     label: "Writing desktop save",
-    description: "Arcadia Desk is creating or updating the desktop save file.",
+    description: "Arcadia Academy is creating or updating the desktop save file.",
   },
   writeError: {
     label: "Desktop save write failed",
@@ -270,7 +270,7 @@ export function useDataManagement({
       if (result.ok) return;
 
       console.warn(
-        `Arcadia Desk could not auto-save work log for ${historyEntry.date}.`,
+        `Arcadia Academy could not auto-save work log for ${historyEntry.date}.`,
         result.error
       );
 
@@ -666,14 +666,14 @@ export function useDataManagement({
         if (!validateSavePayload(importedSave)) {
           setDataNotice({
             type: "error",
-            message: "This does not look like an Arcadia Desk save file.",
+            message: "This does not look like an Arcadia Academy save file.",
           });
           return;
         }
 
         openConfirmDialog({
           title: "Import Save",
-          message: "Import this Arcadia Desk save? This will overwrite current local data.",
+          message: "Import this Arcadia Academy save? This will overwrite current local data.",
           confirmLabel: "Import Save",
           isDangerous: true,
           onConfirm: () => {
@@ -745,7 +745,7 @@ export function useDataManagement({
     openConfirmDialog({
       title: "Run Character Image Migration",
       message:
-        "Before running, copy your active Arcadia Desk save folder, including arcadia-desk-save.json and Character Images/. This migration copies referenced flat character images into organized folders, rewrites successful refs, and does not delete old files.",
+        "Before running, copy your active Arcadia Academy save folder, including arcadia-academy-save.json and Character Images/. This migration copies referenced flat character images into organized folders, rewrites successful refs, and does not delete old files.",
       confirmLabel: "Run Migration",
       isDangerous: false,
       onConfirm: async () => {
