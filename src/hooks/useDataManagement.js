@@ -124,6 +124,9 @@ export function useDataManagement({
   templateLibrary,
   scratchpad,
   calendarEvents,
+  subjects,
+  studyProjects,
+  studySessions,
   setDataNotice,
   hydrateFromStorage,
   hydrateAfterReset,
@@ -228,6 +231,9 @@ export function useDataManagement({
       characterLibrary: createCharacterLibraryRecord(nextCharacterLibrary),
       scratchpad: scratchpad ?? {},
       calendarEvents: calendarEvents ?? [],
+      subjects: subjects ?? [],
+      studyProjects: studyProjects ?? [],
+      studySessions: studySessions ?? [],
     };
   }
 
@@ -392,6 +398,9 @@ export function useDataManagement({
     templateLibrary,
     scratchpad,
     calendarEvents,
+    subjects,
+    studyProjects,
+    studySessions,
   ]);
 
   function exportSaveData() {

@@ -31,6 +31,9 @@ export const STORAGE_KEYS = {
   characterLibrary: "arcadia-academy-character-library",
   scratchpad: "arcadia-academy-scratchpad",
   calendarEvents: "arcadia-academy-calendar-events",
+  subjects: "arcadia-academy-subjects",
+  studyProjects: "arcadia-academy-study-projects",
+  studySessions: "arcadia-academy-study-sessions",
 };
 
 export const MEETING_DRAFT_STORAGE_KEY = "arcadia-academy-meeting-draft";
@@ -1568,6 +1571,15 @@ export function writeSaveToLocalStorage(payload, fallbackBuilders = {}) {
     );
     saveData(STORAGE_KEYS.employees, seededCharacterLibrary);
   }
+
+  // An Academy save predating Stage 2A won't carry these collections. Treat
+  // them as empty rather than leaving whatever newer local data exists,
+  // so restoring an older save doesn't produce a hybrid state.
+  ["subjects", "studyProjects", "studySessions"].forEach((name) => {
+    if (!Object.hasOwn(payload.data, name)) {
+      saveData(STORAGE_KEYS[name], []);
+    }
+  });
 }
 
 export function createResetWorkDataPayload(today, blankWorkday) {

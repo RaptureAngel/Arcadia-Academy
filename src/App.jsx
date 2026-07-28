@@ -71,6 +71,9 @@ import {
   loadSavedData,
   saveData,
 } from "./utils/storage";
+import { normalizeSubjectList } from "./utils/subjects";
+import { normalizeStudyProjectList } from "./utils/studyProjects";
+import { normalizeStudySessionList } from "./utils/studySessions";
 import {
   closeOpenWorkSession,
   createBlankWorkday,
@@ -260,6 +263,19 @@ function App() {
     loadSavedData(STORAGE_KEYS.calendarEvents, [])
   );
 
+  // Arcadia Academy data foundation: subjects, study projects, and study
+  // sessions are a separate shared collection from the Desk-derived project
+  // packs above, and are not yet rendered anywhere in the UI.
+  const [subjects, setSubjects] = useState(() =>
+    normalizeSubjectList(loadSavedData(STORAGE_KEYS.subjects, []))
+  );
+  const [studyProjects, setStudyProjects] = useState(() =>
+    normalizeStudyProjectList(loadSavedData(STORAGE_KEYS.studyProjects, []))
+  );
+  const [studySessions, setStudySessions] = useState(() =>
+    normalizeStudySessionList(loadSavedData(STORAGE_KEYS.studySessions, []))
+  );
+
   const [deepWorkTaskId, setDeepWorkTaskId] = useState(null);
   const [preLunchTaskId, setPreLunchTaskId] = useState(null);
   const previousActiveEmployeeIdRef = useRef(activeEmployeeId);
@@ -312,6 +328,9 @@ function App() {
     templateLibrary,
     scratchpad,
     calendarEvents,
+    subjects,
+    studyProjects,
+    studySessions,
     setDataNotice,
     hydrateFromStorage,
     hydrateAfterReset,
@@ -772,6 +791,18 @@ function App() {
   }, [calendarEvents]);
 
   useEffect(() => {
+    saveData(STORAGE_KEYS.subjects, subjects);
+  }, [subjects]);
+
+  useEffect(() => {
+    saveData(STORAGE_KEYS.studyProjects, studyProjects);
+  }, [studyProjects]);
+
+  useEffect(() => {
+    saveData(STORAGE_KEYS.studySessions, studySessions);
+  }, [studySessions]);
+
+  useEffect(() => {
     if (activeEmployeeId && !activeEmployee) {
       setActiveEmployeeId(null);
     }
@@ -969,6 +1000,13 @@ function App() {
     setDraftDailyQuota(String(loadedDailyQuota));
     setScratchpad(loadSavedData(STORAGE_KEYS.scratchpad, {}));
     setCalendarEvents(loadSavedData(STORAGE_KEYS.calendarEvents, []));
+    setSubjects(normalizeSubjectList(loadSavedData(STORAGE_KEYS.subjects, [])));
+    setStudyProjects(
+      normalizeStudyProjectList(loadSavedData(STORAGE_KEYS.studyProjects, []))
+    );
+    setStudySessions(
+      normalizeStudySessionList(loadSavedData(STORAGE_KEYS.studySessions, []))
+    );
     closeStaleUiState();
     if (successMessage) {
       setDataNotice({ type: "success", message: successMessage });
