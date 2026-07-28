@@ -1,0 +1,277 @@
+/* Arcadia Academy visual identity: warm cream/parchment with a sage
+   accent, layered over the shared Desk-derived chrome (topBar, panels,
+   buttons, inputs). Deliberately a single warm/light look — no dark-mode
+   variant — to read as a calm study space distinct from the Desk theme. */
+
+:root {
+  --academy-bg: #f8f1e3;
+  --academy-bg-soft: #efe4cf;
+  --academy-surface: #fffcf5;
+  --academy-surface-alt: #f2e9d8;
+  --academy-ink: #2e2c26;
+  --academy-ink-soft: #6b6558;
+  --academy-ink-faint: #93897a;
+  --academy-border: #e0d3b8;
+  --academy-border-strong: #cbb98f;
+  --academy-sage: #5f7d64;
+  --academy-sage-strong: #3d5a41;
+  --academy-sage-soft: #a9c6ab;
+  --academy-sage-bg: #eef4ec;
+  --academy-sage-mid: #7a9e7f;
+  --academy-terracotta: #c1694f;
+  --academy-indigo: #5b5ea6;
+  --academy-teal: #3f8f8a;
+  --academy-gold: #c9a662;
+  --academy-danger: #b3543f;
+  --academy-danger-bg: #f7e6e0;
+  --academy-radius-panel: 22px;
+  --academy-radius-card: 16px;
+  --academy-radius-control: 12px;
+  --academy-shadow: 0 12px 28px rgba(72, 58, 30, 0.09), 0 2px 8px rgba(72, 58, 30, 0.06);
+  --academy-font-display: "Quicksand", "Nunito", "Segoe UI", system-ui, sans-serif;
+  --academy-font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
+}
+
+html,
+body {
+  background: var(--academy-bg);
+}
+
+.appShell,
+.selectScreen {
+  background: var(--academy-bg);
+  color: var(--academy-ink);
+  font-family: var(--academy-font-body);
+}
+
+.appShell *,
+.selectScreen * {
+  font-family: inherit;
+}
+
+.selectHero h1,
+.appShell h1,
+.appShell h2,
+.appShell h3,
+.employeeSelectCard h2,
+.studyCompanionInfo h2 {
+  font-family: var(--academy-font-display);
+  color: var(--academy-ink);
+}
+
+.heroText,
+.selectHero .eyebrow {
+  color: var(--academy-ink-soft);
+}
+
+/* Top bar & navigation */
+
+.topBar {
+  border-color: var(--academy-border);
+  background: var(--academy-surface);
+  box-shadow: var(--academy-shadow);
+}
+
+.topStats {
+  color: var(--academy-ink-soft);
+}
+
+.appTabs {
+  border-color: var(--academy-border);
+  background: var(--academy-bg-soft);
+}
+
+.appTab {
+  color: var(--academy-ink-soft);
+  font-family: var(--academy-font-display);
+}
+
+.appTab:hover {
+  border-color: var(--academy-sage-soft);
+  background: var(--academy-sage-bg);
+  color: var(--academy-sage-strong);
+}
+
+.appTab.active {
+  border-color: var(--academy-sage);
+  background: var(--academy-sage-bg);
+  color: var(--academy-sage-strong);
+}
+
+/* Panels & shared surfaces */
+
+.panel,
+.employeeSelectCard,
+.confirmDialog {
+  border-color: var(--academy-border);
+  background: var(--academy-surface);
+  box-shadow: var(--academy-shadow);
+  color: var(--academy-ink);
+}
+
+.panelLabel,
+.eyebrow {
+  color: var(--academy-sage-strong);
+  font-family: var(--academy-font-display);
+}
+
+.confirmDialogHeader h2 {
+  color: var(--academy-ink);
+}
+
+.confirmDialogMessage {
+  color: var(--academy-ink-soft);
+}
+
+/* Buttons */
+
+.primaryButton,
+.secondaryButton,
+.detailsButton,
+.deleteButton,
+.completeButton,
+.dashboardHeaderAction {
+  font-family: var(--academy-font-display);
+  border-radius: var(--academy-radius-control);
+}
+
+.primaryButton {
+  border: 1px solid var(--academy-sage-strong);
+  background: linear-gradient(135deg, var(--academy-sage), var(--academy-sage-strong));
+  color: #fbf7ec;
+  box-shadow: none;
+}
+
+.primaryButton:hover {
+  background: linear-gradient(135deg, var(--academy-sage-strong), var(--academy-sage-strong));
+}
+
+.secondaryButton,
+.detailsButton,
+.dashboardHeaderAction {
+  border: 1px solid var(--academy-border-strong);
+  background: var(--academy-surface);
+  color: var(--academy-sage-strong);
+}
+
+.secondaryButton:hover,
+.detailsButton:hover,
+.dashboardHeaderAction:hover {
+  border-color: var(--academy-sage);
+  background: var(--academy-sage-bg);
+  color: var(--academy-sage-strong);
+}
+
+.completeButton {
+  border: 1px solid var(--academy-sage-soft);
+  background: var(--academy-sage-bg);
+  color: var(--academy-sage-strong);
+}
+
+.deleteButton {
+  border: 1px solid rgba(179, 84, 63, 0.4);
+  background: var(--academy-danger-bg);
+  color: var(--academy-danger);
+}
+
+.deleteButton:hover {
+  border-color: var(--academy-danger);
+  background: rgba(179, 84, 63, 0.16);
+}
+
+button:disabled {
+  filter: grayscale(0.3);
+}
+
+/* Inputs */
+
+.appShell input,
+.appShell textarea,
+.appShell select,
+.selectScreen input,
+.selectScreen textarea,
+.selectScreen select {
+  border: 1px solid var(--academy-border-strong);
+  border-radius: var(--academy-radius-control);
+  background: var(--academy-surface);
+  color: var(--academy-ink);
+  caret-color: var(--academy-sage-strong);
+}
+
+.appShell input:focus,
+.appShell textarea:focus,
+.appShell select:focus,
+.selectScreen input:focus,
+.selectScreen textarea:focus,
+.selectScreen select:focus {
+  outline: none;
+  border-color: var(--academy-sage);
+  box-shadow: 0 0 0 3px var(--academy-sage-bg);
+}
+
+.appShell select,
+.selectScreen select {
+  color-scheme: light;
+}
+
+/* Character avatar & level progress (shared with the study companion panel) */
+
+.employeeAvatar {
+  border-color: var(--academy-sage-soft);
+  background: var(--academy-sage-bg);
+}
+
+.employeeAvatar span,
+.portraitPlaceholder span,
+.largePortrait span {
+  color: var(--academy-sage-strong);
+}
+
+.role {
+  color: var(--academy-sage-strong);
+}
+
+.levelProgress {
+  border-color: var(--academy-border);
+  background: var(--academy-sage-bg);
+}
+
+.levelProgressTop strong {
+  color: var(--academy-ink);
+}
+
+.levelProgressTop span {
+  color: var(--academy-ink-soft);
+}
+
+.levelProgressBar {
+  background: var(--academy-border);
+}
+
+.levelProgressBar div {
+  background: linear-gradient(135deg, var(--academy-sage), var(--academy-sage-strong));
+}
+
+.employeeSelectCard:hover {
+  border-color: var(--academy-sage);
+  background: var(--academy-surface-alt);
+  transform: translateY(-4px);
+}
+
+.miniStats {
+  color: var(--academy-sage-strong);
+}
+
+/* Global data notice banner (shown above whichever view is active) */
+
+.dataNotice--error {
+  border-color: rgba(179, 84, 63, 0.4);
+  background: var(--academy-danger-bg);
+  color: var(--academy-danger);
+}
+
+.dataNotice--success {
+  border-color: var(--academy-sage-soft);
+  background: var(--academy-sage-bg);
+  color: var(--academy-sage-strong);
+}

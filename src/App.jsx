@@ -22,6 +22,13 @@ import RecentHistoryPanel from "./components/RecentHistoryPanel";
 import SettingsView from "./components/SettingsView";
 import TasksView from "./components/TasksView";
 import OutfitSelectorModal from "./components/OutfitSelectorModal";
+import AcademyDashboardView from "./components/academy/AcademyDashboardView";
+import SubjectsView from "./components/academy/SubjectsView";
+import SubjectForm from "./components/academy/SubjectForm";
+import ProjectForm from "./components/academy/ProjectForm";
+import ProjectDetailPanel from "./components/academy/ProjectDetailPanel";
+import FocusSessionOverlay from "./components/academy/FocusSessionOverlay";
+import ArchiveView from "./components/academy/ArchiveView";
 import { clients } from "./data/clients";
 import { employees } from "./data/employees";
 import { taskTypes } from "./data/taskTypes";
@@ -57,6 +64,9 @@ import { useMeetingMode } from "./hooks/useMeetingMode";
 import { useProjects } from "./hooks/useProjects";
 import { useTasks } from "./hooks/useTasks";
 import { useWorkdayArchive } from "./hooks/useWorkdayArchive";
+import { useSubjects } from "./hooks/useSubjects";
+import { useStudyProjects } from "./hooks/useStudyProjects";
+import { useFocusSession } from "./hooks/useFocusSession";
 import { archiveCompletedProjectStepsForDate } from "./utils/projects";
 import { sortProjectTasks, sortRegularTasks } from "./utils/sorting";
 import {
@@ -73,7 +83,10 @@ import {
 } from "./utils/storage";
 import { normalizeSubjectList } from "./utils/subjects";
 import { normalizeStudyProjectList } from "./utils/studyProjects";
-import { normalizeStudySessionList } from "./utils/studySessions";
+import {
+  normalizeStudySessionList,
+  calculateTotalFocusedSeconds,
+} from "./utils/studySessions";
 import {
   closeOpenWorkSession,
   createBlankWorkday,
@@ -99,11 +112,13 @@ import {
 
 const DASHBOARD_TASK_PREVIEW_LIMIT = 6;
 
+// Desk-derived views (Tasks/Projects/Calendar/legacy Dashboard & Archive) are
+// kept mounted-but-inert rather than deleted, per the cleanup-sprint plan.
+const SHOW_LEGACY_DESK_VIEWS = false;
+
 const APP_TABS = [
   { id: "dashboard", label: "Dashboard" },
-  { id: "tasks", label: "Tasks" },
-  { id: "projects", label: "Projects" },
-  { id: "calendar", label: "Calendar" },
+  { id: "subjects", label: "Subjects" },
   { id: "archive", label: "Archive" },
   { id: "characters", label: "Characters" },
   { id: "settings", label: "Settings" },
@@ -578,6 +593,208 @@ function App() {
   }
 
   const {
+    activeSubjects,
+    archivedSubjects,
+    addSubject,
+    editSubject,
+    archiveSubject,
+    restoreSubject,
+  } = useSubjects({ subjects, setSubjects });
+
+  const {
+    activeProjects: activeStudyProjects,
+    shelvedProjects: shelvedStudyProjects,
+    completedProjects: completedStudyProjects,
+    retiredProjects: retiredStudyProjects,
+    canCreateActive: canCreateActiveStudyProject,
+    maxActiveSlots: maxActiveStudySlots,
+    getProjectById: getStudyProjectById,
+    createProject: createStudyProjectRecord,
+    updateProject: updateStudyProjectRecord,
+    updateNotes: updateStudyProjectNotesRecord,
+    changeStatus: changeStudyProjectStatusRecord,
+    deleteProject: deleteStudyProjectRecord,
+  } = useStudyProjects({ studyProjects, setStudyProjects });
+
+  const {
+    activeSession: activeFocusSession,
+    canStartSession: canStartFocusSession,
+    startSession: startFocusSession,
+    discardSession: discardFocusSession,
+    endSession: endFocusSession,
+  } = useFocusSession({
+    setStudyProjects,
+    setStudySessions,
+    characterLibrary,
+    setCharacterLibrary,
+    getProjectById: getStudyProjectById,
+  });
+
+  const [subjectFormState, setSubjectFormState] = useState(null);
+  const [projectFormState, setProjectFormState] = useState(null);
+  const [projectDetailId, setProjectDetailId] = useState(null);
+
+  const archivedStudyProjectList = [
+    ...shelvedStudyProjects,
+    ...completedStudyProjects,
+    ...retiredStudyProjects,
+  ];
+  const totalAcademySessionCount = studySessions.length;
+  const totalAcademyFocusedSeconds = calculateTotalFocusedSeconds(studySessions);
+
+  function openCreateSubjectForm() {
+    setSubjectFormState({ mode: "create" });
+  }
+
+  function openEditSubjectForm(subject) {
+    setSubjectFormState({ mode: "edit", subject });
+  }
+
+  function closeSubjectForm() {
+    setSubjectFormState(null);
+  }
+
+  function submitSubjectForm(values) {
+    if (subjectFormState?.mode === "edit") {
+      editSubject(subjectFormState.subject.id, values);
+    } else {
+      addSubject(values);
+    }
+
+    closeSubjectForm();
+  }
+
+  function openCreateProjectForm() {
+    setProjectFormState({ mode: "create" });
+  }
+
+  function openEditProjectForm(projectId) {
+    const project = getStudyProjectById(projectId);
+
+    if (!project) return;
+
+    setProjectFormState({ mode: "edit", project });
+  }
+
+  function closeProjectForm() {
+    setProjectFormState(null);
+  }
+
+  function submitProjectForm(values) {
+    const result =
+      projectFormState?.mode === "edit"
+        ? updateStudyProjectRecord(projectFormState.project.id, values)
+        : createStudyProjectRecord(values);
+
+    if (result.ok) {
+      closeProjectForm();
+    }
+
+    return result;
+  }
+
+  function openProjectDetail(projectId) {
+    setProjectDetailId(projectId);
+  }
+
+  function closeProjectDetail() {
+    setProjectDetailId(null);
+  }
+
+  function guardProjectStatusChange(projectId, action) {
+    if (activeFocusSession?.projectId === projectId) {
+      setDataNotice({
+        type: "error",
+        message: "End the focus session before changing this project's status.",
+      });
+      return;
+    }
+
+    action();
+  }
+
+  function handleShelveProject(projectId) {
+    guardProjectStatusChange(projectId, () =>
+      changeStudyProjectStatusRecord(projectId, "shelved")
+    );
+  }
+
+  function handleCompleteProject(projectId) {
+    guardProjectStatusChange(projectId, () =>
+      changeStudyProjectStatusRecord(projectId, "completed")
+    );
+  }
+
+  function handleRetireProject(projectId) {
+    guardProjectStatusChange(projectId, () =>
+      changeStudyProjectStatusRecord(projectId, "retired")
+    );
+  }
+
+  function handleRestoreProject(projectId) {
+    guardProjectStatusChange(projectId, () => {
+      const result = changeStudyProjectStatusRecord(projectId, "active");
+
+      if (!result.ok) {
+        setDataNotice({ type: "error", message: result.error });
+      }
+    });
+  }
+
+  function handleDeleteProject(projectId) {
+    const project = getStudyProjectById(projectId);
+
+    openConfirmDialog({
+      title: "Delete Project",
+      message: `Delete "${project?.title || "this project"}"? This permanently removes its progress, notes, and sessions.`,
+      confirmLabel: "Delete Project",
+      isDangerous: true,
+      onConfirm: () => {
+        if (activeFocusSession?.projectId === projectId) {
+          discardFocusSession();
+        }
+
+        deleteStudyProjectRecord(projectId);
+
+        if (projectDetailId === projectId) {
+          setProjectDetailId(null);
+        }
+      },
+    });
+  }
+
+  function handleSaveProjectNotes(projectId, notes) {
+    updateStudyProjectNotesRecord(projectId, notes);
+  }
+
+  function handleStartFocusSession(projectId) {
+    if (!activeEmployee) return;
+
+    const result = startFocusSession(projectId, activeEmployee.id);
+
+    if (!result.ok) {
+      setDataNotice({ type: "error", message: result.error });
+    }
+  }
+
+  function handleFocusFromDetail(projectId) {
+    handleStartFocusSession(projectId);
+    closeProjectDetail();
+  }
+
+  function handleSelectActiveCharacterGuarded(characterId) {
+    if (activeFocusSession) {
+      setDataNotice({
+        type: "error",
+        message: "End the current focus session before switching characters.",
+      });
+      return;
+    }
+
+    selectActiveCharacter(characterId);
+  }
+
+  const {
     meetingSession,
     meetingTask,
     meetingActionItems,
@@ -809,10 +1026,7 @@ function App() {
   }, [activeEmployee, activeEmployeeId]);
 
   const contextLabels = getContextLabels(activeEmployee);
-  const headerLogoSrc =
-    activeEmployee?.context === "class"
-      ? "/branding/arcadia-academy-logo-white.png"
-      : "/branding/arcadia-desk-header-white.png";
+  const headerLogoSrc = "/branding/arcadia-academy-logo-black.png";
   const contextualStatusLabel = getContextStatusLabel(
     workday.status,
     activeEmployee
@@ -1071,8 +1285,8 @@ function App() {
     return (
       <div className="app" data-theme={presentationTheme}>
         <CharacterSelectScreen
-          appTitle={contextLabels.appTitle}
-          appSubtitle={contextLabels.appSubtitle}
+          appTitle="Arcadia Academy"
+          appSubtitle="Academy Progress System"
           characterLibrary={characterLibrary}
           characterLibraryForDisplay={characterLibraryForDisplay}
           activeEmployeeId={activeEmployeeId}
@@ -1111,72 +1325,101 @@ function App() {
     <main className="app appShell" data-theme={presentationTheme}>
       <header className="topBar">
         <div className="appIdentity">
-          <img
-            className="appLogo"
-            src={headerLogoSrc}
-            alt={contextLabels.appTitle}
-          />
+          <img className="appLogo" src={headerLogoSrc} alt="Arcadia Academy" />
         </div>
 
         <AppTabs
           tabs={appTabs}
           activeView={activeView}
           onChangeView={setActiveView}
-          ariaLabel={`${contextLabels.appTitle} views`}
+          ariaLabel="Arcadia Academy views"
         />
 
         <div className="topStats">
           <span>{todayDate}</span>
           <span>{currentClock}</span>
-          <div className={`topWorkdayControls ${workday.status}`}>
-            <span className="topWorkdayStatus">
-              {contextualStatusLabel}
-            </span>
-
-            {(workday.status === "notPunchedIn" ||
-              workday.status === "punchedOut") && (
-              <button
-                className="topWorkdayButton primary"
-                type="button"
-                onClick={punchIn}
-              >
-                {contextLabels.workdayStart}
-              </button>
-            )}
-
-            {workday.status === "working" && (
-              <>
-                <button
-                  className="topWorkdayButton"
-                  type="button"
-                  onClick={startLunch}
-                >
-                  {contextLabels.lunchStart}
-                </button>
-                <button
-                  className="topWorkdayButton"
-                  type="button"
-                  onClick={punchOut}
-                >
-                  {contextLabels.workdayEnd}
-                </button>
-              </>
-            )}
-
-            {workday.status === "onLunch" && (
-              <button
-                className="topWorkdayButton primary"
-                type="button"
-                onClick={returnFromLunch}
-              >
-                {contextLabels.lunchReturn}
-              </button>
-            )}
-          </div>
         </div>
       </header>
 
+      {dataNotice && (
+        <div className={`dataNotice dataNotice--${dataNotice.type}`} role="status">
+          <p>{dataNotice.message}</p>
+          <button
+            className="dataNoticeDismiss"
+            type="button"
+            onClick={() => setDataNotice(null)}
+            aria-label="Dismiss notice"
+          >
+            {"×"}
+          </button>
+        </div>
+      )}
+
+      {SHOW_LEGACY_DESK_VIEWS && (
+        <div className={`topWorkdayControls ${workday.status}`}>
+          <span className="topWorkdayStatus">{contextualStatusLabel}</span>
+
+          {(workday.status === "notPunchedIn" ||
+            workday.status === "punchedOut") && (
+            <button className="topWorkdayButton primary" type="button" onClick={punchIn}>
+              {contextLabels.workdayStart}
+            </button>
+          )}
+
+          {workday.status === "working" && (
+            <>
+              <button className="topWorkdayButton" type="button" onClick={startLunch}>
+                {contextLabels.lunchStart}
+              </button>
+              <button className="topWorkdayButton" type="button" onClick={punchOut}>
+                {contextLabels.workdayEnd}
+              </button>
+            </>
+          )}
+
+          {workday.status === "onLunch" && (
+            <button
+              className="topWorkdayButton primary"
+              type="button"
+              onClick={returnFromLunch}
+            >
+              {contextLabels.lunchReturn}
+            </button>
+          )}
+        </div>
+      )}
+
       {activeView === "dashboard" && (
+        <AcademyDashboardView
+          character={activeEmployee}
+          levelProgress={activeEmployeeLevelProgress}
+          onSwitchCharacter={() => {
+            setIsOutfitSelectorOpen(false);
+            setActiveEmployeeId(null);
+          }}
+          onOpenDossier={() => setDossierCharacterId(activeEmployee.id)}
+          switchCharacterDisabled={Boolean(activeFocusSession)}
+          activeSubjectCount={activeSubjects.length}
+          activeProjects={activeStudyProjects}
+          maxActiveSlots={maxActiveStudySlots}
+          subjects={subjects}
+          totalSessions={totalAcademySessionCount}
+          totalFocusedSeconds={totalAcademyFocusedSeconds}
+          activeSessionProjectId={activeFocusSession?.projectId || null}
+          canFocus={canStartFocusSession()}
+          focusDisabledReason="End the current focus session before starting another."
+          onFocus={handleStartFocusSession}
+          onOpenDetail={openProjectDetail}
+          onShelve={handleShelveProject}
+          onComplete={handleCompleteProject}
+          onRetire={handleRetireProject}
+          onEdit={openEditProjectForm}
+          onDelete={handleDeleteProject}
+          onAddProject={openCreateProjectForm}
+        />
+      )}
+
+      {SHOW_LEGACY_DESK_VIEWS && (
         <DashboardView
           activeEmployee={activeEmployee}
           activeEmployeeLevelProgress={activeEmployeeLevelProgress}
@@ -1229,7 +1472,7 @@ function App() {
         />
       )}
 
-      {activeView === "tasks" && (
+      {SHOW_LEGACY_DESK_VIEWS && (
         <TasksView
           contextLabels={contextLabels}
           taskTitle={taskTitle}
@@ -1266,7 +1509,7 @@ function App() {
         />
       )}
 
-      {activeView === "projects" && (
+      {SHOW_LEGACY_DESK_VIEWS && (
         <ProjectsView
           contextLabels={contextLabels}
           templateLibrary={templateLibrary}
@@ -1307,7 +1550,7 @@ function App() {
         />
       )}
 
-      {activeView === "calendar" && (
+      {SHOW_LEGACY_DESK_VIEWS && (
         <CalendarView
           calendarEvents={calendarEvents}
           clientNames={clientNames}
@@ -1326,7 +1569,7 @@ function App() {
         />
       )}
 
-      {activeView === "archive" && (
+      {SHOW_LEGACY_DESK_VIEWS && (
         <section className="viewShell archiveView">
           <RecentHistoryPanel
             history={history}
@@ -1334,6 +1577,28 @@ function App() {
             onSelectHistoryEntry={setSelectedHistoryEntry}
           />
         </section>
+      )}
+
+      {activeView === "subjects" && (
+        <SubjectsView
+          activeSubjects={activeSubjects}
+          archivedSubjects={archivedSubjects}
+          studyProjects={studyProjects}
+          onAddSubject={openCreateSubjectForm}
+          onEditSubject={openEditSubjectForm}
+          onArchiveSubject={archiveSubject}
+          onRestoreSubject={restoreSubject}
+        />
+      )}
+
+      {activeView === "archive" && (
+        <ArchiveView
+          archivedProjects={archivedStudyProjectList}
+          subjects={subjects}
+          onOpenDetail={openProjectDetail}
+          onRestore={handleRestoreProject}
+          canRestore={canCreateActiveStudyProject}
+        />
       )}
 
       {activeView === "characters" && (
@@ -1355,7 +1620,7 @@ function App() {
             onAddCharacter={openNewCharacterForm}
             onEditCharacter={openEditCharacterForm}
             onDeleteCharacter={deleteCharacter}
-            onSelectCharacter={selectActiveCharacter}
+            onSelectCharacter={handleSelectActiveCharacterGuarded}
             onSelectDossier={setDossierCharacterId}
             onDraftChange={updateCharacterDraft}
             onDraftImageSlotChange={updateCharacterDraftImageSlot}
@@ -1418,13 +1683,15 @@ function App() {
         />
       )}
 
-      <BottomStatusBar
-        activeWorkCount={activeTasks.length}
-        completedTodayCount={completedTodayTasks.length}
-        priorityCount={activeTasks.filter((task) => task.priority).length}
-        activeWorkLabel={contextLabels.activeWork}
-        completedTodayLabel={contextLabels.completedToday}
-      />
+      {SHOW_LEGACY_DESK_VIEWS && (
+        <BottomStatusBar
+          activeWorkCount={activeTasks.length}
+          completedTodayCount={completedTodayTasks.length}
+          priorityCount={activeTasks.filter((task) => task.priority).length}
+          activeWorkLabel={contextLabels.activeWork}
+          completedTodayLabel={contextLabels.completedToday}
+        />
+      )}
 
       <DeepWorkOverlay
         task={deepWorkTask}
@@ -1454,6 +1721,63 @@ function App() {
         onCompleteStep={completeFocusedProjectStep}
         onExit={closeProjectFocus}
       />
+
+      {activeFocusSession && (
+        <FocusSessionOverlay
+          project={getStudyProjectById(activeFocusSession.projectId)}
+          character={characterLibraryForDisplay.find(
+            (character) => character.id === activeFocusSession.characterId
+          )}
+          subjects={subjects}
+          startedAt={activeFocusSession.startedAt}
+          onSaveNotes={handleSaveProjectNotes}
+          onEndSession={endFocusSession}
+          onDiscard={discardFocusSession}
+          onClose={discardFocusSession}
+        />
+      )}
+
+      {projectFormState && (
+        <ProjectForm
+          mode={projectFormState.mode}
+          project={projectFormState.mode === "edit" ? projectFormState.project : null}
+          subjects={subjects}
+          slotsAvailable={canCreateActiveStudyProject}
+          onSubmit={submitProjectForm}
+          onCancel={closeProjectForm}
+        />
+      )}
+
+      {subjectFormState && (
+        <SubjectForm
+          subject={subjectFormState.mode === "edit" ? subjectFormState.subject : null}
+          onSubmit={submitSubjectForm}
+          onCancel={closeSubjectForm}
+        />
+      )}
+
+      {projectDetailId && getStudyProjectById(projectDetailId) && (
+        <ProjectDetailPanel
+          project={getStudyProjectById(projectDetailId)}
+          subjects={subjects}
+          sessions={studySessions}
+          characterLibrary={characterLibraryForDisplay}
+          canFocus={canStartFocusSession()}
+          slotAvailable={canCreateActiveStudyProject}
+          onClose={closeProjectDetail}
+          onSaveNotes={handleSaveProjectNotes}
+          onEdit={(projectId) => {
+            closeProjectDetail();
+            openEditProjectForm(projectId);
+          }}
+          onFocus={handleFocusFromDetail}
+          onShelve={handleShelveProject}
+          onComplete={handleCompleteProject}
+          onRetire={handleRetireProject}
+          onRestore={handleRestoreProject}
+          onDelete={handleDeleteProject}
+        />
+      )}
 
       <MeetingDraftRecoveryDialog
         draft={meetingDraftRecovery}

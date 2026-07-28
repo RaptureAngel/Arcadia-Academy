@@ -38,7 +38,7 @@ function CharacterSelectScreen({
         <p className="eyebrow">{appSubtitle}</p>
         <h1>{appTitle}</h1>
         <p className="heroText">
-          Select today&apos;s employee profile and begin tracking your work.
+          Select or create a character to begin your studies.
         </p>
       </section>
 
