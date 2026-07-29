@@ -94,19 +94,19 @@ const DESKTOP_SAVE_STATUS_COPY = {
 const RESET_CONFIRM_CONFIGS = {
   work: {
     title: "Confirm reset",
-    label: "Reset Work",
+    label: "Reset Session Data",
     confirmWord: "RESET",
-    confirmButtonLabel: "Reset Work",
+    confirmButtonLabel: "Reset Session Data",
     message:
-      "This will remove tasks, projects, history and work logs, workday state, and active character selection. Character, client, and template libraries plus daily quota are preserved.",
+      "This clears leftover internal session-tracking state and returns to the character select screen. Your subjects, study projects, notes, character library, and character XP are not affected.",
   },
   season: {
-    title: "New Season Reset",
-    label: "New Season Reset",
+    title: "New Season",
+    label: "New Season",
     confirmWord: "NEW SEASON",
     confirmButtonLabel: "Start New Season",
     message:
-      "This will start a new Arcadia season. Tasks, projects, history/work logs, workday state, active date, active character selection, and all character XP/levels will be reset. Your character library, dossier fields, images, clients, templates, daily quota, and imported Character Images folder will be preserved.",
+      "This starts a new Arcadia Academy season: every character's XP and level are reset, and leftover internal session-tracking state is cleared. Your character roster, dossier fields, character images, subjects, study projects, notes, and imported Character Images folder are preserved.",
   },
 };
 
@@ -964,7 +964,7 @@ export function useDataManagement({
 
     hydrateAfterResetRef.current({
       nextCharacterLibrary: resetCharacterLibrary,
-      message: "New season started. Work progress and character XP have been reset.",
+      message: "New season started. Character XP and levels have been reset.",
     });
 
     if (desktopSaveState.isTauri && desktopSaveState.active) {

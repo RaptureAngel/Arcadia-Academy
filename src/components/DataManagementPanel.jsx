@@ -49,11 +49,13 @@ function DataManagementPanel({
       </div>
 
       <p className="emptyState">
-        Export or restore the local Arcadia Academy save data stored in this
-        browser. Reset Work clears tasks, projects, history/work logs,
-        workday state, active date, and active character selection while
-        preserving character XP. Season Reset also resets character XP while
-        preserving character, client, and template libraries plus daily quota.
+        Export or restore your local Arcadia Academy save data, including
+        subjects, study projects, sessions, and character progress. Reset
+        Session Data clears leftover internal session-tracking state and
+        returns to the character select screen; your subjects, study
+        projects, notes, and character XP are not affected. New Season also
+        resets XP and levels for every character, while your character
+        roster, subjects, study projects, notes, and saved images are kept.
       </p>
 
       {desktopSaveStatus?.isTauri && (
@@ -259,11 +261,11 @@ function DataManagementPanel({
         </button>
 
         <button className="deleteButton" type="button" onClick={onResetDemoData}>
-          Reset Work
+          Reset Session Data
         </button>
 
         <button className="deleteButton" type="button" onClick={onNewSeasonReset}>
-          Season Reset
+          New Season
         </button>
       </div>
 

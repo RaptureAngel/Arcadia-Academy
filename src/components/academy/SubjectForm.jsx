@@ -93,7 +93,7 @@ function SubjectForm({ subject = null, onSubmit, onCancel }) {
 
           <div className="academyFormRow">
             <label className="academyFormField">
-              <span>Icon (optional)</span>
+              <span>Icon — optional emoji or symbol</span>
               <input
                 type="text"
                 value={draft.icon}
@@ -101,6 +101,9 @@ function SubjectForm({ subject = null, onSubmit, onCancel }) {
                 placeholder="📚"
                 onChange={(event) => updateField("icon", event.target.value)}
               />
+              <p className="academyFormHint">
+                Example: 📚, 🎬, ✍️ or ⚗️. Leave blank to use a plain colour dot.
+              </p>
             </label>
 
             <label className="academyFormField">

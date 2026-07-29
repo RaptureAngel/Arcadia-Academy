@@ -75,16 +75,12 @@ function firstRecordedValue(...values) {
   return values.find((value) => typeof value === "string" && value.trim()) || "";
 }
 
-function getContextLabel(character) {
-  return character?.context === "class" ? "Academy" : "Office";
-}
-
 function getCharacterRoleLabel(character) {
   return firstRecordedValue(
     character?.dossier?.information?.occupation,
     character?.title,
     character?.role,
-    character?.context === "class" ? "Student" : "Arcadia Operator"
+    "Student"
   );
 }
 
@@ -189,20 +185,6 @@ function CharacterLibraryPanel({
                   onChange={(event) => onDraftChange("name", event.target.value)}
                   placeholder="e.g. Reagan Ridley"
                 />
-              </label>
-
-              <label>
-                Context
-                <select
-                  value={draft.context}
-                  onChange={(event) =>
-                    onDraftChange("context", event.target.value)
-                  }
-                  disabled={isEditing}
-                >
-                  <option value="office">Office</option>
-                  <option value="class">Academy</option>
-                </select>
               </label>
             </div>
           </details>
@@ -509,7 +491,7 @@ function CharacterLibraryPanel({
                 </div>
 
                 <div className="characterPreviewHeader">
-                  <p className="panelLabel">{getContextLabel(previewCharacter)}</p>
+                  <p className="panelLabel">Character</p>
                   <h2>{previewCharacter.name}</h2>
                   <p className="role">{previewRoleLabel}</p>
                 </div>
@@ -603,7 +585,7 @@ function CharacterLibraryPanel({
                   </span>
                   <strong>{character.name}</strong>
                   <span className="compactCharacterContext">
-                    {getContextLabel(character)}
+                    Level {getLevel(character.xp)}
                   </span>
                 </button>
               );

@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 
 const DEFAULT_CONFIRM_WORD = "RESET";
 const DEFAULT_MESSAGE =
-  "This will remove tasks, projects, history and work logs, workday state, and active character selection. Character, client, and template libraries plus daily quota are preserved.";
+  "This clears leftover internal session-tracking state and returns to the character select screen. Your subjects, study projects, notes, character library, and character XP are not affected.";
 
 function ResetConfirmDialog({
   isOpen,
   title = "Confirm reset",
-  label = "Reset Work",
+  label = "Reset Session Data",
   message = DEFAULT_MESSAGE,
   confirmWord = DEFAULT_CONFIRM_WORD,
-  confirmButtonLabel = "Reset Work",
+  confirmButtonLabel = "Reset Session Data",
   onConfirm,
   onCancel,
 }) {

@@ -624,7 +624,7 @@
   display: grid;
   place-items: center;
   padding: 22px;
-  background: rgba(4, 12, 18, 0.76);
+  background: rgba(46, 44, 38, 0.5);
   backdrop-filter: blur(12px);
 }
 
@@ -657,10 +657,10 @@
   justify-content: center;
   width: 34px;
   height: 34px;
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  border: 1px solid var(--border-cyan-strong);
   border-radius: 10px;
-  background: rgba(56, 189, 248, 0.06);
-  color: #d8f7ff;
+  background: var(--academy-surface, #fffcf5);
+  color: var(--accent-strong);
   font-size: 1.2rem;
   font-weight: 900;
   line-height: 1;
@@ -673,13 +673,11 @@
   width: min(1120px, calc(100vw - 44px));
   max-height: min(92vh, 760px);
   overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.24);
-  border-radius: 24px;
+  border: 1px solid var(--border-cyan-strong);
+  border-radius: var(--radius-panel);
   padding: 18px;
-  background:
-    radial-gradient(circle at 72% 18%, rgba(25, 230, 161, 0.14), transparent 34%),
-    linear-gradient(135deg, rgba(4, 12, 18, 0.98), rgba(12, 24, 33, 0.96));
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.55);
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-rim);
 }
 
 .outfitSelectorHeader {
@@ -691,7 +689,7 @@
 
 .outfitSelectorHeader h2 {
   margin: 0 0 4px;
-  color: #f2fbff;
+  color: var(--text-hi);
   font-size: 1rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -699,7 +697,7 @@
 
 .outfitSelectorHeader p:last-child {
   margin: 0;
-  color: #9fb3b8;
+  color: var(--text);
   font-size: 0.88rem;
   font-weight: 800;
 }
@@ -720,18 +718,18 @@
   display: grid;
   place-items: center;
   min-width: 0;
-  border: 1px solid rgba(56, 189, 248, 0.14);
+  border: 1px solid var(--border-cyan);
   border-radius: 18px;
-  background: rgba(4, 12, 18, 0.26);
-  color: #38bdf8;
+  background: var(--academy-surface-alt, #f2e9d8);
+  color: var(--accent-strong);
   font-size: 1.35rem;
   font-weight: 900;
 }
 
 .outfitSelectorStep:hover,
 .outfitSelectorStep:focus-visible {
-  border-color: rgba(25, 230, 161, 0.44);
-  background: rgba(20, 34, 43, 0.6);
+  border-color: var(--accent);
+  background: var(--academy-sage-bg, #eef4ec);
   outline: none;
 }
 
@@ -742,11 +740,9 @@
   min-width: 0;
   min-height: 0;
   padding: 18px;
-  border: 1px solid rgba(56, 189, 248, 0.16);
+  border: 1px solid var(--border-cyan);
   border-radius: 22px;
-  background:
-    linear-gradient(135deg, rgba(56, 189, 248, 0.08), rgba(25, 230, 161, 0.04)),
-    rgba(4, 12, 18, 0.32);
+  background: var(--academy-surface-alt, #f2e9d8);
 }
 
 .outfitSelectorPreview {
@@ -756,11 +752,9 @@
   height: clamp(380px, 62vh, 560px);
   margin: 0;
   overflow: hidden;
-  border: 1px solid rgba(25, 230, 161, 0.22);
+  border: 1px solid var(--border-cyan);
   border-radius: 20px;
-  background:
-    linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(25, 230, 161, 0.08)),
-    rgba(2, 8, 12, 0.74);
+  background: var(--academy-sage-bg, #eef4ec);
 }
 
 .outfitSelectorPreviewImage {
@@ -786,7 +780,7 @@
 
 .outfitSelectorInfo h3 {
   max-width: 100%;
-  color: #f2fbff;
+  color: var(--text-hi);
   font-size: 1.8rem;
   line-height: 1.1;
   overflow: hidden;
@@ -794,7 +788,7 @@
 }
 
 .outfitSelectorInfo span {
-  color: #19e6a1;
+  color: var(--accent-strong);
   font-size: 0.76rem;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -802,7 +796,7 @@
 }
 
 .outfitSelectorCount {
-  color: #9fb3b8;
+  color: var(--text);
   font-weight: 800;
 }
 

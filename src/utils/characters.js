@@ -124,7 +124,7 @@ export function normalizeCharacter(character = {}, fallback = {}) {
     ? character.context
     : CHARACTER_CONTEXTS.includes(fallback.context)
     ? fallback.context
-      : "office";
+      : "class";
   const outfits = normalizeOutfits(character.outfits, fallback.outfits);
   const requestedActiveOutfitId =
     typeof character.activeOutfitId === "string"
@@ -143,7 +143,7 @@ export function normalizeCharacter(character = {}, fallback = {}) {
     ...character,
     id: character.id ?? fallback.id,
     name: character.name ?? fallback.name ?? "Untitled Character",
-    role: character.role ?? fallback.role ?? "Arcadia Operator",
+    role: character.role ?? fallback.role ?? "Study Companion",
     context,
     image: character.image ?? fallback.image ?? "",
     imageSlots: normalizeImageSlots(character.imageSlots, fallback.imageSlots),
@@ -286,7 +286,7 @@ export function createCharacterLibraryRecord(characters) {
 export function createCharacterLibraryFromStarterCharacters(starterCharacters) {
   return createStarterRoster(starterCharacters).map((character) =>
     normalizeCharacter(character, {
-      context: "office",
+      context: "class",
       notes: "",
     })
   );
@@ -299,7 +299,7 @@ export function createCharacterLibraryFromSavedEmployees(
   return mergeStarterAndSavedCharacters(starterCharacters, savedCharacters).map(
     (character) =>
       normalizeCharacter(character, {
-        context: "office",
+        context: "class",
         notes: "",
       })
   );
@@ -312,7 +312,7 @@ export function normalizeCharacterLibrary(savedCharacterData) {
   ) {
     return savedCharacterData.characters.map((character) =>
       normalizeCharacter(character, {
-        context: "office",
+        context: "class",
         notes: "",
       })
     );
@@ -321,7 +321,7 @@ export function normalizeCharacterLibrary(savedCharacterData) {
   if (Array.isArray(savedCharacterData)) {
     return savedCharacterData.map((character) =>
       normalizeCharacter(character, {
-        context: "office",
+        context: "class",
         notes: "",
       })
     );

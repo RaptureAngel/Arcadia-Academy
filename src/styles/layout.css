@@ -9,7 +9,7 @@
 .eyebrow,
 .panelLabel {
   margin: 0;
-  color: #38bdf8;
+  color: var(--accent-strong);
   font-size: 0.78rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -24,7 +24,7 @@
 .heroText {
   margin: 0 auto;
   max-width: 600px;
-  color: #9fb3b8;
+  color: var(--text);
   font-size: 1.05rem;
 }
 
@@ -38,26 +38,25 @@
 
 .employeeSelectCard,
 .panel {
-  border: 1px solid rgba(56, 189, 248, 0.18);
-  background: rgba(17, 26, 34, 0.82);
-  color: #e5f2f0;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.32);
-  backdrop-filter: blur(18px);
+  border: 1px solid var(--border-cyan);
+  background: var(--surface-panel);
+  color: var(--text-hi);
+  box-shadow: var(--shadow-rim);
 }
 
 .employeeSelectCard {
   min-height: 360px;
   padding: 22px;
-  color: #e5f2f0;
+  color: var(--text-hi);
   text-align: left;
-  border-radius: 26px;
+  border-radius: var(--radius-panel);
   transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
 }
 
 .employeeSelectCard:hover {
   transform: translateY(-4px);
-  border-color: rgba(25, 230, 161, 0.7);
-  background: rgba(20, 34, 43, 0.94);
+  border-color: var(--accent);
+  background: var(--surface-panel-soft);
 }
 
 /* Portraits */
@@ -67,11 +66,9 @@
   display: grid;
   place-items: center;
   overflow: hidden;
-  border: 1px solid rgba(25, 230, 161, 0.38);
-  background:
-    linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(25, 230, 161, 0.12)),
-    rgba(4, 12, 18, 0.7);
-  color: #19e6a1;
+  border: 1px solid var(--academy-sage-soft, rgba(95, 125, 100, 0.4));
+  background: var(--academy-sage-bg, #eef4ec);
+  color: var(--accent-strong);
 }
 
 .portraitPlaceholder {
@@ -120,7 +117,7 @@
 .largePortrait span,
 .employeeAvatar span {
   display: block;
-  color: #19e6a1;
+  color: var(--accent-strong);
   font-size: 2rem;
   font-weight: 900;
 }
@@ -139,11 +136,9 @@
   width: 136px;
   height: 136px;
   overflow: hidden;
-  border: 1px solid rgba(25, 230, 161, 0.38);
+  border: 1px solid var(--academy-sage-soft, rgba(95, 125, 100, 0.4));
   border-radius: 22px;
-  background:
-    linear-gradient(135deg, rgba(56, 189, 248, 0.16), rgba(25, 230, 161, 0.12)),
-    rgba(4, 12, 18, 0.7);
+  background: var(--academy-sage-bg, #eef4ec);
 }
 
 .employeeAvatarImage {
@@ -184,9 +179,9 @@
   gap: 12px;
   margin-bottom: 10px;
   padding: 6px 8px 6px 12px;
-  border: 1px solid rgba(56, 189, 248, 0.18);
+  border: 1px solid var(--border-cyan);
   border-radius: 14px;
-  background: rgba(17, 26, 34, 0.72);
+  background: var(--surface-panel);
 }
 
 .appIdentity {
@@ -212,9 +207,9 @@
   margin: 0;
   padding: 3px;
   overflow-x: auto;
-  border: 1px solid rgba(56, 189, 248, 0.16);
+  border: 1px solid var(--border-cyan);
   border-radius: 11px;
-  background: rgba(4, 12, 18, 0.42);
+  background: var(--academy-bg-soft, #efe4cf);
 }
 
 .appTab {
@@ -223,22 +218,22 @@
   border-radius: 9px;
   padding: 5px 10px;
   background: transparent;
-  color: #9fb3b8;
+  color: var(--text);
   font-size: 0.78rem;
   font-weight: 900;
   white-space: nowrap;
 }
 
 .appTab:hover {
-  border-color: rgba(56, 189, 248, 0.28);
-  color: #d8f7ff;
-  background: rgba(56, 189, 248, 0.06);
+  border-color: var(--academy-sage-soft, rgba(95, 125, 100, 0.4));
+  color: var(--accent-strong);
+  background: var(--academy-sage-bg, #eef4ec);
 }
 
 .appTab.active {
-  border-color: rgba(25, 230, 161, 0.44);
-  color: #19e6a1;
-  background: rgba(25, 230, 161, 0.1);
+  border-color: var(--accent);
+  color: var(--accent-strong);
+  background: var(--academy-sage-bg, #eef4ec);
 }
 
 .viewShell {

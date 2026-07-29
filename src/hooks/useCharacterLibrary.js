@@ -25,7 +25,7 @@ function createBlankCharacterDraft(defaultImage = "/characters/reagan.png") {
   return {
     name: "",
     role: "",
-    context: "office",
+    context: "class",
     image: defaultImage,
     imageSlots: {
       dossier: "",
@@ -66,7 +66,7 @@ function createBlankOutfitDraft(name = "New Outfit") {
 function createCharacterDraftFromCharacter(character) {
   const context = CHARACTER_CONTEXTS.includes(character.context)
     ? character.context
-    : "office";
+    : "class";
 
   return {
     name: character.name || "",
@@ -504,7 +504,7 @@ export function useCharacterLibrary({
     const name = characterDraft.name.trim();
     const context = CHARACTER_CONTEXTS.includes(characterDraft.context)
       ? characterDraft.context
-      : "office";
+      : "class";
     const image = characterDraft.image.trim();
     const dossierImage = characterDraft.imageSlots?.dossier?.trim() || "";
     const focusImage = characterDraft.imageSlots?.focus?.trim() || "";
@@ -534,7 +534,7 @@ export function useCharacterLibrary({
         : dossier.information.occupation ||
           characterDraft.role.trim() ||
           existingCharacter?.role ||
-          "Arcadia Operator";
+          "Study Companion";
     const bio = characterDraft.bio.trim();
     const notes = characterDraft.notes.trim();
 
@@ -581,7 +581,7 @@ export function useCharacterLibrary({
         xp: 0,
         unlocks: [],
         storyState: {},
-        context: "office",
+        context: "class",
         notes: "",
       }
     );

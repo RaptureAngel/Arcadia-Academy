@@ -34,11 +34,10 @@ function CharacterDossier({ character, isActive = false, onClose }) {
   if (!character) return null;
 
   const context = getCharacterContext(character);
-  const contextLabel = context === "class" ? "Academy" : "Office";
-  const roleLabel = context === "class" ? "Student" : character.role;
+  const contextLabel = "Academy";
+  const roleLabel = context === "class" ? "Student" : character.role || "Study Companion";
   const statusLabel = isActive ? "Active file" : "Standby file";
-  const affiliationLabel =
-    context === "class" ? "Arcadia Academy" : "Arcadia Desk";
+  const affiliationLabel = "Arcadia Academy";
   const dossierInformation = character.dossier?.information || {};
   const dossierAttributes = character.dossier?.attributes || {};
   const imageSrc =
@@ -82,7 +81,7 @@ function CharacterDossier({ character, isActive = false, onClose }) {
             <div className="dossierTitleRow">
               <div>
                 <h2 id="character-dossier-title">{character.name}</h2>
-                <p>{roleLabel || "Arcadia Operator"}</p>
+                <p>{roleLabel || "Study Companion"}</p>
               </div>
             </div>
           </header>
@@ -121,7 +120,7 @@ function CharacterDossier({ character, isActive = false, onClose }) {
                   value={firstRecordedValue(
                     dossierInformation.occupation,
                     roleLabel,
-                    "Arcadia Operator"
+                    "Study Companion"
                   )}
                 />
                 <DossierRow

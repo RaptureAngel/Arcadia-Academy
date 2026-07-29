@@ -3,12 +3,12 @@
 
 .confirmDialog {
   width: min(480px, 100%);
-  border: 1px solid rgba(56, 189, 248, 0.24);
-  border-radius: 24px;
+  border: 1px solid var(--border-cyan-strong);
+  border-radius: var(--radius-panel);
   padding: 24px;
-  background: rgba(17, 26, 34, 0.96);
-  color: #e5f2f0;
-  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.48);
+  background: var(--surface-panel);
+  color: var(--text-hi);
+  box-shadow: var(--shadow-rim);
 }
 
 .confirmDialogHeader {
@@ -17,11 +17,11 @@
 
 .confirmDialogHeader h2 {
   margin: 6px 0 0;
-  color: #f2fbff;
+  color: var(--text-hi);
 }
 
 .confirmDialogMessage {
-  color: #b8cdd4;
+  color: var(--text);
   font-size: 0.9rem;
   line-height: 1.6;
   margin-bottom: 22px;
@@ -43,11 +43,11 @@
 }
 
 .confirmDialogActions .detailsButton {
-  color: #d8f7ff;
+  color: var(--accent-strong);
 }
 
 .confirmDialogActions .deleteButton:disabled {
-  color: #fca5a5;
+  color: #d69686;
 }
 
 .meetingDraftRecoveryDialog {
@@ -131,13 +131,13 @@
   gap: 8px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: #9fb3b8;
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
 
 .confirmDialogLabel strong {
-  color: #d8f7ff;
+  color: var(--text-hi);
   font-family: monospace;
   text-transform: none;
   letter-spacing: 0;
@@ -145,17 +145,17 @@
 
 .confirmDialogInput {
   padding: 10px 14px;
-  border: 1px solid rgba(56, 189, 248, 0.28);
+  border: 1px solid var(--border-cyan-strong);
   border-radius: 12px;
-  background: rgba(56, 189, 248, 0.06);
-  color: #d8f7ff;
+  background: var(--academy-surface, #fffcf5);
+  color: var(--text-hi);
   font-size: 0.95rem;
   font-family: inherit;
 }
 
 .confirmDialogInput:focus {
   outline: none;
-  border-color: rgba(56, 189, 248, 0.6);
+  border-color: var(--accent);
 }
 
 /* Data Notice */

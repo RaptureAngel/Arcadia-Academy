@@ -392,8 +392,9 @@ function App() {
     openConfirmDialog,
   });
 
-  const presentationTheme =
-    activeEmployee?.context === "class" ? "academy" : "arkham";
+  // Arcadia Academy is a standalone, single-theme app: the presentation
+  // theme no longer depends on a character's (legacy) context field.
+  const presentationTheme = "academy";
 
   useEffect(() => {
     document.documentElement.dataset.theme = presentationTheme;
@@ -409,16 +410,7 @@ function App() {
     clientNames,
     clientDisplayByName,
     getClientOptionsFor,
-    showClientForm,
-    editingClientId,
-    clientDraft,
-    openNewClientForm,
-    openEditClientForm,
-    cancelClientForm,
     closeClientManagerUi,
-    updateClientDraft,
-    saveClient,
-    deleteClient,
   } = useClientLibrary({
     clientLibrary,
     setClientLibrary,
@@ -1171,7 +1163,7 @@ function App() {
 
   function hydrateAfterReset({
     nextCharacterLibrary = null,
-    message = "Work data has been reset.",
+    message = "Session data has been reset.",
   } = {}) {
     const today = getTodayKey();
 
@@ -1641,18 +1633,6 @@ function App() {
 
       {activeView === "settings" && (
         <SettingsView
-          clientManagerProps={{
-            clients: clientLibrary,
-            draft: clientDraft,
-            isFormOpen: showClientForm,
-            isEditing: Boolean(editingClientId),
-            onAddClient: openNewClientForm,
-            onEditClient: openEditClientForm,
-            onDeleteClient: deleteClient,
-            onDraftChange: updateClientDraft,
-            onCancel: cancelClientForm,
-            onSubmit: saveClient,
-          }}
           dataManagementProps={{
             onExportSaveData: exportSaveData,
             onImportSaveData: importSaveData,

@@ -66,7 +66,7 @@ function CharacterSelectScreen({
               </div>
               <h2>{employee.name}</h2>
               <p className="role">
-                {employee.context === "class" ? "Student" : employee.role}
+                {employee.context === "class" ? "Student" : employee.role || "Study Companion"}
               </p>
               <div className="miniStats">
                 <span>Level {getLevel(employee.xp)}</span>

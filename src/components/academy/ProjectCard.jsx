@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { formatFocusedDuration, formatRelativeTime } from "../../utils/dates";
 import {
-  getActivityVerb,
+  getProjectActionLabel,
   getProjectProgressLabel,
   getProjectProgressPercent,
   getSubjectDisplay,
@@ -105,9 +105,7 @@ function ProjectCard({
           title={!canFocus ? focusDisabledReason : ""}
           onClick={() => onFocus(project.id)}
         >
-          {project.sessionCount > 0
-            ? `Continue ${getActivityVerb(project.projectType)}`
-            : `Begin ${getActivityVerb(project.projectType)}`}
+          {getProjectActionLabel(project)}
         </button>
 
         <div className="projectCardMenu" ref={menuRef}>
