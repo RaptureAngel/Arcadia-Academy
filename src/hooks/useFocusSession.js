@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { calculateAcademySessionXp } from "../utils/academyXp";
 import { getLevel } from "../utils/xp";
 import {
@@ -23,6 +23,9 @@ export function useFocusSession({
   getProjectById,
 }) {
   const [activeSession, setActiveSession] = useState(null);
+  // Synchronous lock (not React state) so a double-click on "Save Session"
+  // can't race past the activeSession check and award XP/progress twice.
+  const isEndingSessionRef = useRef(false);
 
   function canStartSession() {
     return !activeSession;
@@ -49,6 +52,7 @@ export function useFocusSession({
   }
 
   function discardSession() {
+    isEndingSessionRef.current = false;
     setActiveSession(null);
   }
 
@@ -57,9 +61,16 @@ export function useFocusSession({
       return { ok: false, error: "No focus session is running." };
     }
 
+    if (isEndingSessionRef.current) {
+      return { ok: false, error: "This session is already being saved." };
+    }
+
+    isEndingSessionRef.current = true;
+
     const project = getProjectById(activeSession.projectId);
 
     if (!project) {
+      isEndingSessionRef.current = false;
       setActiveSession(null);
       return { ok: false, error: "That project no longer exists." };
     }
@@ -114,6 +125,7 @@ export function useFocusSession({
     const { valid, errors } = validateStudyProject(updatedProject);
 
     if (!valid) {
+      isEndingSessionRef.current = false;
       return { ok: false, error: errors.join(" ") };
     }
 
@@ -133,6 +145,7 @@ export function useFocusSession({
     const sessionValidation = validateStudySession(session);
 
     if (!sessionValidation.valid) {
+      isEndingSessionRef.current = false;
       return { ok: false, error: sessionValidation.errors.join(" ") };
     }
 

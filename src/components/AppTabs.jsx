@@ -2,7 +2,7 @@ function AppTabs({
   tabs,
   activeView,
   onChangeView,
-  ariaLabel = "Arcadia Desk views",
+  ariaLabel = "Arcadia Academy views",
 }) {
   return (
     <nav className="appTabs" aria-label={ariaLabel}>

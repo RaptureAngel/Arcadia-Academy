@@ -1,4 +1,17 @@
+import { useEffect } from "react";
+
 function ConfirmDialog({ config, onConfirm, onCancel }) {
+  useEffect(() => {
+    if (!config) return undefined;
+
+    function handleKeyDown(event) {
+      if (event.key === "Escape") onCancel();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [config, onCancel]);
+
   if (!config) return null;
 
   return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getCharacterContext } from "../utils/contextLabels";
 
 function DossierRow({ label, value }) {
@@ -27,9 +27,23 @@ const DOSSIER_TABS = [
   { id: "profile", label: "Profile" },
 ];
 
-function CharacterDossier({ character, isActive = false, onClose }) {
+function CharacterDossier({
+  character,
+  isActive = false,
+  onClose,
+  onOpenOutfitSelector,
+}) {
   const [failedImageKeys, setFailedImageKeys] = useState([]);
   const [activeTab, setActiveTab] = useState("information");
+
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Escape") onClose();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
 
   if (!character) return null;
 
@@ -38,6 +52,8 @@ function CharacterDossier({ character, isActive = false, onClose }) {
   const roleLabel = context === "class" ? "Student" : character.role || "Study Companion";
   const statusLabel = isActive ? "Active file" : "Standby file";
   const affiliationLabel = "Arcadia Academy";
+  const hasOutfits = Array.isArray(character.outfits) && character.outfits.length > 0;
+  const canChangeOutfit = Boolean(onOpenOutfitSelector) && hasOutfits;
   const dossierInformation = character.dossier?.information || {};
   const dossierAttributes = character.dossier?.attributes || {};
   const imageSrc =
@@ -83,6 +99,15 @@ function CharacterDossier({ character, isActive = false, onClose }) {
                 <h2 id="character-dossier-title">{character.name}</h2>
                 <p>{roleLabel || "Study Companion"}</p>
               </div>
+              {canChangeOutfit && (
+                <button
+                  className="detailsButton"
+                  type="button"
+                  onClick={onOpenOutfitSelector}
+                >
+                  Change Outfit
+                </button>
+              )}
             </div>
           </header>
 

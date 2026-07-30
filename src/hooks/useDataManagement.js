@@ -5,15 +5,7 @@ import {
   createCharacterLibraryFromStarterCharacters,
   createCharacterLibraryRecord,
 } from "../utils/characters";
-import {
-  createClientLibraryRecord,
-  createSeededClientLibrary,
-} from "../utils/clients";
 import { getTodayKey } from "../utils/dates";
-import {
-  createSeededTemplateLibrary,
-  createTemplateLibraryRecord,
-} from "../utils/templates";
 import {
   moveUnusedCharacterImagesToArchive,
   previewCharacterImageMigration,
@@ -24,7 +16,7 @@ import {
   STORAGE_KEYS,
   buildSavePayload,
   chooseDesktopSaveFolder,
-  createResetWorkDataPayload,
+  createResetAcademyActivityPayload,
   createSavePayloadFromLocalStorage,
   downloadSavePayload,
   inspectDesktopSaveFolder,
@@ -36,10 +28,8 @@ import {
   validateSavePayload,
   writeDesktopSavePayload,
   writeDesktopStorageConfig,
-  writeDesktopWorkLogFile,
   writeSaveToLocalStorage,
 } from "../utils/storage";
-import { createBlankWorkday } from "../utils/workday";
 
 function createNewSeasonCharacterLibrary(characters) {
   return characters.map((character) => ({
@@ -92,21 +82,21 @@ const DESKTOP_SAVE_STATUS_COPY = {
 };
 
 const RESET_CONFIRM_CONFIGS = {
-  work: {
-    title: "Confirm reset",
-    label: "Reset Session Data",
+  activity: {
+    title: "Reset Academy Activity",
+    label: "Reset Academy Activity",
     confirmWord: "RESET",
-    confirmButtonLabel: "Reset Session Data",
+    confirmButtonLabel: "Reset Academy Activity",
     message:
-      "This clears leftover internal session-tracking state and returns to the character select screen. Your subjects, study projects, notes, character library, and character XP are not affected.",
+      "This permanently deletes all subjects, study projects, project notes, progress, and study sessions, and ends any focus session in progress. Your character roster, character images, outfits, character XP, and save-folder configuration are kept. A backup of the current save is made first where a desktop save is active.",
   },
   season: {
-    title: "New Season",
-    label: "New Season",
+    title: "New Academy Season",
+    label: "New Academy Season",
     confirmWord: "NEW SEASON",
     confirmButtonLabel: "Start New Season",
     message:
-      "This starts a new Arcadia Academy season: every character's XP and level are reset, and leftover internal session-tracking state is cleared. Your character roster, dossier fields, character images, subjects, study projects, notes, and imported Character Images folder are preserved.",
+      "This permanently deletes all subjects, study projects, project notes, progress, and study sessions, ends any focus session in progress, and resets every character's XP and level to zero. Your character roster, dossier fields, character images, outfits, and save-folder configuration are kept. A backup of the current save is made first where a desktop save is active.",
   },
 };
 
@@ -114,16 +104,6 @@ export function useDataManagement({
   activeEmployeeId,
   characterLibrary,
   setCharacterLibrary,
-  tasks,
-  projects,
-  activeDate,
-  history,
-  workday,
-  dailyQuota,
-  clientLibrary,
-  templateLibrary,
-  scratchpad,
-  calendarEvents,
   subjects,
   studyProjects,
   studySessions,
@@ -196,10 +176,6 @@ export function useDataManagement({
 
   function getImportFallbackBuilders() {
     return {
-      createTemplateLibraryFallback: () =>
-        createTemplateLibraryRecord(createSeededTemplateLibrary()),
-      createClientLibraryFallback: () =>
-        createClientLibraryRecord(createSeededClientLibrary()),
       createCharacterLibraryFallback: (data) => {
         const importedEmployees = Object.hasOwn(data, "employees")
           ? data.employees
@@ -220,20 +196,10 @@ export function useDataManagement({
     return {
       activeEmployeeId,
       employees: nextCharacterLibrary,
-      tasks,
-      projects,
-      activeDate,
-      history,
-      workday,
-      dailyQuota,
-      customProjectTemplates: createTemplateLibraryRecord(templateLibrary),
-      clientLibrary: createClientLibraryRecord(clientLibrary),
       characterLibrary: createCharacterLibraryRecord(nextCharacterLibrary),
-      scratchpad: scratchpad ?? {},
-      calendarEvents: calendarEvents ?? [],
-      subjects: subjects ?? [],
-      studyProjects: studyProjects ?? [],
-      studySessions: studySessions ?? [],
+      subjects: overrides.subjects ?? subjects ?? [],
+      studyProjects: overrides.studyProjects ?? studyProjects ?? [],
+      studySessions: overrides.studySessions ?? studySessions ?? [],
     };
   }
 
@@ -247,46 +213,6 @@ export function useDataManagement({
       configuredFolderPath: result.configuredFolderPath || null,
       error: result.error || null,
     };
-  }
-
-  function autoSaveWorkLog(historyEntry, { showNotice = false } = {}) {
-    if (!historyEntry) return;
-    if (!isDesktopStorageAvailable()) return;
-
-    const employeeName =
-      characterLibrary.find(
-        (character) => character.id === historyEntry.activeEmployeeId
-      )?.name ||
-      characterLibrary.find(
-        (character) => character.id === activeEmployeeId
-      )?.name;
-    const employeeNamesById = characterLibrary.reduce((names, character) => {
-      if (!character?.id) return names;
-
-      return {
-        ...names,
-        [character.id]: character.name,
-      };
-    }, {});
-
-    writeDesktopWorkLogFile(historyEntry, {
-      employeeName,
-      employeeNamesById,
-    }).then((result) => {
-      if (result.ok) return;
-
-      console.warn(
-        `Arcadia Academy could not auto-save work log for ${historyEntry.date}.`,
-        result.error
-      );
-
-      if (showNotice) {
-        setDataNotice({
-          type: "error",
-          message: "Work log archived, but the .txt auto-save failed.",
-        });
-      }
-    });
   }
 
   useEffect(() => {
@@ -388,16 +314,6 @@ export function useDataManagement({
     pendingFolderConflict,
     activeEmployeeId,
     characterLibrary,
-    tasks,
-    projects,
-    activeDate,
-    history,
-    workday,
-    dailyQuota,
-    clientLibrary,
-    templateLibrary,
-    scratchpad,
-    calendarEvents,
     subjects,
     studyProjects,
     studySessions,
@@ -925,18 +841,17 @@ export function useDataManagement({
     });
   }
 
-  function performReset() {
-    const today = getTodayKey();
-    const resetPayload = createResetWorkDataPayload(
-      today,
-      createBlankWorkday(today)
-    );
+  function performResetAcademyActivity() {
+    const resetPayload = createResetAcademyActivityPayload();
 
     Object.entries(resetPayload).forEach(([name, value]) => {
       saveData(STORAGE_KEYS[name], value);
     });
 
-    hydrateAfterResetRef.current();
+    hydrateAfterResetRef.current({
+      message:
+        "Academy activity has been reset. Subjects, study projects, and sessions were cleared.",
+    });
 
     if (desktopSaveState.isTauri && desktopSaveState.active) {
       persistDesktopSavePayload(createSavePayloadFromLocalStorage(), null, {
@@ -945,12 +860,8 @@ export function useDataManagement({
     }
   }
 
-  function performNewSeasonReset() {
-    const today = getTodayKey();
-    const resetPayload = createResetWorkDataPayload(
-      today,
-      createBlankWorkday(today)
-    );
+  function performNewAcademySeason() {
+    const resetPayload = createResetAcademyActivityPayload();
     const resetCharacterLibrary = createNewSeasonCharacterLibrary(characterLibrary);
 
     Object.entries(resetPayload).forEach(([name, value]) => {
@@ -964,7 +875,8 @@ export function useDataManagement({
 
     hydrateAfterResetRef.current({
       nextCharacterLibrary: resetCharacterLibrary,
-      message: "New season started. Character XP and levels have been reset.",
+      message:
+        "New Academy season started. Subjects, study projects, and sessions were cleared, and every character's XP has been reset.",
     });
 
     if (desktopSaveState.isTauri && desktopSaveState.active) {
@@ -974,12 +886,12 @@ export function useDataManagement({
     }
   }
 
-  function resetDemoData() {
+  function openResetAcademyActivityConfirm() {
     setDataNotice(null);
-    setResetConfirmType("work");
+    setResetConfirmType("activity");
   }
 
-  function openNewSeasonReset() {
+  function openNewAcademySeasonConfirm() {
     setDataNotice(null);
     setResetConfirmType("season");
   }
@@ -991,7 +903,6 @@ export function useDataManagement({
     resetConfirmConfig,
     resetConfirmType,
     setResetConfirmType,
-    autoSaveWorkLog,
     exportSaveData,
     importSaveData,
     persistDesktopSavePayload,
@@ -1011,9 +922,9 @@ export function useDataManagement({
     unusedCharacterImageArchiveStatus,
     moveUnusedCharacterImagesToArchive:
       moveUnusedCharacterImagesToArchiveWithConfirmation,
-    performReset,
-    performNewSeasonReset,
-    resetDemoData,
-    openNewSeasonReset,
+    performResetAcademyActivity,
+    performNewAcademySeason,
+    openResetAcademyActivityConfirm,
+    openNewAcademySeasonConfirm,
   };
 }

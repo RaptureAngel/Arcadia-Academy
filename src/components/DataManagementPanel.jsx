@@ -1,9 +1,8 @@
 function DataManagementPanel({
   onExportSaveData,
   onImportSaveData,
-  onArchiveToday,
-  onResetDemoData,
-  onNewSeasonReset,
+  onResetAcademyActivity,
+  onNewAcademySeason,
   onCreateDesktopSave,
   onChooseDesktopSaveFolder,
   onUseFolderSave,
@@ -51,11 +50,10 @@ function DataManagementPanel({
       <p className="emptyState">
         Export or restore your local Arcadia Academy save data, including
         subjects, study projects, sessions, and character progress. Reset
-        Session Data clears leftover internal session-tracking state and
-        returns to the character select screen; your subjects, study
-        projects, notes, and character XP are not affected. New Season also
-        resets XP and levels for every character, while your character
-        roster, subjects, study projects, notes, and saved images are kept.
+        Academy Activity permanently deletes all subjects, study projects,
+        notes, progress, and sessions, while keeping your character roster,
+        images, outfits, and XP. New Academy Season does the same and also
+        resets every character's XP and level to zero.
       </p>
 
       {desktopSaveStatus?.isTauri && (
@@ -256,16 +254,12 @@ function DataManagementPanel({
           />
         </label>
 
-        <button className="secondaryButton" type="button" onClick={onArchiveToday}>
-          Archive Today
+        <button className="deleteButton" type="button" onClick={onResetAcademyActivity}>
+          Reset Academy Activity
         </button>
 
-        <button className="deleteButton" type="button" onClick={onResetDemoData}>
-          Reset Session Data
-        </button>
-
-        <button className="deleteButton" type="button" onClick={onNewSeasonReset}>
-          New Season
+        <button className="deleteButton" type="button" onClick={onNewAcademySeason}>
+          New Academy Season
         </button>
       </div>
 

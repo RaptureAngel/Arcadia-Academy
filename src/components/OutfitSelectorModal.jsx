@@ -60,6 +60,15 @@ function OutfitSelectorModal({
     setSelectedOutfitId(employee?.activeOutfitId || "");
   }, [employee?.activeOutfitId, employee?.id]);
 
+  useEffect(() => {
+    function handleKeyDown(event) {
+      if (event.key === "Escape") onClose();
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   const selectedOutfit =
     outfits.find((outfit) => outfit.id === selectedOutfitId) || null;
   const selectedOption =

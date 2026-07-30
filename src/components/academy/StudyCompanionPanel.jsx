@@ -5,6 +5,7 @@ function StudyCompanionPanel({
   levelProgress,
   onSwitchCharacter,
   onOpenDossier,
+  onOpenOutfitSelector,
   switchDisabled,
   activeSubjectCount,
   occupiedSlotCount,
@@ -14,6 +15,8 @@ function StudyCompanionPanel({
 }) {
   const imageSrc =
     character?.portraitDisplayImage ?? character?.displayImage ?? character?.image;
+  const hasOutfits =
+    Array.isArray(character?.outfits) && character.outfits.length > 0;
 
   return (
     <aside className="panel studyCompanionPanel">
@@ -100,6 +103,15 @@ function StudyCompanionPanel({
         <button className="detailsButton" type="button" onClick={onOpenDossier}>
           Dossier
         </button>
+        {hasOutfits && (
+          <button
+            className="detailsButton"
+            type="button"
+            onClick={onOpenOutfitSelector}
+          >
+            Change Outfit
+          </button>
+        )}
       </div>
     </aside>
   );

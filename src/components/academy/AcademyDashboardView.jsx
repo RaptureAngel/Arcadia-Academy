@@ -6,6 +6,7 @@ function AcademyDashboardView({
   levelProgress,
   onSwitchCharacter,
   onOpenDossier,
+  onOpenOutfitSelector,
   switchCharacterDisabled,
   activeSubjectCount,
   activeProjects,
@@ -33,6 +34,7 @@ function AcademyDashboardView({
           levelProgress={levelProgress}
           onSwitchCharacter={onSwitchCharacter}
           onOpenDossier={onOpenDossier}
+          onOpenOutfitSelector={onOpenOutfitSelector}
           switchDisabled={switchCharacterDisabled}
           activeSubjectCount={activeSubjectCount}
           occupiedSlotCount={activeProjects.length}

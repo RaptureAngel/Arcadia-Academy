@@ -11,42 +11,22 @@ import {
   writeFile,
   writeTextFile,
 } from "@tauri-apps/plugin-fs";
-import {
-  buildMeetingNotesText,
-  getMeetingNotesFileName,
-} from "./meetingNotesExport";
-import { buildWorkLogText, getWorkLogFileName } from "./workLogExport";
 
 export const STORAGE_KEYS = {
   activeEmployeeId: "arcadia-academy-active-employee-id",
   employees: "arcadia-academy-employees",
-  tasks: "arcadia-academy-tasks",
-  projects: "arcadia-academy-projects",
-  activeDate: "arcadia-academy-active-date",
-  history: "arcadia-academy-history",
-  workday: "arcadia-academy-workday",
-  dailyQuota: "arcadia-academy-daily-quota",
-  customProjectTemplates: "arcadia-academy-custom-project-templates",
-  clientLibrary: "arcadia-academy-client-library",
   characterLibrary: "arcadia-academy-character-library",
-  scratchpad: "arcadia-academy-scratchpad",
-  calendarEvents: "arcadia-academy-calendar-events",
   subjects: "arcadia-academy-subjects",
   studyProjects: "arcadia-academy-study-projects",
   studySessions: "arcadia-academy-study-sessions",
 };
 
-export const MEETING_DRAFT_STORAGE_KEY = "arcadia-academy-meeting-draft";
-export const MEETING_DRAFT_VERSION = 1;
 export const SAVE_FILE_VERSION = 1;
 export const DESKTOP_SAVE_FILE_NAME = "arcadia-academy-save.json";
 export const DESKTOP_BACKUP_DIR_NAME = "Backups";
-export const DESKTOP_WORK_LOG_DIR_NAME = "Work Logs";
-export const DESKTOP_MEETING_NOTES_DIR_NAME = "Meeting Notes";
 export const DESKTOP_CHARACTER_IMAGE_DIR_NAME = "Character Images";
 export const DESKTOP_STORAGE_CONFIG_FILE_NAME =
   "arcadia-academy-storage-config.json";
-export const DESKTOP_MEETING_DRAFT_FILE_NAME = "arcadia-academy-meeting-draft.json";
 export const DESKTOP_BACKUP_LIMIT = 3;
 export const DESKTOP_BACKUP_THROTTLE_MS = 10 * 60 * 1000;
 export const MANAGED_CHARACTER_IMAGE_PREFIX = "arcadia-character-image:";
@@ -91,233 +71,6 @@ export function saveData(key, value) {
   } catch (error) {
     console.warn(`Could not save data for ${key}`, error);
     return { ok: false, error };
-  }
-}
-
-function normalizeMeetingDraftSession(session) {
-  if (!session || typeof session !== "object") return null;
-
-  const taskId = typeof session.taskId === "string" ? session.taskId : "";
-  const startedAt =
-    typeof session.startedAt === "string" ? session.startedAt : "";
-
-  if (!taskId || !startedAt) return null;
-
-  return {
-    taskId,
-    startedAt,
-    notes: typeof session.notes === "string" ? session.notes : "",
-    actionItemIds: Array.isArray(session.actionItemIds)
-      ? session.actionItemIds.filter((item) => typeof item === "string")
-      : [],
-  };
-}
-
-function normalizeMeetingTaskSnapshot(snapshot) {
-  if (!snapshot || typeof snapshot !== "object") return null;
-
-  const id = typeof snapshot.id === "string" ? snapshot.id : "";
-
-  if (!id) return null;
-
-  return {
-    id,
-    title: typeof snapshot.title === "string" ? snapshot.title : "Untitled meeting",
-    client: typeof snapshot.client === "string" ? snapshot.client : "",
-    taskType:
-      typeof snapshot.taskType === "string"
-        ? snapshot.taskType
-        : "Meeting / Call",
-    projectId: snapshot.projectId ?? null,
-    projectName: snapshot.projectName ?? null,
-    projectTemplateName: snapshot.projectTemplateName ?? null,
-    completed: Boolean(snapshot.completed),
-  };
-}
-
-function normalizeActionItemSnapshot(snapshot) {
-  if (!snapshot || typeof snapshot !== "object") return null;
-
-  const id = typeof snapshot.id === "string" ? snapshot.id : "";
-
-  if (!id) return null;
-
-  return {
-    id,
-    title:
-      typeof snapshot.title === "string"
-        ? snapshot.title
-        : "Untitled action item",
-    client: typeof snapshot.client === "string" ? snapshot.client : "",
-    taskType:
-      typeof snapshot.taskType === "string"
-        ? snapshot.taskType
-        : "Meeting Follow-up",
-    priority: Boolean(snapshot.priority),
-  };
-}
-
-export function normalizeMeetingDraft(draft) {
-  if (!draft || typeof draft !== "object") return null;
-  if (draft.version !== MEETING_DRAFT_VERSION) return null;
-
-  const session = normalizeMeetingDraftSession(draft.session);
-  const meetingTaskSnapshot = normalizeMeetingTaskSnapshot(
-    draft.meetingTaskSnapshot
-  );
-
-  if (!session || !meetingTaskSnapshot) return null;
-
-  return {
-    version: MEETING_DRAFT_VERSION,
-    savedAt:
-      typeof draft.savedAt === "string"
-        ? draft.savedAt
-        : new Date().toISOString(),
-    session,
-    meetingTaskSnapshot,
-    actionItemSnapshots: Array.isArray(draft.actionItemSnapshots)
-      ? draft.actionItemSnapshots.map(normalizeActionItemSnapshot).filter(Boolean)
-      : [],
-    form: {
-      actionTitle:
-        typeof draft.form?.actionTitle === "string"
-          ? draft.form.actionTitle
-          : "",
-      actionPriority: Boolean(draft.form?.actionPriority),
-    },
-  };
-}
-
-export function readMeetingDraft() {
-  try {
-    const savedValue = localStorage.getItem(MEETING_DRAFT_STORAGE_KEY);
-
-    if (!savedValue) return null;
-
-    return normalizeMeetingDraft(JSON.parse(savedValue));
-  } catch (error) {
-    console.warn("Could not read Arcadia Academy meeting draft.", error);
-    return null;
-  }
-}
-
-export function writeMeetingDraft(draft) {
-  const normalizedDraft = normalizeMeetingDraft({
-    ...draft,
-    version: MEETING_DRAFT_VERSION,
-    savedAt: new Date().toISOString(),
-  });
-
-  if (!normalizedDraft) {
-    return { ok: false, error: null };
-  }
-
-  try {
-    localStorage.setItem(
-      MEETING_DRAFT_STORAGE_KEY,
-      JSON.stringify(normalizedDraft)
-    );
-    return { ok: true, draft: normalizedDraft, error: null };
-  } catch (error) {
-    console.warn("Could not save Arcadia Academy meeting draft.", error);
-    return { ok: false, error };
-  }
-}
-
-export function clearMeetingDraft() {
-  try {
-    localStorage.removeItem(MEETING_DRAFT_STORAGE_KEY);
-    return { ok: true, error: null };
-  } catch (error) {
-    console.warn("Could not clear Arcadia Academy meeting draft.", error);
-    return { ok: false, error };
-  }
-}
-
-export async function readDesktopMeetingDraft() {
-  if (!isDesktopStorageAvailable()) {
-    return { ok: false, status: "unavailable", draft: null, error: null };
-  }
-
-  try {
-    const draftExists = await exists(DESKTOP_MEETING_DRAFT_FILE_NAME, {
-      baseDir: BaseDirectory.AppData,
-    });
-
-    if (!draftExists) {
-      return { ok: false, status: "missing", draft: null, error: null };
-    }
-
-    const draftText = await readTextFile(DESKTOP_MEETING_DRAFT_FILE_NAME, {
-      baseDir: BaseDirectory.AppData,
-    });
-    const draft = normalizeMeetingDraft(JSON.parse(draftText));
-
-    if (!draft) {
-      return { ok: false, status: "invalid", draft: null, error: null };
-    }
-
-    return { ok: true, status: "active", draft, error: null };
-  } catch (error) {
-    console.warn("Could not read Arcadia Academy desktop meeting draft.", error);
-    return { ok: false, status: "error", draft: null, error };
-  }
-}
-
-export async function writeDesktopMeetingDraft(draft) {
-  if (!isDesktopStorageAvailable()) {
-    return { ok: false, status: "unavailable", error: null };
-  }
-
-  const normalizedDraft = normalizeMeetingDraft({
-    ...draft,
-    version: MEETING_DRAFT_VERSION,
-    savedAt: new Date().toISOString(),
-  });
-
-  if (!normalizedDraft) {
-    return { ok: false, status: "invalid", error: null };
-  }
-
-  try {
-    await mkdir(".", {
-      baseDir: BaseDirectory.AppData,
-      recursive: true,
-    });
-    await writeTextFile(
-      DESKTOP_MEETING_DRAFT_FILE_NAME,
-      JSON.stringify(normalizedDraft, null, 2),
-      { baseDir: BaseDirectory.AppData }
-    );
-
-    return { ok: true, status: "active", error: null };
-  } catch (error) {
-    console.warn("Could not save Arcadia Academy desktop meeting draft.", error);
-    return { ok: false, status: "error", error };
-  }
-}
-
-export async function clearDesktopMeetingDraft() {
-  if (!isDesktopStorageAvailable()) {
-    return { ok: false, status: "unavailable", error: null };
-  }
-
-  try {
-    const draftExists = await exists(DESKTOP_MEETING_DRAFT_FILE_NAME, {
-      baseDir: BaseDirectory.AppData,
-    });
-
-    if (draftExists) {
-      await remove(DESKTOP_MEETING_DRAFT_FILE_NAME, {
-        baseDir: BaseDirectory.AppData,
-      });
-    }
-
-    return { ok: true, status: "cleared", error: null };
-  } catch (error) {
-    console.warn("Could not clear Arcadia Academy desktop meeting draft.", error);
-    return { ok: false, status: "error", error };
   }
 }
 
@@ -1449,113 +1202,12 @@ export async function inspectDesktopSaveFolder(folderPath) {
   }
 }
 
-export async function writeDesktopWorkLogFile(
-  entry,
-  { employeeName, employeeNamesById } = {}
-) {
-  if (!isDesktopStorageAvailable()) {
-    return { ok: false, status: "unavailable", error: null };
-  }
-
-  try {
-    const locationResult = await getDesktopSaveLocation();
-    const workLogText = buildWorkLogText(entry, {
-      employeeName,
-      employeeNamesById,
-    });
-    const workLogFileName = getWorkLogFileName(entry);
-
-    await mkdirInDesktopLocation(locationResult.location, DESKTOP_WORK_LOG_DIR_NAME);
-    await writeTextFileInDesktopLocation(
-      locationResult.location,
-      `${DESKTOP_WORK_LOG_DIR_NAME}/${workLogFileName}`,
-      workLogText
-    );
-
-    return {
-      ok: true,
-      status: "active",
-      fileName: workLogFileName,
-      saveLocation: locationResult.status,
-      folderPath:
-        locationResult.location.kind === "chosen"
-          ? locationResult.location.folderPath
-          : null,
-      fallback: locationResult.fallback,
-      error: null,
-    };
-  } catch (error) {
-    console.warn("Could not auto-save Arcadia Academy work log.", error);
-    return { ok: false, status: "writeError", error };
-  }
-}
-
-export async function writeDesktopMeetingNotesFile(
-  session,
-  meetingTask,
-  actionItems = []
-) {
-  if (!isDesktopStorageAvailable()) {
-    return { ok: false, status: "unavailable", error: null };
-  }
-
-  try {
-    const locationResult = await getDesktopSaveLocation();
-    const meetingNotesText = buildMeetingNotesText(
-      session,
-      meetingTask,
-      actionItems
-    );
-    const meetingNotesFileName = getMeetingNotesFileName(session, meetingTask);
-
-    await mkdirInDesktopLocation(
-      locationResult.location,
-      DESKTOP_MEETING_NOTES_DIR_NAME
-    );
-    await writeTextFileInDesktopLocation(
-      locationResult.location,
-      `${DESKTOP_MEETING_NOTES_DIR_NAME}/${meetingNotesFileName}`,
-      meetingNotesText
-    );
-
-    return {
-      ok: true,
-      status: "active",
-      fileName: meetingNotesFileName,
-      saveLocation: locationResult.status,
-      folderPath:
-        locationResult.location.kind === "chosen"
-          ? locationResult.location.folderPath
-          : null,
-      fallback: locationResult.fallback,
-      error: null,
-    };
-  } catch (error) {
-    console.warn("Could not auto-save Arcadia Academy meeting notes.", error);
-    return { ok: false, status: "writeError", error };
-  }
-}
-
 export function writeSaveToLocalStorage(payload, fallbackBuilders = {}) {
   Object.entries(STORAGE_KEYS).forEach(([name, storageKey]) => {
     if (Object.hasOwn(payload.data, name)) {
       saveData(storageKey, payload.data[name]);
     }
   });
-
-  if (!Object.hasOwn(payload.data, "customProjectTemplates")) {
-    saveData(
-      STORAGE_KEYS.customProjectTemplates,
-      fallbackBuilders.createTemplateLibraryFallback?.()
-    );
-  }
-
-  if (!Object.hasOwn(payload.data, "clientLibrary")) {
-    saveData(
-      STORAGE_KEYS.clientLibrary,
-      fallbackBuilders.createClientLibraryFallback?.()
-    );
-  }
 
   if (!Object.hasOwn(payload.data, "characterLibrary")) {
     const seededCharacterLibrary =
@@ -1582,15 +1234,15 @@ export function writeSaveToLocalStorage(payload, fallbackBuilders = {}) {
   });
 }
 
-export function createResetWorkDataPayload(today, blankWorkday) {
+// Clears the shared Academy activity collections (subjects, study projects,
+// study sessions) while leaving the character roster, images, outfits, and
+// XP untouched. Used by both "Reset Academy Activity" and "New Academy
+// Season" — the latter additionally zeroes character XP separately.
+export function createResetAcademyActivityPayload() {
   return {
-    tasks: [],
-    projects: [],
-    history: [],
-    workday: blankWorkday,
-    activeDate: today,
-    activeEmployeeId: null,
-    scratchpad: {},
+    subjects: [],
+    studyProjects: [],
+    studySessions: [],
   };
 }
 

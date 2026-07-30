@@ -144,7 +144,6 @@ export function useCharacterLibrary({
   setActiveEmployeeId,
   dossierCharacterId,
   setDossierCharacterId,
-  setDeepWorkTaskId,
   openConfirmDialog,
 } = {}) {
   const [showCharacterForm, setShowCharacterForm] = useState(false);
@@ -610,7 +609,7 @@ export function useCharacterLibrary({
 
     openConfirmDialog({
       title: "Delete Character",
-      message: `Delete character "${characterToDelete.name}"? Existing tasks, project steps, history, and work logs will not be changed.`,
+      message: `Delete character "${characterToDelete.name}"? Study projects and sessions already logged with this character will not be changed.`,
       confirmLabel: "Delete",
       isDangerous: true,
       onConfirm: () => {
@@ -620,7 +619,6 @@ export function useCharacterLibrary({
 
         if (activeEmployeeId === characterId) {
           setActiveEmployeeId(null);
-          setDeepWorkTaskId(null);
         }
 
         if (dossierCharacterId === characterId) {
