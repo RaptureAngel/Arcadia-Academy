@@ -54,6 +54,49 @@
   width: min(560px, 100%);
 }
 
+/* Focus Session Recovery Dialog */
+
+.focusRecoveryDialog {
+  width: min(520px, 100%);
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+}
+
+.focusRecoveryDetails {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+}
+
+.focusRecoveryDetailRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 10px;
+  align-items: baseline;
+  min-width: 0;
+  border: 1px solid var(--academy-border, var(--border-cyan));
+  border-radius: 12px;
+  padding: 8px 12px;
+  background: var(--academy-surface-alt, #f2e9d8);
+}
+
+.focusRecoveryDetailRow dt {
+  margin: 0;
+  color: var(--academy-ink-soft, var(--text));
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.focusRecoveryDetailRow dd {
+  margin: 0;
+  color: var(--academy-ink, var(--text-hi));
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
 .meetingDraftSummary {
   display: grid;
   gap: 12px;

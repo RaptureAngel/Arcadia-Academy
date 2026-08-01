@@ -22,6 +22,15 @@ export const STORAGE_KEYS = {
 };
 
 export const SAVE_FILE_VERSION = 1;
+
+// Device-local only: the in-progress focus-session recovery draft. This key
+// is deliberately NOT part of STORAGE_KEYS, so it is never touched by
+// buildSavePayload/readSaveFromLocalStorage/writeSaveToLocalStorage/
+// createResetAcademyActivityPayload — it never appears in an exported save,
+// the desktop JSON, or an import, and never travels between devices.
+export const ACTIVE_FOCUS_SESSION_STORAGE_KEY =
+  "arcadia-academy-active-focus-session";
+
 export const DESKTOP_SAVE_FILE_NAME = "arcadia-academy-save.json";
 export const DESKTOP_BACKUP_DIR_NAME = "Backups";
 export const DESKTOP_CHARACTER_IMAGE_DIR_NAME = "Character Images";

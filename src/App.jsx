@@ -15,6 +15,7 @@ import SubjectForm from "./components/academy/SubjectForm";
 import ProjectForm from "./components/academy/ProjectForm";
 import ProjectDetailPanel from "./components/academy/ProjectDetailPanel";
 import FocusSessionOverlay from "./components/academy/FocusSessionOverlay";
+import FocusSessionRecoveryDialog from "./components/academy/FocusSessionRecoveryDialog";
 import ArchiveView from "./components/academy/ArchiveView";
 import { employees } from "./data/employees";
 
@@ -219,8 +220,11 @@ function App() {
 
   const {
     activeSession: activeFocusSession,
+    pendingRecovery: pendingFocusSessionRecovery,
     canStartSession: canStartFocusSession,
     startSession: startFocusSession,
+    resumeRecoverySession: resumeFocusSessionRecovery,
+    discardRecoverySession: discardFocusSessionRecovery,
     discardSession: discardFocusSession,
     endSession: endFocusSession,
   } = useFocusSession({
@@ -303,7 +307,10 @@ function App() {
   }
 
   function guardProjectStatusChange(projectId, action) {
-    if (activeFocusSession?.projectId === projectId) {
+    if (
+      activeFocusSession?.projectId === projectId ||
+      pendingFocusSessionRecovery?.record?.projectId === projectId
+    ) {
       setDataNotice({
         type: "error",
         message: "End the focus session before changing this project's status.",
@@ -357,6 +364,20 @@ function App() {
   }
 
   function handleDeleteProject(projectId) {
+    // Consistent with guardProjectStatusChange: a project with an active or
+    // pending-recovery focus session is blocked from deletion rather than
+    // silently discarding that session.
+    if (
+      activeFocusSession?.projectId === projectId ||
+      pendingFocusSessionRecovery?.record?.projectId === projectId
+    ) {
+      setDataNotice({
+        type: "error",
+        message: "End or discard the focus session on this project before deleting it.",
+      });
+      return;
+    }
+
     const project = getStudyProjectById(projectId);
 
     openConfirmDialog({
@@ -365,10 +386,6 @@ function App() {
       confirmLabel: "Delete Project",
       isDangerous: true,
       onConfirm: () => {
-        if (activeFocusSession?.projectId === projectId) {
-          discardFocusSession();
-        }
-
         deleteStudyProjectRecord(projectId);
         setStudySessions((currentSessions) =>
           currentSessions.filter((session) => session.projectId !== projectId)
@@ -400,8 +417,24 @@ function App() {
     closeProjectDetail();
   }
 
+  function handleResumeFocusSessionRecovery() {
+    const result = resumeFocusSessionRecovery();
+
+    if (!result.ok) {
+      setDataNotice({ type: "error", message: result.error });
+    }
+  }
+
+  function handleDiscardFocusSessionRecovery() {
+    const result = discardFocusSessionRecovery();
+
+    if (!result.ok) {
+      setDataNotice({ type: "error", message: result.error });
+    }
+  }
+
   function handleSelectActiveCharacterGuarded(characterId) {
-    if (activeFocusSession) {
+    if (activeFocusSession || pendingFocusSessionRecovery) {
       setDataNotice({
         type: "error",
         message: "End the current focus session before switching characters.",
@@ -410,6 +443,38 @@ function App() {
     }
 
     selectActiveCharacter(characterId);
+  }
+
+  // The audit confirmed that deleting the character attached to an active
+  // (or recovered-but-undecided) session orphans that session and silently
+  // drops its XP. Block deletion rather than discarding the session.
+  function handleDeleteCharacterGuarded(characterId) {
+    if (
+      activeFocusSession?.characterId === characterId ||
+      pendingFocusSessionRecovery?.record?.characterId === characterId
+    ) {
+      setDataNotice({
+        type: "error",
+        message:
+          "End or discard this character's active study session before deleting them.",
+      });
+      return;
+    }
+
+    deleteCharacter(characterId);
+  }
+
+  function handleImportSaveDataGuarded(event) {
+    if (activeFocusSession || pendingFocusSessionRecovery) {
+      event.target.value = "";
+      setDataNotice({
+        type: "error",
+        message: "End or discard the current study session before importing a save.",
+      });
+      return;
+    }
+
+    importSaveData(event);
   }
 
   useEffect(() => {
@@ -452,6 +517,21 @@ function App() {
 
   const headerLogoSrc = "/branding/arcadia-academy-logo-black.png";
   const appTabs = APP_TABS;
+
+  // FocusSessionOverlay computes its live timer as (now - startedAt). For a
+  // resumed session, activeSession.startedAt is the TRUE original start
+  // (kept for history), so a virtual anchor is derived here instead: the
+  // moment that, combined with elapsed real time, reproduces
+  // focusedSecondsBaseline exactly. Time the app was closed is never
+  // included, because baselineAt only advances while the app is running.
+  // For a fresh (non-resumed) session this is identical to the true
+  // startedAt, so normal sessions are unaffected.
+  const focusSessionTimerAnchor = activeFocusSession
+    ? new Date(
+        new Date(activeFocusSession.baselineAt).getTime() -
+          activeFocusSession.focusedSecondsBaseline * 1000
+      ).toISOString()
+    : null;
 
   const todayDate = currentTime.toLocaleDateString("en-ZA", {
     weekday: "short",
@@ -544,7 +624,7 @@ function App() {
           onImportImage={importCharacterImage}
           onAddCharacter={openNewCharacterForm}
           onEditCharacter={openEditCharacterForm}
-          onDeleteCharacter={deleteCharacter}
+          onDeleteCharacter={handleDeleteCharacterGuarded}
           onSelectCharacter={selectActiveCharacter}
           onSelectDossier={setDossierCharacterId}
           onDraftChange={updateCharacterDraft}
@@ -563,6 +643,14 @@ function App() {
           onCancel={cancelCharacterForm}
           onSubmit={saveCharacter}
         />
+
+        {pendingFocusSessionRecovery && (
+          <FocusSessionRecoveryDialog
+            pendingRecovery={pendingFocusSessionRecovery}
+            onResume={handleResumeFocusSessionRecovery}
+            onDiscard={handleDiscardFocusSessionRecovery}
+          />
+        )}
       </div>
     );
   }
@@ -673,7 +761,7 @@ function App() {
             onImportFocusImage={() => importCharacterImage("focus")}
             onAddCharacter={openNewCharacterForm}
             onEditCharacter={openEditCharacterForm}
-            onDeleteCharacter={deleteCharacter}
+            onDeleteCharacter={handleDeleteCharacterGuarded}
             onSelectCharacter={handleSelectActiveCharacterGuarded}
             onSelectDossier={setDossierCharacterId}
             onDraftChange={updateCharacterDraft}
@@ -699,7 +787,7 @@ function App() {
         <SettingsView
           dataManagementProps={{
             onExportSaveData: exportSaveData,
-            onImportSaveData: importSaveData,
+            onImportSaveData: handleImportSaveDataGuarded,
             onResetAcademyActivity: openResetAcademyActivityConfirm,
             onNewAcademySeason: openNewAcademySeasonConfirm,
             onCreateDesktopSave: createDesktopSaveFile,
@@ -733,11 +821,19 @@ function App() {
             (character) => character.id === activeFocusSession.characterId
           )}
           subjects={subjects}
-          startedAt={activeFocusSession.startedAt}
+          startedAt={focusSessionTimerAnchor}
           onSaveNotes={handleSaveProjectNotes}
           onEndSession={endFocusSession}
           onDiscard={discardFocusSession}
           onClose={discardFocusSession}
+        />
+      )}
+
+      {pendingFocusSessionRecovery && (
+        <FocusSessionRecoveryDialog
+          pendingRecovery={pendingFocusSessionRecovery}
+          onResume={handleResumeFocusSessionRecovery}
+          onDiscard={handleDiscardFocusSessionRecovery}
         />
       )}
 
