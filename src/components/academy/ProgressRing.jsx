@@ -1,5 +1,9 @@
 const RADIUS = 26;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+// Short dash + long gap, scaled from the same ratio as a 12px-stroke/60px-radius
+// reference ring, so a full circle reads as separate rounded beads rather than
+// a solid ring — used for open-ended/output progress instead of a percentage arc.
+const BEAD_DASHARRAY = "1 4";
 
 function ProgressRing({
   percent = null,
@@ -9,6 +13,7 @@ function ProgressRing({
   centerValue,
   centerLabel,
   centerContent,
+  beaded = false,
 }) {
   const hasPercent = Number.isFinite(percent);
   const clampedPercent = hasPercent ? Math.min(100, Math.max(0, percent)) : 0;
@@ -35,14 +40,14 @@ function ProgressRing({
         />
         {(hasPercent || centerValue !== undefined) && (
           <circle
-            className="progressRingFill"
+            className={`progressRingFill ${beaded ? "progressRingFill--beaded" : ""}`}
             cx="32"
             cy="32"
             r={RADIUS}
             strokeWidth={strokeWidth}
             fill="none"
-            strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={hasPercent ? offset : 0}
+            strokeDasharray={beaded ? BEAD_DASHARRAY : CIRCUMFERENCE}
+            strokeDashoffset={beaded ? 0 : hasPercent ? offset : 0}
             strokeLinecap="round"
             transform="rotate(-90 32 32)"
           />

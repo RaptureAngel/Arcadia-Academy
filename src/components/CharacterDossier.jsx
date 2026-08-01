@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCharacterContext } from "../utils/contextLabels";
-import { getFramingStyle } from "../utils/imageFraming";
+import FramedCharacterImage from "./FramedCharacterImage";
 
 function DossierRow({ label, value }) {
   return (
@@ -213,10 +213,11 @@ function CharacterDossier({
         <div className="dossierVisualPanel" aria-hidden="true">
           <div className="dossierPortraitFrame">
             {visibleImageSrc && !(imageFailed && fallbackImageFailed) ? (
-              <img
+              <FramedCharacterImage
                 src={visibleImageSrc}
                 alt=""
-                style={getFramingStyle(visibleImageFraming)}
+                framing={visibleImageFraming}
+                fill={false}
                 onError={() =>
                   setFailedImageKeys((currentKeys) =>
                     currentKeys.includes(visibleImageKey)

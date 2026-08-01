@@ -2,20 +2,23 @@ import { useEffect, useState } from "react";
 import {
   DEFAULT_IMAGE_FRAMING,
   IMAGE_FRAMING_ASPECT_RATIOS,
-  getFramingStyle,
   normalizeImageFraming,
 } from "../utils/imageFraming";
-
-const SLOT_LABELS = {
-  portrait: "Portrait",
-  dossier: "Dossier",
-  focus: "Focus",
-};
+import FramedCharacterImage from "./FramedCharacterImage";
 
 // Mounted only while open (see CharacterLibraryPanel), so a fresh `draft`
 // is derived from `framing` on every open via the lazy useState initializer
 // — no reset effect required.
-function ImageFramingModal({ imageSrc, characterName, slot, framing, onSave, onCancel }) {
+function ImageFramingModal({
+  imageSrc,
+  characterName,
+  slot,
+  contextLabel,
+  overrideWarning,
+  framing,
+  onSave,
+  onCancel,
+}) {
   const [draft, setDraft] = useState(() => normalizeImageFraming(framing));
 
   useEffect(() => {
@@ -27,7 +30,6 @@ function ImageFramingModal({ imageSrc, characterName, slot, framing, onSave, onC
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onCancel]);
 
-  const slotLabel = SLOT_LABELS[slot] || "Image";
   const aspectRatio = IMAGE_FRAMING_ASPECT_RATIOS[slot] || "1 / 1";
 
   function updateDraft(field, value) {
@@ -53,9 +55,12 @@ function ImageFramingModal({ imageSrc, characterName, slot, framing, onSave, onC
       >
         <header className="imageFramingHeader">
           <div>
-            <p className="panelLabel">Adjust Framing</p>
+            <p className="panelLabel">
+              Adjust Framing — {contextLabel || "Image"}
+            </p>
             <h2 id="image-framing-title">
-              {slotLabel} image{characterName ? ` — ${characterName}` : ""}
+              {contextLabel || "Image"}
+              {characterName ? ` — ${characterName}` : ""}
             </h2>
           </div>
           <button
@@ -70,12 +75,15 @@ function ImageFramingModal({ imageSrc, characterName, slot, framing, onSave, onC
 
         <form className="imageFramingForm" onSubmit={handleSave}>
           <div className="imageFramingPreviewWrap">
+            {overrideWarning ? (
+              <p className="imageFramingOverrideWarning">{overrideWarning}</p>
+            ) : null}
             <div
               className="imageFramingPreview"
               style={{ aspectRatio }}
             >
               {imageSrc ? (
-                <img src={imageSrc} alt="" style={getFramingStyle(draft)} />
+                <FramedCharacterImage src={imageSrc} alt="" framing={draft} />
               ) : (
                 <span className="imageFramingPreviewEmpty">No image set</span>
               )}

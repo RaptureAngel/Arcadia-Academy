@@ -352,6 +352,38 @@ export function useCharacterLibrary({
     }));
   }
 
+  // "Save Framing" must be a complete action on its own — it cannot leave the
+  // change stranded in the draft where only a later, separate "Save Changes"
+  // would surface it (that was the bug: every render site reads from
+  // characterLibrary, never from characterDraft). So this updates the draft
+  // (so an in-progress "Save Changes" doesn't revert it with stale data) and,
+  // when editing an already-saved character, writes straight into
+  // characterLibrary too, so every view reflects it immediately. For a
+  // brand-new character that hasn't been created yet, there is no library
+  // record to update — it stays draft-only until the character is created.
+  function saveCharacterImageFraming(slot, framing) {
+    const normalizedFraming = normalizeImageFramingSlots({ [slot]: framing })[slot];
+
+    updateCharacterDraftImageFraming(slot, normalizedFraming);
+
+    if (!editingCharacterId) return;
+
+    setCharacterLibrary((currentCharacters) =>
+      currentCharacters.map((character) =>
+        character.id === editingCharacterId
+          ? normalizeCharacter({
+              ...character,
+              imageFraming: {
+                ...normalizeImageFramingSlots(character.imageFraming),
+                [slot]: normalizedFraming,
+              },
+              updatedAt: new Date().toISOString(),
+            })
+          : character
+      )
+    );
+  }
+
   function updateCharacterDraftDossier(section, field, value) {
     setCharacterDraft((currentDraft) => {
       const currentDossier = normalizeCharacterDossier(currentDraft.dossier);
@@ -442,6 +474,46 @@ export function useCharacterLibrary({
           : outfit
       ),
     }));
+  }
+
+  // Mirrors saveCharacterImageFraming for an outfit-specific slot: keeps the
+  // draft in sync and, when the outfit already exists on a saved character,
+  // writes straight into characterLibrary so it's visible immediately. If
+  // the outfit itself is new and unsaved, the library has no matching outfit
+  // to update yet, so this is a safe no-op there — the draft update carries
+  // it through to the eventual "Save Changes".
+  function saveCharacterOutfitImageFraming(outfitId, slot, framing) {
+    const normalizedFraming = normalizeImageFramingSlots({ [slot]: framing })[slot];
+
+    updateCharacterDraftOutfitImageFraming(outfitId, slot, normalizedFraming);
+
+    if (!editingCharacterId) return;
+
+    setCharacterLibrary((currentCharacters) =>
+      currentCharacters.map((character) => {
+        if (character.id !== editingCharacterId) return character;
+        if (!character.outfits?.some((outfit) => outfit.id === outfitId)) {
+          return character;
+        }
+
+        return normalizeCharacter({
+          ...character,
+          outfits: character.outfits.map((outfit) =>
+            outfit.id === outfitId
+              ? {
+                  ...outfit,
+                  imageFraming: {
+                    ...normalizeImageFramingSlots(outfit.imageFraming),
+                    [slot]: normalizedFraming,
+                  },
+                  updatedAt: new Date().toISOString(),
+                }
+              : outfit
+          ),
+          updatedAt: new Date().toISOString(),
+        });
+      })
+    );
   }
 
   function setCharacterDraftActiveOutfit(outfitId) {
@@ -711,12 +783,12 @@ export function useCharacterLibrary({
     cancelCharacterForm,
     updateCharacterDraft,
     updateCharacterDraftImageSlot,
-    updateCharacterDraftImageFraming,
+    saveCharacterImageFraming,
     updateCharacterDraftDossier,
     addCharacterDraftOutfit,
     updateCharacterDraftOutfit,
     updateCharacterDraftOutfitImageSlot,
-    updateCharacterDraftOutfitImageFraming,
+    saveCharacterOutfitImageFraming,
     setCharacterDraftActiveOutfit,
     deleteCharacterDraftOutfit,
     importCharacterImage,

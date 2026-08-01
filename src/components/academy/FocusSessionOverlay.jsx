@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getActivityVerb, getSubjectDisplay } from "../../utils/academyDisplay";
-import { getFramingStyle } from "../../utils/imageFraming";
+import FramedCharacterImage from "../FramedCharacterImage";
 import ProjectNotesEditor from "./ProjectNotesEditor";
 import SessionEndForm from "./SessionEndForm";
 
@@ -158,10 +158,10 @@ function FocusSessionOverlay({
 
         <div className="focusSessionVisual">
           {imageSrc ? (
-            <img
+            <FramedCharacterImage
               src={imageSrc}
               alt={character?.name || "Focus companion"}
-              style={getFramingStyle(character?.focusFraming)}
+              framing={character?.focusFraming}
             />
           ) : (
             <span className="focusSessionVisualFallback">

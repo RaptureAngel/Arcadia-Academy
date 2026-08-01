@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { getFramingStyle } from "../utils/imageFraming";
+import FramedCharacterImage from "./FramedCharacterImage";
 
 function getOutfitName(outfit) {
   return outfit?.name || "Untitled Outfit";
@@ -20,11 +20,11 @@ function OutfitPreviewImage({ imageCandidates, characterName }) {
   }
 
   return (
-    <img
+    <FramedCharacterImage
       src={candidate.src}
       alt={characterName}
+      framing={candidate.framing}
       className="outfitSelectorPreviewImage"
-      style={getFramingStyle(candidate.framing)}
       onError={() =>
         setFailedImageSources((currentSources) =>
           currentSources.includes(candidate.src)

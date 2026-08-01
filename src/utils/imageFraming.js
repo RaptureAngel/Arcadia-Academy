@@ -16,6 +16,12 @@ export const IMAGE_FRAMING_ASPECT_RATIOS = {
   focus: "3 / 4",
 };
 
+export const IMAGE_FRAMING_SLOT_LABELS = {
+  portrait: "Portrait",
+  dossier: "Dossier",
+  focus: "Focus",
+};
+
 function clampNumber(value, min, max, fallback) {
   const num = Number(value);
 

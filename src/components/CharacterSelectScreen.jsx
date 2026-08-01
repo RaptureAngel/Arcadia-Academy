@@ -1,6 +1,6 @@
 import CharacterLibraryPanel from "./CharacterLibraryPanel";
+import FramedCharacterImage from "./FramedCharacterImage";
 import { getLevel } from "../utils/xp";
-import { getFramingStyle } from "../utils/imageFraming";
 
 function CharacterSelectScreen({
   appTitle,
@@ -24,12 +24,12 @@ function CharacterSelectScreen({
   onSelectDossier,
   onDraftChange,
   onDraftImageSlotChange,
-  onDraftImageFramingChange,
+  onSaveImageFraming,
   onDraftDossierChange,
   onAddOutfit,
   onDraftOutfitChange,
   onDraftOutfitImageSlotChange,
-  onDraftOutfitImageFramingChange,
+  onSaveOutfitImageFraming,
   onSetActiveOutfit,
   onDeleteOutfit,
   onImportOutfitImage,
@@ -56,11 +56,11 @@ function CharacterSelectScreen({
             >
               <div className="portraitPlaceholder">
                 {employee.portraitDisplayImage ? (
-                  <img
+                  <FramedCharacterImage
                     src={employee.portraitDisplayImage}
                     alt={employee.name}
+                    framing={employee.portraitFraming}
                     className="portraitImage"
-                    style={getFramingStyle(employee.portraitFraming)}
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
                     }}
@@ -103,12 +103,12 @@ function CharacterSelectScreen({
           onSelectDossier={onSelectDossier}
           onDraftChange={onDraftChange}
           onDraftImageSlotChange={onDraftImageSlotChange}
-          onDraftImageFramingChange={onDraftImageFramingChange}
+          onSaveImageFraming={onSaveImageFraming}
           onDraftDossierChange={onDraftDossierChange}
           onAddOutfit={onAddOutfit}
           onDraftOutfitChange={onDraftOutfitChange}
           onDraftOutfitImageSlotChange={onDraftOutfitImageSlotChange}
-          onDraftOutfitImageFramingChange={onDraftOutfitImageFramingChange}
+          onSaveOutfitImageFraming={onSaveOutfitImageFraming}
           onSetActiveOutfit={onSetActiveOutfit}
           onDeleteOutfit={onDeleteOutfit}
           onImportOutfitImage={onImportOutfitImage}

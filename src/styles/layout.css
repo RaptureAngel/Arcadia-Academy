@@ -151,6 +151,31 @@
   display: block;
 }
 
+/* FramedCharacterImage: shared frame/image split used everywhere a saved
+   image-framing record (fit/position/zoom) is rendered. The frame span
+   owns overflow + dimensions + radius; the <img> owns object-fit/
+   object-position/transform (see getFramingStyle). */
+.framedCharacterImage {
+  display: block;
+}
+
+.framedCharacterImage--fill {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.framedCharacterImage--fill .framedCharacterImageImg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.framedCharacterImageImg {
+  display: block;
+}
+
 .employeeProfileInfo {
   min-width: 0;
   text-align: left;

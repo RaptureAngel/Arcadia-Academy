@@ -155,12 +155,12 @@ function App() {
     cancelCharacterForm,
     updateCharacterDraft,
     updateCharacterDraftImageSlot,
-    updateCharacterDraftImageFraming,
+    saveCharacterImageFraming,
     updateCharacterDraftDossier,
     addCharacterDraftOutfit,
     updateCharacterDraftOutfit,
     updateCharacterDraftOutfitImageSlot,
-    updateCharacterDraftOutfitImageFraming,
+    saveCharacterOutfitImageFraming,
     setCharacterDraftActiveOutfit,
     deleteCharacterDraftOutfit,
     importCharacterImage,
@@ -549,12 +549,12 @@ function App() {
           onSelectDossier={setDossierCharacterId}
           onDraftChange={updateCharacterDraft}
           onDraftImageSlotChange={updateCharacterDraftImageSlot}
-          onDraftImageFramingChange={updateCharacterDraftImageFraming}
+          onSaveImageFraming={saveCharacterImageFraming}
           onDraftDossierChange={updateCharacterDraftDossier}
           onAddOutfit={addCharacterDraftOutfit}
           onDraftOutfitChange={updateCharacterDraftOutfit}
           onDraftOutfitImageSlotChange={updateCharacterDraftOutfitImageSlot}
-          onDraftOutfitImageFramingChange={updateCharacterDraftOutfitImageFraming}
+          onSaveOutfitImageFraming={saveCharacterOutfitImageFraming}
           onSetActiveOutfit={setCharacterDraftActiveOutfit}
           onDeleteOutfit={deleteCharacterDraftOutfit}
           onImportOutfitImage={(outfitId, slot) =>
@@ -678,12 +678,12 @@ function App() {
             onSelectDossier={setDossierCharacterId}
             onDraftChange={updateCharacterDraft}
             onDraftImageSlotChange={updateCharacterDraftImageSlot}
-            onDraftImageFramingChange={updateCharacterDraftImageFraming}
+            onSaveImageFraming={saveCharacterImageFraming}
             onDraftDossierChange={updateCharacterDraftDossier}
             onAddOutfit={addCharacterDraftOutfit}
             onDraftOutfitChange={updateCharacterDraftOutfit}
             onDraftOutfitImageSlotChange={updateCharacterDraftOutfitImageSlot}
-            onDraftOutfitImageFramingChange={updateCharacterDraftOutfitImageFraming}
+            onSaveOutfitImageFraming={saveCharacterOutfitImageFraming}
             onSetActiveOutfit={setCharacterDraftActiveOutfit}
             onDeleteOutfit={deleteCharacterDraftOutfit}
             onImportOutfitImage={(outfitId, slot) =>

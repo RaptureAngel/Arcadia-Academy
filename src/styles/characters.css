@@ -188,6 +188,19 @@
   font-weight: 950;
 }
 
+/* The initials-placeholder rule above targets any bare <span> in the frame,
+   which would otherwise also catch FramedCharacterImage's non-fill wrapper
+   span and box it into a 150px placeholder tile. Reset it back to a plain
+   passthrough wrapper so only .dossierPortraitFrame img governs sizing. */
+.dossierPortraitFrame .framedCharacterImage {
+  display: block;
+  width: auto;
+  height: auto;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
 .dossierClassification {
   margin: 0;
   color: #c1694f;

@@ -134,20 +134,20 @@ function ProjectCard({
         </div>
       </div>
 
+      <h3 className="projectCardTitle">{project.title}</h3>
+
       <button
         className="projectCardBody"
         type="button"
         onClick={() => onOpenDetail(project.id)}
         aria-label={`View details for ${project.title}`}
       >
-        <h3 className="projectCardTitle">{project.title}</h3>
-
         <div className="projectCardProgressRow">
           {metrics.ringMode === "percent" ? (
             <ProgressRing
               percent={metrics.percent}
-              size={128}
-              strokeWidth={6}
+              size={144}
+              strokeWidth={5}
               label={metrics.ringLabel}
             />
           ) : (
@@ -155,8 +155,9 @@ function ProjectCard({
               percent={null}
               centerValue={metrics.count}
               centerLabel={metrics.countLabel}
-              size={128}
-              strokeWidth={6}
+              size={144}
+              strokeWidth={5}
+              beaded
               label={metrics.ringLabel}
             />
           )}

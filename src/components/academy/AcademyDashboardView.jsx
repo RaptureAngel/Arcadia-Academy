@@ -37,7 +37,6 @@ function AcademyDashboardView({
           switchDisabled={switchCharacterDisabled}
           subjects={subjects}
           activeProjects={activeProjects}
-          occupiedSlotCount={activeProjects.length}
         />
 
         <ActiveStudiesGrid

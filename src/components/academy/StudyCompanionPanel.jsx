@@ -1,6 +1,6 @@
 import { getSubjectAccentColor } from "../../utils/academyDisplay";
-import { getFramingStyle } from "../../utils/imageFraming";
 import { isSubjectArchived } from "../../utils/subjects";
+import FramedCharacterImage from "../FramedCharacterImage";
 
 function getActiveProjectCountForSubject(subjectId, activeProjects) {
   return activeProjects.filter((project) => project.subjectId === subjectId).length;
@@ -15,7 +15,6 @@ function StudyCompanionPanel({
   switchDisabled,
   subjects,
   activeProjects,
-  occupiedSlotCount,
 }) {
   const imageSrc =
     character?.portraitDisplayImage ?? character?.displayImage ?? character?.image;
@@ -30,34 +29,26 @@ function StudyCompanionPanel({
       <p className="panelLabel">Study Companion</p>
 
       <div className="studyCompanionHeader">
-        <div className="studyCompanionPortraitWrap">
-          <button
-            className="employeeAvatar employeeAvatarButton studyCompanionAvatar"
-            type="button"
-            onClick={onOpenDossier}
-            aria-label={`Open dossier for ${character?.name || "your companion"}`}
-          >
-            {imageSrc ? (
-              <img
-                src={imageSrc}
-                alt={character?.name || "Study companion"}
-                className="employeeAvatarImage"
-                style={getFramingStyle(character?.portraitFraming)}
-                onError={(event) => {
-                  event.currentTarget.style.display = "none";
-                }}
-              />
-            ) : (
-              <span>{character?.name?.slice(0, 1) || "A"}</span>
-            )}
-          </button>
-
-          <p className="studyCompanionMessage">
-            {occupiedSlotCount === 0
-              ? "Ready when you are."
-              : "Ready when you are. Your studies are waiting below."}
-          </p>
-        </div>
+        <button
+          className="employeeAvatar employeeAvatarButton studyCompanionAvatar"
+          type="button"
+          onClick={onOpenDossier}
+          aria-label={`Open dossier for ${character?.name || "your companion"}`}
+        >
+          {imageSrc ? (
+            <FramedCharacterImage
+              src={imageSrc}
+              alt={character?.name || "Study companion"}
+              framing={character?.portraitFraming}
+              className="employeeAvatarImage"
+              onError={(event) => {
+                event.currentTarget.style.display = "none";
+              }}
+            />
+          ) : (
+            <span>{character?.name?.slice(0, 1) || "A"}</span>
+          )}
+        </button>
 
         <div className="studyCompanionInfo">
           <h2>{character?.name || "No companion selected"}</h2>

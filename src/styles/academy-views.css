@@ -68,10 +68,6 @@
   gap: 12px;
 }
 
-.studyCompanionPortraitWrap {
-  position: relative;
-}
-
 .studyCompanionAvatar {
   width: 100%;
   height: auto;
@@ -84,17 +80,6 @@
   height: 100%;
   object-fit: cover;
   object-position: top center;
-}
-
-.studyCompanionPortraitWrap .studyCompanionMessage {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
-  left: 10px;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--academy-ink);
-  text-align: center;
 }
 
 .studyCompanionInfo {
@@ -120,27 +105,24 @@
   letter-spacing: 0.02em;
 }
 
-.studyCompanionMessage {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: var(--academy-radius-card);
-  background: var(--academy-sage-bg);
-  color: var(--academy-sage-strong);
-  font-size: 0.88rem;
-  font-style: italic;
-}
-
 .studyCompanionActions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
 }
 
 .studyCompanionActions .secondaryButton,
 .studyCompanionActions .detailsButton {
-  flex: 1 1 120px;
-  width: auto;
+  width: 100%;
+  min-width: 0;
   margin: 0;
+  padding: 10px 8px;
+  font-size: 0.82rem;
+}
+
+.studyCompanionActions .secondaryButton:only-child,
+.studyCompanionActions .detailsButton:only-child {
+  grid-column: 1 / -1;
 }
 
 .studyCompanionSubjects {
@@ -245,14 +227,13 @@
 }
 
 .projectCard {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
   gap: 10px;
-  min-height: 340px;
+  min-height: 360px;
   max-height: 520px;
   padding: 18px;
   border: 1px solid var(--academy-border);
-  border-top: 4px solid var(--subject-color, var(--academy-sage));
   border-radius: var(--academy-radius-card);
   background: var(--academy-surface);
   box-shadow: var(--academy-card-shadow);
@@ -298,10 +279,8 @@
 
 .projectCardBody {
   display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
+  align-items: center;
+  width: 100%;
   min-height: 0;
   padding: 0;
   border: 0;
@@ -316,12 +295,17 @@
   font-size: 1.25rem;
   line-height: 1.2;
   overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .projectCardProgressRow {
   display: flex;
   align-items: center;
   gap: 16px;
+  width: 100%;
 }
 
 .projectCardStats {
@@ -446,7 +430,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 340px;
+  min-height: 360px;
   max-height: 520px;
   border: 2px dashed var(--academy-border-strong);
   border-radius: var(--academy-radius-card);
@@ -604,12 +588,17 @@
   margin: 0;
 }
 
-.subjectColorSwatches {
+.subjectColorControl {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+  min-height: 40px;
 }
 
 .subjectColorSwatch {
+  position: relative;
+  flex: 0 0 auto;
   width: 28px;
   height: 28px;
   border-radius: 50%;
@@ -619,6 +608,147 @@
 
 .subjectColorSwatch.active {
   border-color: var(--academy-ink);
+}
+
+.subjectColorSwatch:focus-visible {
+  outline: 2px solid var(--academy-sage-strong);
+  outline-offset: 2px;
+}
+
+.subjectColorSwatchCheck {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 900;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.subjectColorCustomSwatch {
+  flex: 0 0 auto;
+  display: block;
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 2px solid var(--academy-border-strong);
+}
+
+.subjectColorCustomSwatch input[type="color"] {
+  display: block;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.subjectColorCustomSwatch input[type="color"]:focus-visible {
+  outline: 2px solid var(--academy-sage-strong);
+  outline-offset: 1px;
+}
+
+.subjectColorCustomSwatch input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.subjectColorCustomSwatch input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 5px;
+}
+
+.subjectColorHexValue {
+  flex: 0 0 auto;
+  color: var(--academy-ink-soft);
+  font-family: "SFMono-Regular", Consolas, monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.subjectIconField {
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.subjectIconField input[type="text"] {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.subjectIconPickerToggle {
+  flex: 0 0 auto;
+  width: auto;
+  min-width: 0;
+  margin: 0;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+.subjectIconPicker {
+  position: absolute;
+  left: 0;
+  z-index: 30;
+  width: min(280px, 90vw);
+  padding: 12px;
+  border: 1px solid var(--academy-border);
+  border-radius: var(--academy-radius-card);
+  background: var(--academy-surface);
+  box-shadow: var(--academy-shadow);
+}
+
+.subjectIconPicker--down {
+  top: calc(100% + 6px);
+}
+
+.subjectIconPicker--up {
+  bottom: calc(100% + 6px);
+}
+
+.subjectIconPickerGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 4px;
+}
+
+.subjectIconOption {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.subjectIconOption:hover,
+.subjectIconOption:focus-visible {
+  border-color: var(--academy-border-strong);
+  background: var(--academy-sage-bg);
+  outline: none;
+}
+
+.subjectIconPickerHint {
+  margin: 10px 0 0;
+  color: var(--academy-ink-faint);
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.subjectIconPickerHint kbd {
+  padding: 1px 5px;
+  border: 1px solid var(--academy-border-strong);
+  border-radius: 4px;
+  background: var(--academy-surface-alt);
+  font-family: inherit;
+  font-size: 0.7rem;
 }
 
 /* Shared modal / form scaffolding */

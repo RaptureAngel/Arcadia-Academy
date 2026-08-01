@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { getLevel } from "../utils/xp";
-import { getFramingStyle } from "../utils/imageFraming";
+import { IMAGE_FRAMING_SLOT_LABELS } from "../utils/imageFraming";
+import FramedCharacterImage from "./FramedCharacterImage";
 import ImageFramingModal from "./ImageFramingModal";
 
 function CharacterPortrait({ character }) {
@@ -12,11 +13,11 @@ function CharacterPortrait({ character }) {
   }
 
   return (
-    <img
+    <FramedCharacterImage
       src={imageSrc}
       alt={character.name}
+      framing={character?.portraitFraming}
       className="portraitImage"
-      style={getFramingStyle(character?.portraitFraming)}
       onError={(event) => {
         event.currentTarget.style.display = "none";
       }}
@@ -41,11 +42,11 @@ function CharacterFeaturedImage({ character }) {
   }
 
   return (
-    <img
+    <FramedCharacterImage
       src={imageSrc}
       alt={character.name}
+      framing={character?.dossierFraming}
       className="featuredCharacterImage"
-      style={getFramingStyle(character?.dossierFraming)}
       onError={() =>
         setFailedImageSources((currentSources) =>
           currentSources.includes(imageSrc)
@@ -112,12 +113,12 @@ function CharacterLibraryPanel({
   onSelectDossier,
   onDraftChange,
   onDraftImageSlotChange,
-  onDraftImageFramingChange,
+  onSaveImageFraming,
   onDraftDossierChange,
   onAddOutfit,
   onDraftOutfitChange,
   onDraftOutfitImageSlotChange,
-  onDraftOutfitImageFramingChange,
+  onSaveOutfitImageFraming,
   onSetActiveOutfit,
   onDeleteOutfit,
   onImportOutfitImage,
@@ -144,12 +145,20 @@ function CharacterLibraryPanel({
       return {
         ref: outfit?.imageSlots?.[slot] || "",
         framing: outfit?.imageFraming?.[slot],
+        contextLabel: `${outfit?.name || "Untitled Outfit"} — ${IMAGE_FRAMING_SLOT_LABELS[slot]}`,
       };
     }
+
+    const activeOutfit = outfits.find((outfit) => outfit.id === draft.activeOutfitId);
+    const overriddenByActiveOutfit = Boolean(activeOutfit?.imageSlots?.[slot]);
 
     return {
       ref: slot === "portrait" ? draft.image : draft.imageSlots?.[slot] || "",
       framing: draft.imageFraming?.[slot],
+      contextLabel: `Base ${IMAGE_FRAMING_SLOT_LABELS[slot]}`,
+      overrideWarning: overriddenByActiveOutfit
+        ? `The active outfit "${activeOutfit.name || "Untitled Outfit"}" currently supplies its own ${IMAGE_FRAMING_SLOT_LABELS[slot].toLowerCase()} image, so this base framing won't be visible until you switch outfits or edit that outfit's own image.`
+        : null,
     };
   }
 
@@ -157,9 +166,9 @@ function CharacterLibraryPanel({
     if (!framingTarget) return;
 
     if (framingTarget.outfitId) {
-      onDraftOutfitImageFramingChange?.(framingTarget.outfitId, framingTarget.slot, framing);
+      onSaveOutfitImageFraming?.(framingTarget.outfitId, framingTarget.slot, framing);
     } else {
-      onDraftImageFramingChange?.(framingTarget.slot, framing);
+      onSaveImageFraming?.(framingTarget.slot, framing);
     }
 
     setFramingTarget(null);
@@ -678,6 +687,8 @@ function CharacterLibraryPanel({
           }
           characterName={draft.name}
           slot={framingTarget.slot}
+          contextLabel={framingTargetData?.contextLabel}
+          overrideWarning={framingTargetData?.overrideWarning}
           framing={framingTargetData?.framing}
           onSave={handleSaveFraming}
           onCancel={() => setFramingTarget(null)}
