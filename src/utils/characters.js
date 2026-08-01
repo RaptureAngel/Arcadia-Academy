@@ -1,4 +1,8 @@
-const CHARACTER_SCHEMA_VERSION = 2;
+import { normalizeImageFramingSlots } from "./imageFraming";
+
+// v3 adds per-slot image framing metadata (imageFraming); older saves
+// normalize to safe defaults via normalizeImageFramingSlots below.
+const CHARACTER_SCHEMA_VERSION = 3;
 export const CHARACTER_LIBRARY_VERSION = 1;
 export const CHARACTER_CONTEXTS = ["office", "class"];
 export const CHARACTER_IMAGE_SLOTS = ["portrait", "dossier", "focus"];
@@ -75,6 +79,7 @@ function normalizeOutfits(characterOutfits, fallbackOutfits) {
           ? outfit.name
           : `Outfit ${index + 1}`,
       imageSlots: normalizeImageSlots(outfit.imageSlots),
+      imageFraming: normalizeImageFramingSlots(outfit.imageFraming),
       createdAt: typeof outfit.createdAt === "string" ? outfit.createdAt : null,
       updatedAt: typeof outfit.updatedAt === "string" ? outfit.updatedAt : null,
     }));
@@ -147,6 +152,9 @@ export function normalizeCharacter(character = {}, fallback = {}) {
     context,
     image: character.image ?? fallback.image ?? "",
     imageSlots: normalizeImageSlots(character.imageSlots, fallback.imageSlots),
+    imageFraming: normalizeImageFramingSlots(
+      character.imageFraming ?? fallback.imageFraming
+    ),
     imageAssets: normalizeImageAssets(character.imageAssets, fallback.imageAssets),
     outfits,
     activeOutfitId,
@@ -190,6 +198,21 @@ export function getCharacterImageRef(character, slot = "portrait") {
     : "";
 
   return outfitSlotRef || slotRef || character?.image || "";
+}
+
+// Framing follows whichever level (outfit vs character) actually supplies
+// the image for this slot, so it stays paired with the image the user is
+// really seeing rather than always preferring the outfit's own framing.
+export function getCharacterImageFraming(character, slot = "portrait") {
+  if (!CHARACTER_IMAGE_SLOTS.includes(slot)) {
+    return normalizeImageFramingSlots(null).portrait;
+  }
+
+  const activeOutfit = getActiveOutfit(character);
+  const usesOutfitImage = Boolean(activeOutfit?.imageSlots?.[slot]);
+  const source = usesOutfitImage ? activeOutfit : character;
+
+  return source?.imageFraming?.[slot] || normalizeImageFramingSlots(null)[slot];
 }
 
 export function getCharacterImageRefs(character) {

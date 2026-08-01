@@ -83,16 +83,16 @@ const DESKTOP_SAVE_STATUS_COPY = {
 
 const RESET_CONFIRM_CONFIGS = {
   activity: {
-    title: "Reset Academy Activity",
-    label: "Reset Academy Activity",
+    title: "Reset Activity",
+    label: "Reset Activity",
     confirmWord: "RESET",
-    confirmButtonLabel: "Reset Academy Activity",
+    confirmButtonLabel: "Reset Activity",
     message:
       "This permanently deletes all subjects, study projects, project notes, progress, and study sessions, and ends any focus session in progress. Your character roster, character images, outfits, character XP, and save-folder configuration are kept. A backup of the current save is made first where a desktop save is active.",
   },
   season: {
-    title: "New Academy Season",
-    label: "New Academy Season",
+    title: "New Season",
+    label: "New Season",
     confirmWord: "NEW SEASON",
     confirmButtonLabel: "Start New Season",
     message:

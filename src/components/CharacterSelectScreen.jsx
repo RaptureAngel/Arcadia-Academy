@@ -1,5 +1,6 @@
 import CharacterLibraryPanel from "./CharacterLibraryPanel";
 import { getLevel } from "../utils/xp";
+import { getFramingStyle } from "../utils/imageFraming";
 
 function CharacterSelectScreen({
   appTitle,
@@ -14,6 +15,7 @@ function CharacterSelectScreen({
   editingCharacterId,
   characterImageOptions,
   canImportCharacterImage,
+  resolveImageReference,
   onImportImage,
   onAddCharacter,
   onEditCharacter,
@@ -22,10 +24,12 @@ function CharacterSelectScreen({
   onSelectDossier,
   onDraftChange,
   onDraftImageSlotChange,
+  onDraftImageFramingChange,
   onDraftDossierChange,
   onAddOutfit,
   onDraftOutfitChange,
   onDraftOutfitImageSlotChange,
+  onDraftOutfitImageFramingChange,
   onSetActiveOutfit,
   onDeleteOutfit,
   onImportOutfitImage,
@@ -56,6 +60,7 @@ function CharacterSelectScreen({
                     src={employee.portraitDisplayImage}
                     alt={employee.name}
                     className="portraitImage"
+                    style={getFramingStyle(employee.portraitFraming)}
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
                     }}
@@ -87,6 +92,7 @@ function CharacterSelectScreen({
           isEditing={Boolean(editingCharacterId)}
           imageOptions={characterImageOptions}
           canImportImage={canImportCharacterImage}
+          resolveImageReference={resolveImageReference}
           onImportImage={onImportImage}
           onImportDossierImage={() => onImportImage("dossier")}
           onImportFocusImage={() => onImportImage("focus")}
@@ -97,10 +103,12 @@ function CharacterSelectScreen({
           onSelectDossier={onSelectDossier}
           onDraftChange={onDraftChange}
           onDraftImageSlotChange={onDraftImageSlotChange}
+          onDraftImageFramingChange={onDraftImageFramingChange}
           onDraftDossierChange={onDraftDossierChange}
           onAddOutfit={onAddOutfit}
           onDraftOutfitChange={onDraftOutfitChange}
           onDraftOutfitImageSlotChange={onDraftOutfitImageSlotChange}
+          onDraftOutfitImageFramingChange={onDraftOutfitImageFramingChange}
           onSetActiveOutfit={onSetActiveOutfit}
           onDeleteOutfit={onDeleteOutfit}
           onImportOutfitImage={onImportOutfitImage}

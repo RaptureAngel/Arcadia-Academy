@@ -155,10 +155,12 @@ function App() {
     cancelCharacterForm,
     updateCharacterDraft,
     updateCharacterDraftImageSlot,
+    updateCharacterDraftImageFraming,
     updateCharacterDraftDossier,
     addCharacterDraftOutfit,
     updateCharacterDraftOutfit,
     updateCharacterDraftOutfitImageSlot,
+    updateCharacterDraftOutfitImageFraming,
     setCharacterDraftActiveOutfit,
     deleteCharacterDraftOutfit,
     importCharacterImage,
@@ -538,6 +540,7 @@ function App() {
           editingCharacterId={editingCharacterId}
           characterImageOptions={characterImageOptions}
           canImportCharacterImage={canImportCharacterImage}
+          resolveImageReference={getDisplayImageUrl}
           onImportImage={importCharacterImage}
           onAddCharacter={openNewCharacterForm}
           onEditCharacter={openEditCharacterForm}
@@ -546,10 +549,12 @@ function App() {
           onSelectDossier={setDossierCharacterId}
           onDraftChange={updateCharacterDraft}
           onDraftImageSlotChange={updateCharacterDraftImageSlot}
+          onDraftImageFramingChange={updateCharacterDraftImageFraming}
           onDraftDossierChange={updateCharacterDraftDossier}
           onAddOutfit={addCharacterDraftOutfit}
           onDraftOutfitChange={updateCharacterDraftOutfit}
           onDraftOutfitImageSlotChange={updateCharacterDraftOutfitImageSlot}
+          onDraftOutfitImageFramingChange={updateCharacterDraftOutfitImageFraming}
           onSetActiveOutfit={setCharacterDraftActiveOutfit}
           onDeleteOutfit={deleteCharacterDraftOutfit}
           onImportOutfitImage={(outfitId, slot) =>
@@ -662,6 +667,7 @@ function App() {
             isEditing={Boolean(editingCharacterId)}
             imageOptions={characterImageOptions}
             canImportImage={canImportCharacterImage}
+            resolveImageReference={getDisplayImageUrl}
             onImportImage={importCharacterImage}
             onImportDossierImage={() => importCharacterImage("dossier")}
             onImportFocusImage={() => importCharacterImage("focus")}
@@ -672,10 +678,12 @@ function App() {
             onSelectDossier={setDossierCharacterId}
             onDraftChange={updateCharacterDraft}
             onDraftImageSlotChange={updateCharacterDraftImageSlot}
+            onDraftImageFramingChange={updateCharacterDraftImageFraming}
             onDraftDossierChange={updateCharacterDraftDossier}
             onAddOutfit={addCharacterDraftOutfit}
             onDraftOutfitChange={updateCharacterDraftOutfit}
             onDraftOutfitImageSlotChange={updateCharacterDraftOutfitImageSlot}
+            onDraftOutfitImageFramingChange={updateCharacterDraftOutfitImageFraming}
             onSetActiveOutfit={setCharacterDraftActiveOutfit}
             onDeleteOutfit={deleteCharacterDraftOutfit}
             onImportOutfitImage={(outfitId, slot) =>

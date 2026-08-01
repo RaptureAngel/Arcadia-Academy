@@ -1,11 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CHARACTER_CONTEXTS,
+  getCharacterImageFraming,
   getCharacterImageRef,
   getCharacterImageRefs,
   normalizeCharacter,
   normalizeCharacterDossier,
 } from "../utils/characters";
+import { normalizeImageFramingSlots } from "../utils/imageFraming";
 import {
   importDesktopCharacterImage,
   isManagedCharacterImageReference,
@@ -33,6 +35,7 @@ function createBlankCharacterDraft(defaultImage = "/characters/reagan.png") {
     },
     outfits: [],
     activeOutfitId: "",
+    imageFraming: normalizeImageFramingSlots(null),
     dossier: normalizeCharacterDossier(),
     bio: "",
     notes: "",
@@ -58,6 +61,7 @@ function createBlankOutfitDraft(name = "New Outfit") {
       dossier: "",
       focus: "",
     },
+    imageFraming: normalizeImageFramingSlots(null),
     createdAt: now,
     updatedAt: now,
   };
@@ -85,9 +89,11 @@ function createCharacterDraftFromCharacter(character) {
             dossier: outfit.imageSlots?.dossier || "",
             focus: outfit.imageSlots?.focus || "",
           },
+          imageFraming: normalizeImageFramingSlots(outfit.imageFraming),
         }))
       : [],
     activeOutfitId: character.activeOutfitId || "",
+    imageFraming: normalizeImageFramingSlots(character.imageFraming),
     dossier: normalizeCharacterDossier(character.dossier),
     bio: character.bio || "",
     notes: character.notes || "",
@@ -179,6 +185,9 @@ export function useCharacterLibrary({
           portraitDisplayImage: getDisplayImageUrl(portraitImage) || mainDisplayImage,
           dossierDisplayImage: getDisplayImageUrl(dossierImage) || mainDisplayImage,
           focusDisplayImage: getDisplayImageUrl(focusImage) || mainDisplayImage,
+          portraitFraming: getCharacterImageFraming(character, "portrait"),
+          dossierFraming: getCharacterImageFraming(character, "dossier"),
+          focusFraming: getCharacterImageFraming(character, "focus"),
         };
       });
     },
@@ -333,6 +342,16 @@ export function useCharacterLibrary({
     }));
   }
 
+  function updateCharacterDraftImageFraming(slot, framing) {
+    setCharacterDraft((currentDraft) => ({
+      ...currentDraft,
+      imageFraming: {
+        ...normalizeImageFramingSlots(currentDraft.imageFraming),
+        [slot]: normalizeImageFramingSlots({ [slot]: framing })[slot],
+      },
+    }));
+  }
+
   function updateCharacterDraftDossier(section, field, value) {
     setCharacterDraft((currentDraft) => {
       const currentDossier = normalizeCharacterDossier(currentDraft.dossier);
@@ -399,6 +418,24 @@ export function useCharacterLibrary({
               imageSlots: {
                 ...(outfit.imageSlots || {}),
                 [slot]: value,
+              },
+              updatedAt: new Date().toISOString(),
+            }
+          : outfit
+      ),
+    }));
+  }
+
+  function updateCharacterDraftOutfitImageFraming(outfitId, slot, framing) {
+    setCharacterDraft((currentDraft) => ({
+      ...currentDraft,
+      outfits: (currentDraft.outfits || []).map((outfit) =>
+        outfit.id === outfitId
+          ? {
+              ...outfit,
+              imageFraming: {
+                ...normalizeImageFramingSlots(outfit.imageFraming),
+                [slot]: normalizeImageFramingSlots({ [slot]: framing })[slot],
               },
               updatedAt: new Date().toISOString(),
             }
@@ -516,6 +553,7 @@ export function useCharacterLibrary({
           dossier: outfit.imageSlots?.dossier?.trim() || "",
           focus: outfit.imageSlots?.focus?.trim() || "",
         },
+        imageFraming: normalizeImageFramingSlots(outfit.imageFraming),
       }))
       .filter((outfit) => outfit.name);
     const activeOutfitId = outfits.some(
@@ -567,6 +605,7 @@ export function useCharacterLibrary({
           dossier: dossierImage,
           focus: focusImage,
         },
+        imageFraming: normalizeImageFramingSlots(characterDraft.imageFraming),
         outfits,
         activeOutfitId,
         dossier,
@@ -672,10 +711,12 @@ export function useCharacterLibrary({
     cancelCharacterForm,
     updateCharacterDraft,
     updateCharacterDraftImageSlot,
+    updateCharacterDraftImageFraming,
     updateCharacterDraftDossier,
     addCharacterDraftOutfit,
     updateCharacterDraftOutfit,
     updateCharacterDraftOutfitImageSlot,
+    updateCharacterDraftOutfitImageFraming,
     setCharacterDraftActiveOutfit,
     deleteCharacterDraftOutfit,
     importCharacterImage,

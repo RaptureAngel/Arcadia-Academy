@@ -8,7 +8,6 @@ function AcademyDashboardView({
   onOpenDossier,
   onOpenOutfitSelector,
   switchCharacterDisabled,
-  activeSubjectCount,
   activeProjects,
   maxActiveSlots,
   subjects,
@@ -36,11 +35,9 @@ function AcademyDashboardView({
           onOpenDossier={onOpenDossier}
           onOpenOutfitSelector={onOpenOutfitSelector}
           switchDisabled={switchCharacterDisabled}
-          activeSubjectCount={activeSubjectCount}
+          subjects={subjects}
+          activeProjects={activeProjects}
           occupiedSlotCount={activeProjects.length}
-          maxSlots={maxActiveSlots}
-          totalSessions={totalSessions}
-          totalFocusedSeconds={totalFocusedSeconds}
         />
 
         <ActiveStudiesGrid
@@ -50,6 +47,8 @@ function AcademyDashboardView({
           activeSessionProjectId={activeSessionProjectId}
           canFocus={canFocus}
           focusDisabledReason={focusDisabledReason}
+          totalSessions={totalSessions}
+          totalFocusedSeconds={totalFocusedSeconds}
           onFocus={onFocus}
           onOpenDetail={onOpenDetail}
           onShelve={onShelve}

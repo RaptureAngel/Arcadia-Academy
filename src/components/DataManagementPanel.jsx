@@ -50,9 +50,9 @@ function DataManagementPanel({
       <p className="emptyState">
         Export or restore your local Arcadia Academy save data, including
         subjects, study projects, sessions, and character progress. Reset
-        Academy Activity permanently deletes all subjects, study projects,
+        Activity permanently deletes all subjects, study projects,
         notes, progress, and sessions, while keeping your character roster,
-        images, outfits, and XP. New Academy Season does the same and also
+        images, outfits, and XP. New Season does the same and also
         resets every character's XP and level to zero.
       </p>
 
@@ -255,11 +255,11 @@ function DataManagementPanel({
         </label>
 
         <button className="deleteButton" type="button" onClick={onResetAcademyActivity}>
-          Reset Academy Activity
+          Reset Activity
         </button>
 
         <button className="deleteButton" type="button" onClick={onNewAcademySeason}>
-          New Academy Season
+          New Season
         </button>
       </div>
 

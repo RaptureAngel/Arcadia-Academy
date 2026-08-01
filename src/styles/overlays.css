@@ -814,6 +814,149 @@
   margin: 0;
 }
 
+.imageFramingModal {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 14px;
+  width: min(720px, calc(100vw - 44px));
+  max-height: min(92vh, 760px);
+  overflow: auto;
+  border: 1px solid var(--border-cyan-strong);
+  border-radius: var(--radius-panel);
+  padding: 18px;
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-rim);
+}
+
+.imageFramingHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.imageFramingHeader h2 {
+  margin: 4px 0 0;
+  color: var(--text-hi);
+  font-size: 1.1rem;
+}
+
+.imageFramingForm {
+  display: grid;
+  gap: 18px;
+}
+
+.imageFramingPreviewWrap {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.imageFramingPreview {
+  position: relative;
+  width: min(100%, 320px);
+  overflow: hidden;
+  border: 1px solid var(--border-cyan);
+  border-radius: 18px;
+  background: var(--academy-sage-bg, #eef4ec);
+}
+
+.imageFramingPreview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.imageFramingPreviewEmpty {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  min-height: 160px;
+  color: var(--text);
+  font-size: 0.85rem;
+}
+
+.imageFramingHint {
+  margin: 0;
+  max-width: 420px;
+  color: var(--text);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.imageFramingControls {
+  display: grid;
+  gap: 16px;
+}
+
+.imageFramingFitChoice {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.imageFramingFitChoice legend {
+  padding: 0 0 4px;
+  color: var(--accent-strong);
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.imageFramingFitChoice label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-hi);
+  font-size: 0.88rem;
+  font-weight: 400;
+}
+
+.imageFramingFitChoice input[type="radio"] {
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: none;
+  accent-color: var(--accent-strong);
+}
+
+.imageFramingSlider {
+  display: grid;
+  gap: 6px;
+}
+
+.imageFramingSlider span {
+  color: var(--text-hi);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.imageFramingSlider input[type="range"] {
+  width: 100%;
+}
+
+.imageFramingActions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.imageFramingActionsEnd {
+  display: flex;
+  gap: 10px;
+}
+
+.imageFramingActions .detailsButton,
+.imageFramingActions .primaryButton {
+  min-width: 120px;
+  margin: 0;
+}
+
 .endDayEmployee {
   display: flex;
   align-items: center;

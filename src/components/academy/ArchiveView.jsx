@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { formatFocusedDuration, formatRelativeTime } from "../../utils/dates";
 import {
   getProjectProgressLabel,
+  getSubjectAccentColor,
   getSubjectDisplay,
 } from "../../utils/academyDisplay";
 import {
@@ -106,7 +107,7 @@ function ArchiveView({ archivedProjects, subjects, onOpenDetail, onRestore, canR
               <li key={project.id} className="archiveListItem">
                 <span
                   className="archiveListSubjectDot"
-                  style={{ "--subject-color": subject.color || "#5f7d64" }}
+                  style={{ "--subject-color": getSubjectAccentColor(subject) }}
                   aria-hidden="true"
                 />
                 <div className="archiveListBody">

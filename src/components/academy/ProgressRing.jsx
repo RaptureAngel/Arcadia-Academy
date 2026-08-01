@@ -6,11 +6,16 @@ function ProgressRing({
   label,
   size = 64,
   strokeWidth = 6,
+  centerValue,
+  centerLabel,
   centerContent,
 }) {
   const hasPercent = Number.isFinite(percent);
   const clampedPercent = hasPercent ? Math.min(100, Math.max(0, percent)) : 0;
   const offset = CIRCUMFERENCE * (1 - clampedPercent / 100);
+  const displayValue = centerValue ?? (hasPercent ? `${Math.round(clampedPercent)}%` : "∞");
+  const valueFontSize = Math.max(13, Math.round(size * 0.22));
+  const labelFontSize = Math.max(8, Math.round(size * 0.075));
 
   return (
     <div
@@ -28,7 +33,7 @@ function ProgressRing({
           strokeWidth={strokeWidth}
           fill="none"
         />
-        {hasPercent && (
+        {(hasPercent || centerValue !== undefined) && (
           <circle
             className="progressRingFill"
             cx="32"
@@ -37,14 +42,25 @@ function ProgressRing({
             strokeWidth={strokeWidth}
             fill="none"
             strokeDasharray={CIRCUMFERENCE}
-            strokeDashoffset={offset}
+            strokeDashoffset={hasPercent ? offset : 0}
             strokeLinecap="round"
             transform="rotate(-90 32 32)"
           />
         )}
       </svg>
       <div className="progressRingCenter" aria-hidden="true">
-        {centerContent ?? (hasPercent ? `${Math.round(clampedPercent)}%` : "∞")}
+        {centerContent ?? (
+          <>
+            <span className="progressRingValue" style={{ fontSize: valueFontSize }}>
+              {displayValue}
+            </span>
+            {centerLabel && (
+              <span className="progressRingCenterLabel" style={{ fontSize: labelFontSize }}>
+                {centerLabel}
+              </span>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

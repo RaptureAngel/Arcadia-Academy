@@ -3,6 +3,7 @@ import { formatFocusedDuration, formatRelativeTime } from "../../utils/dates";
 import {
   getProjectProgressLabel,
   getProjectProgressPercent,
+  getSubjectAccentColor,
   getSubjectDisplay,
 } from "../../utils/academyDisplay";
 import {
@@ -66,6 +67,7 @@ function ProjectDetailPanel({
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-detail-title"
+        style={{ "--subject-color": getSubjectAccentColor(subject) }}
       >
         <div className="academyModalHeader">
           <p className="panelLabel">

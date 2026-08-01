@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCharacterContext } from "../utils/contextLabels";
+import { getFramingStyle } from "../utils/imageFraming";
 
 function DossierRow({ label, value }) {
   return (
@@ -69,6 +70,10 @@ function CharacterDossier({
       ? fallbackImageSrc
       : imageSrc;
   const visibleImageKey = imageFailed ? fallbackImageKey : imageKey;
+  const visibleImageFraming =
+    imageFailed && fallbackImageSrc !== imageSrc && !fallbackImageFailed
+      ? character.portraitFraming
+      : character.dossierFraming;
   const profileText =
     firstRecordedValue(character.dossier?.profile, character.bio, character.notes) ||
     "No profile background has been recorded for this character yet.";
@@ -211,6 +216,7 @@ function CharacterDossier({
               <img
                 src={visibleImageSrc}
                 alt=""
+                style={getFramingStyle(visibleImageFraming)}
                 onError={() =>
                   setFailedImageKeys((currentKeys) =>
                     currentKeys.includes(visibleImageKey)

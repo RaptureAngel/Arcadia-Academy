@@ -1,6 +1,7 @@
+import { formatFocusedDuration } from "../../utils/dates";
 import ProjectCard from "./ProjectCard";
 
-function AddProjectTile({ onAdd, disabled, disabledReason }) {
+function AddProjectTile({ onAdd, disabled, disabledReason, caption }) {
   return (
     <button
       className="addProjectTile"
@@ -12,7 +13,8 @@ function AddProjectTile({ onAdd, disabled, disabledReason }) {
       <span className="addProjectTileIcon" aria-hidden="true">
         +
       </span>
-      <span>{disabled ? "Slot full" : "Add Project"}</span>
+      <span className="addProjectTileLabel">{disabled ? "Slot full" : "Add Project"}</span>
+      {caption && <span className="addProjectTileCaption">{caption}</span>}
     </button>
   );
 }
@@ -24,6 +26,8 @@ function ActiveStudiesGrid({
   activeSessionProjectId,
   canFocus,
   focusDisabledReason,
+  totalSessions,
+  totalFocusedSeconds,
   onFocus,
   onOpenDetail,
   onShelve,
@@ -35,22 +39,32 @@ function ActiveStudiesGrid({
 }) {
   const emptySlotCount = Math.max(0, maxActiveSlots - activeProjects.length);
   const slotsFull = emptySlotCount === 0;
+  const emptySlotCaption =
+    emptySlotCount === 1 ? "One slot open" : emptySlotCount > 1 ? `${emptySlotCount} slots open` : "";
 
   return (
     <section className="activeStudiesSection">
       <div className="academyViewHeader">
-        <div>
-          <p className="panelLabel">Active Studies</p>
-          <h2>
-            {activeProjects.length} of {maxActiveSlots} slots in use
-          </h2>
+        <h2 className="activeStudiesHeading">
+          Active Studies
+          <span className="activeStudiesSlotCount">
+            {activeProjects.length} of {maxActiveSlots} slots
+          </span>
+        </h2>
+
+        <div className="activeStudiesHeaderStats">
+          <span>
+            {totalSessions} session{totalSessions === 1 ? "" : "s"}
+          </span>
+          <span>{formatFocusedDuration(totalFocusedSeconds)} focused</span>
         </div>
-        {slotsFull && (
-          <p className="academyFormNotice">
-            All slots are full. Shelve, complete, or retire a project to free one up.
-          </p>
-        )}
       </div>
+
+      {slotsFull && (
+        <p className="academyFormNotice">
+          All slots are full. Shelve, complete, or retire a project to free one up.
+        </p>
+      )}
 
       <div className="activeStudiesGrid">
         {activeProjects.map((project) => (
@@ -80,6 +94,7 @@ function ActiveStudiesGrid({
             onAdd={onAddProject}
             disabled={slotsFull}
             disabledReason="All five active slots are full."
+            caption={emptySlotCaption}
           />
         ))}
       </div>

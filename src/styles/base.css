@@ -130,6 +130,8 @@ select:disabled {
 }
 
 .appShell {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   max-width: none;
   margin: 0 auto;

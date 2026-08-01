@@ -25,9 +25,10 @@
   --academy-danger: #b3543f;
   --academy-danger-bg: #f7e6e0;
   --academy-radius-panel: 22px;
-  --academy-radius-card: 16px;
+  --academy-radius-card: 18px;
   --academy-radius-control: 12px;
   --academy-shadow: 0 12px 28px rgba(72, 58, 30, 0.09), 0 2px 8px rgba(72, 58, 30, 0.06);
+  --academy-card-shadow: 0 2px 0 0 #efe6d4, 0 10px 22px 0 rgba(120, 100, 70, 0.1);
   --academy-font-display: "Quicksand", "Nunito", "Segoe UI", system-ui, sans-serif;
   --academy-font-body: "Nunito", "Segoe UI", system-ui, sans-serif;
 }
@@ -260,6 +261,10 @@ button:disabled {
 
 .miniStats {
   color: var(--academy-sage-strong);
+}
+
+.desktopSavePath {
+  color: var(--academy-ink-soft);
 }
 
 /* Global data notice banner (shown above whichever view is active) */

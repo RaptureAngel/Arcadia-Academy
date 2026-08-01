@@ -1,33 +1,35 @@
 import { useEffect, useMemo, useState } from "react";
+import { getFramingStyle } from "../utils/imageFraming";
 
 function getOutfitName(outfit) {
   return outfit?.name || "Untitled Outfit";
 }
 
-function OutfitPreviewImage({ imageSources, characterName }) {
+function OutfitPreviewImage({ imageCandidates, characterName }) {
   const [failedImageSources, setFailedImageSources] = useState([]);
-  const imageSrc = imageSources.find(
-    (candidate) => candidate && !failedImageSources.includes(candidate)
+  const candidate = imageCandidates.find(
+    (item) => item.src && !failedImageSources.includes(item.src)
   );
 
   useEffect(() => {
     setFailedImageSources([]);
-  }, [imageSources.join("|")]);
+  }, [imageCandidates.map((item) => item.src).join("|")]);
 
-  if (!imageSrc) {
+  if (!candidate) {
     return <span>{characterName?.slice(0, 1) || "A"}</span>;
   }
 
   return (
     <img
-      src={imageSrc}
+      src={candidate.src}
       alt={characterName}
       className="outfitSelectorPreviewImage"
+      style={getFramingStyle(candidate.framing)}
       onError={() =>
         setFailedImageSources((currentSources) =>
-          currentSources.includes(imageSrc)
+          currentSources.includes(candidate.src)
             ? currentSources
-            : [...currentSources, imageSrc]
+            : [...currentSources, candidate.src]
         )
       }
     />
@@ -94,20 +96,39 @@ function OutfitSelectorModal({
     const nextIndex = (selectedIndex + 1) % outfitOptions.length;
     setSelectedOutfitId(outfitOptions[nextIndex].id);
   };
-  const previewImageSources = useMemo(
+  const previewImageCandidates = useMemo(
     () =>
       [
-        resolveImageReference?.(selectedOutfit?.imageSlots?.dossier),
-        resolveImageReference?.(selectedOutfit?.imageSlots?.portrait),
-        resolveImageReference?.(selectedOutfit?.imageSlots?.focus),
-        resolveImageReference?.(employee?.imageSlots?.dossier),
-        resolveImageReference?.(employee?.imageSlots?.portrait),
-        resolveImageReference?.(employee?.image),
-        employee?.mainDisplayImage,
-        employee?.displayImage,
+        {
+          src: resolveImageReference?.(selectedOutfit?.imageSlots?.dossier),
+          framing: selectedOutfit?.imageFraming?.dossier,
+        },
+        {
+          src: resolveImageReference?.(selectedOutfit?.imageSlots?.portrait),
+          framing: selectedOutfit?.imageFraming?.portrait,
+        },
+        {
+          src: resolveImageReference?.(selectedOutfit?.imageSlots?.focus),
+          framing: selectedOutfit?.imageFraming?.focus,
+        },
+        {
+          src: resolveImageReference?.(employee?.imageSlots?.dossier),
+          framing: employee?.imageFraming?.dossier,
+        },
+        {
+          src: resolveImageReference?.(employee?.imageSlots?.portrait),
+          framing: employee?.imageFraming?.portrait,
+        },
+        {
+          src: resolveImageReference?.(employee?.image),
+          framing: employee?.imageFraming?.portrait,
+        },
+        { src: employee?.mainDisplayImage, framing: employee?.portraitFraming },
+        { src: employee?.displayImage, framing: employee?.portraitFraming },
       ].filter(
-        (imageSrc, index, sources) =>
-          imageSrc && sources.indexOf(imageSrc) === index
+        (candidate, index, candidates) =>
+          candidate.src &&
+          candidates.findIndex((other) => other.src === candidate.src) === index
       ),
     [employee, resolveImageReference, selectedOutfit]
   );
@@ -150,7 +171,7 @@ function OutfitSelectorModal({
           <div className="outfitSelectorBody">
             <div className="outfitSelectorPreview portraitPlaceholder">
               <OutfitPreviewImage
-                imageSources={previewImageSources}
+                imageCandidates={previewImageCandidates}
                 characterName={employee.name}
               />
             </div>

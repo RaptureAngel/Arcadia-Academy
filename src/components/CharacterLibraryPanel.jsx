@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react";
 import { getLevel } from "../utils/xp";
+import { getFramingStyle } from "../utils/imageFraming";
+import ImageFramingModal from "./ImageFramingModal";
 
 function CharacterPortrait({ character }) {
   const imageSrc =
@@ -14,6 +16,7 @@ function CharacterPortrait({ character }) {
       src={imageSrc}
       alt={character.name}
       className="portraitImage"
+      style={getFramingStyle(character?.portraitFraming)}
       onError={(event) => {
         event.currentTarget.style.display = "none";
       }}
@@ -42,6 +45,7 @@ function CharacterFeaturedImage({ character }) {
       src={imageSrc}
       alt={character.name}
       className="featuredCharacterImage"
+      style={getFramingStyle(character?.dossierFraming)}
       onError={() =>
         setFailedImageSources((currentSources) =>
           currentSources.includes(imageSrc)
@@ -97,6 +101,7 @@ function CharacterLibraryPanel({
   isEditing,
   imageOptions,
   canImportImage = false,
+  resolveImageReference,
   onImportImage,
   onImportDossierImage,
   onImportFocusImage,
@@ -107,10 +112,12 @@ function CharacterLibraryPanel({
   onSelectDossier,
   onDraftChange,
   onDraftImageSlotChange,
+  onDraftImageFramingChange,
   onDraftDossierChange,
   onAddOutfit,
   onDraftOutfitChange,
   onDraftOutfitImageSlotChange,
+  onDraftOutfitImageFramingChange,
   onSetActiveOutfit,
   onDeleteOutfit,
   onImportOutfitImage,
@@ -124,6 +131,41 @@ function CharacterLibraryPanel({
   const dossierInformation = dossier.information || {};
   const dossierAttributes = dossier.attributes || {};
   const [previewCharacterId, setPreviewCharacterId] = useState(null);
+  const [framingTarget, setFramingTarget] = useState(null);
+
+  function getFramingTargetData() {
+    if (!framingTarget) return null;
+
+    const { slot, outfitId } = framingTarget;
+
+    if (outfitId) {
+      const outfit = outfits.find((item) => item.id === outfitId);
+
+      return {
+        ref: outfit?.imageSlots?.[slot] || "",
+        framing: outfit?.imageFraming?.[slot],
+      };
+    }
+
+    return {
+      ref: slot === "portrait" ? draft.image : draft.imageSlots?.[slot] || "",
+      framing: draft.imageFraming?.[slot],
+    };
+  }
+
+  function handleSaveFraming(framing) {
+    if (!framingTarget) return;
+
+    if (framingTarget.outfitId) {
+      onDraftOutfitImageFramingChange?.(framingTarget.outfitId, framingTarget.slot, framing);
+    } else {
+      onDraftImageFramingChange?.(framingTarget.slot, framing);
+    }
+
+    setFramingTarget(null);
+  }
+
+  const framingTargetData = getFramingTargetData();
   const previewCharacter = useMemo(
     () =>
       characters.find((character) => character.id === previewCharacterId) ||
@@ -221,6 +263,14 @@ function CharacterLibraryPanel({
                   Import Image
                 </button>
               )}
+
+              <button
+                className="detailsButton"
+                type="button"
+                onClick={() => setFramingTarget({ slot: "portrait", outfitId: null })}
+              >
+                Adjust Framing
+              </button>
             </div>
 
             <div className="characterImageField">
@@ -245,6 +295,14 @@ function CharacterLibraryPanel({
                   Import Dossier Image
                 </button>
               )}
+
+              <button
+                className="detailsButton"
+                type="button"
+                onClick={() => setFramingTarget({ slot: "dossier", outfitId: null })}
+              >
+                Adjust Framing
+              </button>
             </div>
 
             <div className="characterImageField">
@@ -269,6 +327,14 @@ function CharacterLibraryPanel({
                   Import Focus Image
                 </button>
               )}
+
+              <button
+                className="detailsButton"
+                type="button"
+                onClick={() => setFramingTarget({ slot: "focus", outfitId: null })}
+              >
+                Adjust Framing
+              </button>
             </div>
           </details>
 
@@ -379,6 +445,16 @@ function CharacterLibraryPanel({
                               Import
                             </button>
                           )}
+
+                          <button
+                            className="detailsButton"
+                            type="button"
+                            onClick={() =>
+                              setFramingTarget({ slot, outfitId: outfit.id })
+                            }
+                          >
+                            Adjust Framing
+                          </button>
                         </div>
                       ))}
                     </div>
@@ -592,6 +668,20 @@ function CharacterLibraryPanel({
             })}
           </div>
         </div>
+      )}
+
+      {framingTarget && (
+        <ImageFramingModal
+          key={`${framingTarget.outfitId || "base"}-${framingTarget.slot}`}
+          imageSrc={
+            framingTargetData?.ref ? resolveImageReference?.(framingTargetData.ref) : ""
+          }
+          characterName={draft.name}
+          slot={framingTarget.slot}
+          framing={framingTargetData?.framing}
+          onSave={handleSaveFraming}
+          onCancel={() => setFramingTarget(null)}
+        />
       )}
     </section>
   );

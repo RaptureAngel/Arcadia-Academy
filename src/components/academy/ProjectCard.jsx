@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
-import { formatFocusedDuration, formatRelativeTime } from "../../utils/dates";
 import {
   getProjectActionLabel,
-  getProjectProgressLabel,
-  getProjectProgressPercent,
+  getProjectCardMetrics,
+  getSubjectAccentColor,
+  getSubjectButtonColor,
   getSubjectDisplay,
 } from "../../utils/academyDisplay";
 import { PROJECT_TYPE_LABELS } from "../../utils/studyProjects";
 import ProgressRing from "./ProgressRing";
+
+const ESTIMATED_MENU_HEIGHT = 210;
 
 function ProjectCard({
   project,
@@ -23,9 +25,10 @@ function ProjectCard({
   onDelete,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [menuPlacement, setMenuPlacement] = useState("down");
   const menuRef = useRef(null);
   const subject = getSubjectDisplay(project.subjectId, subjects);
-  const percent = getProjectProgressPercent(project);
+  const metrics = getProjectCardMetrics(project);
 
   useEffect(() => {
     if (!menuOpen) return undefined;
@@ -49,6 +52,23 @@ function ProjectCard({
     };
   }, [menuOpen]);
 
+  function toggleMenu(event) {
+    if (menuOpen) {
+      setMenuOpen(false);
+      return;
+    }
+
+    const buttonRect = event.currentTarget.getBoundingClientRect();
+    const spaceBelow = window.innerHeight - buttonRect.bottom;
+
+    setMenuPlacement(
+      spaceBelow < ESTIMATED_MENU_HEIGHT && buttonRect.top > ESTIMATED_MENU_HEIGHT
+        ? "up"
+        : "down"
+    );
+    setMenuOpen(true);
+  }
+
   function runAction(action) {
     setMenuOpen(false);
     action(project.id);
@@ -57,56 +77,20 @@ function ProjectCard({
   return (
     <article
       className="projectCard"
-      style={{ "--subject-color": subject.color || "#5f7d64" }}
+      style={{
+        "--subject-color": getSubjectAccentColor(subject),
+        "--subject-button-color": getSubjectButtonColor(subject),
+      }}
     >
-      <button
-        className="projectCardBody"
-        type="button"
-        onClick={() => onOpenDetail(project.id)}
-        aria-label={`View details for ${project.title}`}
-      >
-        <div className="projectCardTop">
+      <div className="projectCardTop">
+        <span className="projectCardSubjectGroup">
+          <span className="projectCardSubjectDot" aria-hidden="true" />
           <span className="projectCardSubject">
             {subject.icon ? `${subject.icon} ` : ""}
             {subject.name}
           </span>
-          <span className="projectCardType">{PROJECT_TYPE_LABELS[project.projectType]}</span>
-        </div>
-
-        <h3 className="projectCardTitle">{project.title}</h3>
-
-        <div className="projectCardProgressRow">
-          <ProgressRing
-            percent={percent}
-            size={54}
-            strokeWidth={5}
-            label={`${project.title} progress: ${
-              percent === null ? "open-ended" : `${percent}%`
-            }`}
-          />
-          <div className="projectCardStats">
-            <span>{getProjectProgressLabel(project)}</span>
-            <span>
-              {project.sessionCount} session{project.sessionCount === 1 ? "" : "s"} ·{" "}
-              {formatFocusedDuration(project.focusedSeconds)}
-            </span>
-            <span className="projectCardLastActivity">
-              {formatRelativeTime(project.lastWorkedAt)}
-            </span>
-          </div>
-        </div>
-      </button>
-
-      <div className="projectCardActions">
-        <button
-          className="primaryButton projectCardFocusButton"
-          type="button"
-          disabled={!canFocus}
-          title={!canFocus ? focusDisabledReason : ""}
-          onClick={() => onFocus(project.id)}
-        >
-          {getProjectActionLabel(project)}
-        </button>
+          <span className="projectCardType">· {PROJECT_TYPE_LABELS[project.projectType]}</span>
+        </span>
 
         <div className="projectCardMenu" ref={menuRef}>
           <button
@@ -115,13 +99,16 @@ function ProjectCard({
             aria-haspopup="true"
             aria-expanded={menuOpen}
             aria-label={`More actions for ${project.title}`}
-            onClick={() => setMenuOpen((current) => !current)}
+            onClick={toggleMenu}
           >
             {"⋮"}
           </button>
 
           {menuOpen && (
-            <div className="projectCardMenuList" role="menu">
+            <div
+              className={`projectCardMenuList projectCardMenuList--${menuPlacement}`}
+              role="menu"
+            >
               <button type="button" role="menuitem" onClick={() => runAction(onEdit)}>
                 Edit
               </button>
@@ -145,6 +132,60 @@ function ProjectCard({
             </div>
           )}
         </div>
+      </div>
+
+      <button
+        className="projectCardBody"
+        type="button"
+        onClick={() => onOpenDetail(project.id)}
+        aria-label={`View details for ${project.title}`}
+      >
+        <h3 className="projectCardTitle">{project.title}</h3>
+
+        <div className="projectCardProgressRow">
+          {metrics.ringMode === "percent" ? (
+            <ProgressRing
+              percent={metrics.percent}
+              size={128}
+              strokeWidth={6}
+              label={metrics.ringLabel}
+            />
+          ) : (
+            <ProgressRing
+              percent={null}
+              centerValue={metrics.count}
+              centerLabel={metrics.countLabel}
+              size={128}
+              strokeWidth={6}
+              label={metrics.ringLabel}
+            />
+          )}
+
+          <div className="projectCardStats">
+            {metrics.lines.map((line, index) => (
+              <span
+                key={index}
+                className={
+                  index === 0 ? "projectCardStatsPrimary" : "projectCardStatsSecondary"
+                }
+              >
+                {line}
+              </span>
+            ))}
+          </div>
+        </div>
+      </button>
+
+      <div className="projectCardActions">
+        <button
+          className="projectCardFocusButton"
+          type="button"
+          disabled={!canFocus}
+          title={!canFocus ? focusDisabledReason : ""}
+          onClick={() => onFocus(project.id)}
+        >
+          {getProjectActionLabel(project)}
+        </button>
       </div>
     </article>
   );
