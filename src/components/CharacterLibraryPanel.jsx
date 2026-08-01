@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { getLevel } from "../utils/xp";
 import { IMAGE_FRAMING_SLOT_LABELS } from "../utils/imageFraming";
-import FramedCharacterImage from "./FramedCharacterImage";
 import ImageFramingModal from "./ImageFramingModal";
 
 function CharacterPortrait({ character }) {
@@ -13,10 +12,9 @@ function CharacterPortrait({ character }) {
   }
 
   return (
-    <FramedCharacterImage
+    <img
       src={imageSrc}
       alt={character.name}
-      framing={character?.portraitFraming}
       className="portraitImage"
       onError={(event) => {
         event.currentTarget.style.display = "none";
@@ -42,10 +40,9 @@ function CharacterFeaturedImage({ character }) {
   }
 
   return (
-    <FramedCharacterImage
+    <img
       src={imageSrc}
       alt={character.name}
-      framing={character?.dossierFraming}
       className="featuredCharacterImage"
       onError={() =>
         setFailedImageSources((currentSources) =>

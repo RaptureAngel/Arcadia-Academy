@@ -1,5 +1,4 @@
 import CharacterLibraryPanel from "./CharacterLibraryPanel";
-import FramedCharacterImage from "./FramedCharacterImage";
 import { getLevel } from "../utils/xp";
 
 function CharacterSelectScreen({
@@ -56,10 +55,9 @@ function CharacterSelectScreen({
             >
               <div className="portraitPlaceholder">
                 {employee.portraitDisplayImage ? (
-                  <FramedCharacterImage
+                  <img
                     src={employee.portraitDisplayImage}
                     alt={employee.name}
-                    framing={employee.portraitFraming}
                     className="portraitImage"
                     onError={(event) => {
                       event.currentTarget.style.display = "none";
