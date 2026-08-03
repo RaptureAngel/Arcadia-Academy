@@ -5,6 +5,11 @@ import {
   createCharacterLibraryFromStarterCharacters,
   createCharacterLibraryRecord,
 } from "../utils/characters";
+import {
+  areAcademyDatasetsEquivalent,
+  isAcademyDatasetEmptyOrUntouched,
+  normalizeAcademyDataset,
+} from "../utils/academyDataComparison";
 import { getTodayKey } from "../utils/dates";
 import {
   moveUnusedCharacterImagesToArchive,
@@ -352,9 +357,29 @@ export function useDataManagement({
         (result.status === "active" || result.status === "folderUnavailable") &&
         result.payload
       ) {
+        // Only meaningful when no revision history has ever been tracked
+        // locally (see the "bootstrapContext" note in
+        // compareLocalAndDesktopSaveState) — computed unconditionally
+        // since it's cheap and only happens once at startup.
+        const localDataset = normalizeAcademyDataset({
+          activeEmployeeId,
+          characterLibrary,
+          subjects,
+          studyProjects,
+          studySessions,
+        });
+        const desktopDataset = normalizeAcademyDataset(result.payload.data);
+
         const comparison = compareLocalAndDesktopSaveState(
           localMetadataRef.current,
-          result.payload.metadata
+          result.payload.metadata,
+          {
+            isLocalDataEmptyOrUntouched: isAcademyDatasetEmptyOrUntouched(localDataset),
+            isLocalDataEquivalentToDesktop: areAcademyDatasetsEquivalent(
+              localDataset,
+              desktopDataset
+            ),
+          }
         );
 
         if (comparison.outcome === "conflict") {

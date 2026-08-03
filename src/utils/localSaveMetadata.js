@@ -113,19 +113,42 @@ export function markLocalSaveSyncedWithDesktop(current, desktopMetadata, fallbac
 // - "desktop-newer": desktop moved, local did not diverge — safe to hydrate.
 // - "local-newer": local moved, desktop did not diverge — safe to push.
 // - "conflict": both diverged, or freshness can't be determined safely.
-export function compareLocalAndDesktopSaveState(localMetadata, desktopMetadata) {
+//
+// `bootstrapContext` disambiguates the case where no revision history has
+// ever been tracked locally (revision 0, never synced) — this is
+// genuinely ambiguous from metadata alone: it means either a fresh
+// install, or an existing installation's first launch after this feature
+// was added, where real local data may already exist. Metadata cannot
+// tell those apart, so the caller inspects the actual local/desktop data
+// and passes the result in as:
+//   { isLocalDataEmptyOrUntouched, isLocalDataEquivalentToDesktop }
+// Both are ignored once real revision history exists (the normal
+// revision-based rules below take over, unchanged).
+export function compareLocalAndDesktopSaveState(
+  localMetadata,
+  desktopMetadata,
+  bootstrapContext = {}
+) {
   if (!desktopMetadata) return { outcome: "no-desktop" };
 
   const desktopRevision = toFiniteOrNull(desktopMetadata.revision);
   const localRevision = localMetadata.revision || 0;
   const syncedRevision = localMetadata.lastSyncedDesktopRevision;
 
-  // Never tracked anything locally yet (fresh install, or an existing
-  // install's first launch after upgrading to this feature) — there is no
-  // local history to protect, so trust the desktop file exactly as Academy
-  // always has.
   if (localRevision === 0 && syncedRevision === null) {
-    return { outcome: "desktop-newer", reason: "no-local-history" };
+    // No local history has ever been tracked. Metadata alone can't tell a
+    // genuine fresh install apart from an existing installation upgrading
+    // to this feature for the first time — inspect the actual data rather
+    // than guessing.
+    if (bootstrapContext.isLocalDataEmptyOrUntouched) {
+      return { outcome: "desktop-newer", reason: "no-local-history" };
+    }
+
+    if (bootstrapContext.isLocalDataEquivalentToDesktop) {
+      return { outcome: "in-sync", reason: "bootstrap-equivalent" };
+    }
+
+    return { outcome: "conflict", reason: "bootstrap-local-has-data" };
   }
 
   if (desktopRevision === null) {
