@@ -546,14 +546,14 @@ export function useDataManagement({
     studySessions,
   ]);
 
-  // Best-effort flush on the ways the app can actually go away, reducing
-  // (not eliminating) the window in which local data can outrun the
-  // desktop file. This fires the write immediately instead of waiting for
-  // the 500ms debounce; it does not delay window closure, so a hard kill
-  // mid-write can still interrupt it — there is no reliable way to
-  // guarantee an async file write completes before an abrupt process exit
-  // without risking blocking the window close, which was explicitly out of
-  // scope here.
+  // Best-effort flush on the ways the app can actually go away. pagehide/
+  // beforeunload fire the write immediately instead of waiting for the
+  // 500ms debounce, but can't delay the process actually exiting. The
+  // Tauri close-request path can and does delay it: it holds the window
+  // open (preventDefault) until any in-flight write finishes and one final
+  // flush completes, then lets the close proceed — so a normal window
+  // close can no longer interrupt a write mid-flight the way a hard kill
+  // still could.
   useEffect(() => {
     if (!desktopSaveState.isTauri || !desktopSaveState.active) return undefined;
 
@@ -564,11 +564,34 @@ export function useDataManagement({
     window.addEventListener("pagehide", flush);
     window.addEventListener("beforeunload", flush);
 
+    async function waitForNoInFlightWrite() {
+      while (isWritingDesktopSaveRef.current) {
+        await new Promise((resolve) => window.setTimeout(resolve, 50));
+      }
+    }
+
     let unlistenCloseRequested = null;
     let cancelled = false;
+    let closeFlushed = false;
 
     import("@tauri-apps/api/window")
-      .then(({ getCurrentWindow }) => getCurrentWindow().onCloseRequested(flush))
+      .then(({ getCurrentWindow }) => {
+        const currentWindow = getCurrentWindow();
+
+        return currentWindow.onCloseRequested(async (event) => {
+          if (closeFlushed) return;
+
+          event.preventDefault();
+
+          try {
+            await waitForNoInFlightWrite();
+            await attemptDesktopAutosave();
+          } finally {
+            closeFlushed = true;
+            currentWindow.close();
+          }
+        });
+      })
       .then((unlisten) => {
         if (cancelled) {
           unlisten();

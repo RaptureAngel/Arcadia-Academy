@@ -313,9 +313,15 @@ export function useFocusSession({
         progressAfterValue = updatedProject.progressCurrent;
       }
     } else if (project.progressMethod === "sessions") {
+      // Increment from the existing progressCurrent (matching the "outputs"
+      // pattern below), not from sessionCount directly — sessionCount only
+      // tracks Academy-logged sessions, while progressCurrent may start
+      // above 0 if the project was created with a manual head start.
+      // Overwriting with sessionCount would silently discard that head start
+      // the moment the first real session was logged.
       updatedProject = updateStudyProjectProgress(
         updatedProject,
-        updatedProject.sessionCount,
+        progressBefore + 1,
         endedAt
       );
       progressAfterValue = updatedProject.progressCurrent;
