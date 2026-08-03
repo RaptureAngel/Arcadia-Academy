@@ -1,4 +1,8 @@
-import { PROGRESS_METHOD_LABELS, PROJECT_TYPE_LABELS } from "./studyProjects";
+import {
+  PROGRESS_METHOD_LABELS,
+  PROJECT_STATUS_LABELS,
+  PROJECT_TYPE_LABELS,
+} from "./studyProjects";
 import { SESSION_OUTCOME_LABELS } from "./studySessions";
 
 // Pure, read-only formatting for human-readable study-history exports.
@@ -61,6 +65,19 @@ function formatFocusedTimeForLog(totalSeconds) {
   return parts.join(" ");
 }
 
+// Resolves a project's subject name safely: null when no subject is
+// assigned (a normal state, not an error), a labelled fallback when a
+// subjectId is set but the subject record can't be found.
+function resolveProjectSubjectName(project, subjects) {
+  if (!project?.subjectId) return null;
+
+  const subject = Array.isArray(subjects)
+    ? subjects.find((item) => item.id === project.subjectId)
+    : null;
+
+  return subject ? subject.name : `Unknown subject (${project.subjectId})`;
+}
+
 // Resolves a session's linked project/subject/character records safely.
 // Deleted/unresolvable records fall back to clear, labelled text — the
 // underlying id is only included in that fallback text, never elsewhere.
@@ -73,19 +90,8 @@ function resolveSessionContext({ session, studyProjects, subjects, characterLibr
     ? project.title
     : `Deleted project (${session.projectId || "unknown id"})`;
 
-  let subjectName = null;
-
-  if (project) {
-    if (project.subjectId) {
-      const subject = Array.isArray(subjects)
-        ? subjects.find((item) => item.id === project.subjectId)
-        : null;
-
-      subjectName = subject ? subject.name : `Unknown subject (${project.subjectId})`;
-    }
-    // project.subjectId is null/empty: no subject assigned, omit the line.
-  }
-  // project itself missing: its subject can't be known, omit the line.
+  // project itself missing: its subject can't be known, resolves to null.
+  const subjectName = project ? resolveProjectSubjectName(project, subjects) : null;
 
   let characterName = null;
 
@@ -132,6 +138,42 @@ function describeSessionProgress(session, project) {
   return null;
 }
 
+// Builds the "Project Notes" block: one entry per project with a non-blank
+// persistent note (project.notes — distinct from a session's own note),
+// listed exactly once regardless of how many sessions reference it. Empty
+// array when no project has a saved note, so the caller can omit the whole
+// section rather than print an empty header.
+function buildProjectNotesLines(studyProjects, subjects) {
+  const projectsWithNotes = (Array.isArray(studyProjects) ? studyProjects : []).filter(
+    (project) => typeof project?.notes === "string" && project.notes.trim()
+  );
+
+  if (projectsWithNotes.length === 0) return [];
+
+  const lines = ["Project Notes", ""];
+
+  projectsWithNotes.forEach((project) => {
+    const subjectName = resolveProjectSubjectName(project, subjects);
+    const statusLabel = PROJECT_STATUS_LABELS[project.status] || project.status;
+
+    lines.push(project.title);
+    if (subjectName) lines.push(`Subject: ${subjectName}`);
+    if (statusLabel) lines.push(`Status: ${statusLabel}`);
+    lines.push("");
+    lines.push(project.notes.replace(/\r\n/g, "\n"));
+    lines.push("");
+    lines.push("---");
+    lines.push("");
+  });
+
+  // Drop the trailing blank line + divider after the final project.
+  while (lines.length > 0 && (lines[lines.length - 1] === "" || lines[lines.length - 1] === "---")) {
+    lines.pop();
+  }
+
+  return lines;
+}
+
 // --- TXT export -------------------------------------------------------
 
 export function buildStudyLogText({
@@ -175,6 +217,13 @@ export function buildStudyLogText({
 
   lines.push("");
 
+  const projectNotesLines = buildProjectNotesLines(studyProjects, subjects);
+
+  if (projectNotesLines.length > 0) {
+    lines.push(...projectNotesLines);
+    lines.push("");
+  }
+
   if (orderedSessions.length === 0) {
     lines.push("Sessions");
     lines.push("");
@@ -206,7 +255,7 @@ export function buildStudyLogText({
     if (session.xpAwarded > 0) lines.push(`XP awarded: ${session.xpAwarded}`);
 
     if (session.note && session.note.trim()) {
-      lines.push(`Note: ${session.note.replace(/\r\n/g, "\n")}`);
+      lines.push(`Session note: ${session.note.replace(/\r\n/g, "\n")}`);
     }
 
     lines.push("");
@@ -242,7 +291,8 @@ const CSV_COLUMNS = [
   "Output Count",
   "Outcome",
   "XP Awarded",
-  "Note",
+  "Session Note",
+  "Project Notes",
 ];
 
 // RFC 4180-style escaping: any field containing a comma, quote, or line
@@ -298,6 +348,11 @@ export function buildSessionsCsv({
         session.outcome ? SESSION_OUTCOME_LABELS[session.outcome] || session.outcome : "",
         isFiniteNumber(session.xpAwarded) ? session.xpAwarded : 0,
         session.note || "",
+        // Blank when the project is deleted (no record to read notes from)
+        // or simply has no saved note. Intentionally duplicated across every
+        // row for the same project — each CSV row stays independently
+        // understandable without needing to cross-reference other rows.
+        project?.notes || "",
       ])
     );
   });
