@@ -97,6 +97,59 @@
   text-align: right;
 }
 
+/* Save Conflict Dialog */
+
+.saveConflictDialog {
+  width: min(560px, 100%);
+  max-height: min(90vh, 640px);
+  overflow-y: auto;
+}
+
+.saveConflictActions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+/* Desktop Save Warning Banner */
+
+.desktopSaveWarningBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 14px;
+  margin-bottom: 10px;
+  padding: 10px 14px;
+  border: 1px solid var(--academy-danger, #b3543f);
+  border-radius: 14px;
+  background: var(--academy-danger-bg, #f7e6e0);
+}
+
+.desktopSaveWarningText {
+  margin: 0;
+  min-width: 220px;
+  flex: 1 1 260px;
+  color: var(--academy-danger, #b3543f);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.desktopSaveWarningActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.desktopSaveWarningActions .detailsButton {
+  width: auto;
+  min-width: 0;
+  min-height: 34px;
+  margin: 0;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+}
+
 .meetingDraftSummary {
   display: grid;
   gap: 12px;

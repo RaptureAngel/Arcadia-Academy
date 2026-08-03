@@ -16,6 +16,8 @@ import ProjectForm from "./components/academy/ProjectForm";
 import ProjectDetailPanel from "./components/academy/ProjectDetailPanel";
 import FocusSessionOverlay from "./components/academy/FocusSessionOverlay";
 import FocusSessionRecoveryDialog from "./components/academy/FocusSessionRecoveryDialog";
+import SaveConflictDialog from "./components/SaveConflictDialog";
+import DesktopSaveWarningBanner from "./components/DesktopSaveWarningBanner";
 import ArchiveView from "./components/academy/ArchiveView";
 import { employees } from "./data/employees";
 
@@ -101,17 +103,26 @@ function App() {
   const {
     desktopSaveState,
     desktopSaveStatus,
+    desktopSaveWarning,
+    pendingSaveConflict,
+    saveConflictDismissed,
+    corruptRepairStatus,
     resetConfirmConfig,
     resetConfirmType,
     setResetConfirmType,
     exportSaveData,
     importSaveData,
-    persistDesktopSavePayload,
     createDesktopSaveFile,
     chooseDesktopSaveLocation,
     useFolderSave,
     replaceFolderSave,
     cancelFolderConflict,
+    retryDesktopSave,
+    beginCorruptDesktopSaveRepair,
+    resolveSaveConflictUseLocal,
+    resolveSaveConflictUseDesktop,
+    dismissSaveConflict,
+    reopenSaveConflict,
     characterImageMigrationReport,
     characterImageMigrationStatus,
     previewCharacterImageMigration,
@@ -433,6 +444,11 @@ function App() {
     }
   }
 
+  function handleReviewDesktopSave() {
+    setActiveView("settings");
+    reopenSaveConflict();
+  }
+
   function handleSelectActiveCharacterGuarded(characterId) {
     if (activeFocusSession || pendingFocusSessionRecovery) {
       setDataNotice({
@@ -644,6 +660,24 @@ function App() {
           onSubmit={saveCharacter}
         />
 
+        <DesktopSaveWarningBanner
+          warning={desktopSaveWarning}
+          onReview={handleReviewDesktopSave}
+          onRetry={retryDesktopSave}
+          onRepairCorrupt={beginCorruptDesktopSaveRepair}
+          onExportCurrentData={exportSaveData}
+        />
+
+        {pendingSaveConflict && !saveConflictDismissed && !pendingFocusSessionRecovery && (
+          <SaveConflictDialog
+            conflict={pendingSaveConflict}
+            onUseLocal={resolveSaveConflictUseLocal}
+            onUseDesktop={resolveSaveConflictUseDesktop}
+            onExportLocal={exportSaveData}
+            onCancel={dismissSaveConflict}
+          />
+        )}
+
         {pendingFocusSessionRecovery && (
           <FocusSessionRecoveryDialog
             pendingRecovery={pendingFocusSessionRecovery}
@@ -674,6 +708,14 @@ function App() {
           <span>{currentClock}</span>
         </div>
       </header>
+
+      <DesktopSaveWarningBanner
+        warning={desktopSaveWarning}
+        onReview={handleReviewDesktopSave}
+        onRetry={retryDesktopSave}
+        onRepairCorrupt={beginCorruptDesktopSaveRepair}
+        onExportCurrentData={exportSaveData}
+      />
 
       {dataNotice && (
         <div className={`dataNotice dataNotice--${dataNotice.type}`} role="status">
@@ -795,6 +837,12 @@ function App() {
             onUseFolderSave: useFolderSave,
             onReplaceFolderSave: replaceFolderSave,
             onCancelFolderConflict: cancelFolderConflict,
+            onRetryDesktopSave: retryDesktopSave,
+            onRepairCorruptDesktopSave: beginCorruptDesktopSaveRepair,
+            corruptRepairStatus,
+            pendingSaveConflict,
+            saveConflictDismissed,
+            onReopenSaveConflict: reopenSaveConflict,
             onPreviewCharacterImageMigration: previewCharacterImageMigration,
             onRunCharacterImageMigration: runCharacterImageMigration,
             characterImageMigrationReport,
@@ -834,6 +882,16 @@ function App() {
           pendingRecovery={pendingFocusSessionRecovery}
           onResume={handleResumeFocusSessionRecovery}
           onDiscard={handleDiscardFocusSessionRecovery}
+        />
+      )}
+
+      {pendingSaveConflict && !saveConflictDismissed && !pendingFocusSessionRecovery && (
+        <SaveConflictDialog
+          conflict={pendingSaveConflict}
+          onUseLocal={resolveSaveConflictUseLocal}
+          onUseDesktop={resolveSaveConflictUseDesktop}
+          onExportLocal={exportSaveData}
+          onCancel={dismissSaveConflict}
         />
       )}
 

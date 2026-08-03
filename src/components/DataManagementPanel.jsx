@@ -8,6 +8,12 @@ function DataManagementPanel({
   onUseFolderSave,
   onReplaceFolderSave,
   onCancelFolderConflict,
+  onRetryDesktopSave,
+  onRepairCorruptDesktopSave,
+  corruptRepairStatus,
+  pendingSaveConflict,
+  saveConflictDismissed,
+  onReopenSaveConflict,
   onPreviewCharacterImageMigration,
   onRunCharacterImageMigration,
   characterImageMigrationReport,
@@ -117,6 +123,39 @@ function DataManagementPanel({
                   Keep Current Folder
                 </button>
               </>
+            )}
+
+            {desktopSaveStatus.canRepairCorrupt && onRepairCorruptDesktopSave && (
+              <button
+                className="deleteButton"
+                type="button"
+                onClick={onRepairCorruptDesktopSave}
+                disabled={corruptRepairStatus === "repairing"}
+              >
+                {corruptRepairStatus === "repairing"
+                  ? "Repairing..."
+                  : "Repair Desktop Save"}
+              </button>
+            )}
+
+            {desktopSaveStatus.canRetry && onRetryDesktopSave && (
+              <button
+                className="secondaryButton"
+                type="button"
+                onClick={onRetryDesktopSave}
+              >
+                Retry Save
+              </button>
+            )}
+
+            {pendingSaveConflict && saveConflictDismissed && onReopenSaveConflict && (
+              <button
+                className="detailsButton"
+                type="button"
+                onClick={onReopenSaveConflict}
+              >
+                Review Save Conflict
+              </button>
             )}
           </div>
         </div>

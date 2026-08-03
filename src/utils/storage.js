@@ -31,6 +31,14 @@ export const SAVE_FILE_VERSION = 1;
 export const ACTIVE_FOCUS_SESSION_STORAGE_KEY =
   "arcadia-academy-active-focus-session";
 
+// Device-local only: tracks how "fresh" this browser's local data is
+// relative to the last desktop save this device actually synchronised
+// with, so startup can tell a genuine conflict apart from a routine
+// fast-forward in either direction. Same exclusion rules as the recovery
+// key above — never part of STORAGE_KEYS, never exported/imported/shared.
+export const LOCAL_SAVE_METADATA_STORAGE_KEY =
+  "arcadia-academy-local-save-metadata";
+
 export const DESKTOP_SAVE_FILE_NAME = "arcadia-academy-save.json";
 export const DESKTOP_BACKUP_DIR_NAME = "Backups";
 export const DESKTOP_CHARACTER_IMAGE_DIR_NAME = "Character Images";
@@ -101,12 +109,22 @@ export function readSaveFromLocalStorage() {
   );
 }
 
-export function buildSavePayload(data, exportedAt = new Date().toISOString()) {
+// extraMetadata is additive and optional (e.g. { updatedAt, revision } for
+// desktop-save freshness comparison — see localSaveMetadata.js). Existing
+// callers passing zero or one argument are unaffected; validateSavePayload
+// never requires these fields, so saves written without them (or read by
+// older code that doesn't know about them) remain fully compatible.
+export function buildSavePayload(
+  data,
+  exportedAt = new Date().toISOString(),
+  extraMetadata = {}
+) {
   return {
     metadata: {
       appName: "Arcadia Academy",
       exportedAt,
       version: SAVE_FILE_VERSION,
+      ...extraMetadata,
     },
     data,
   };
@@ -1020,6 +1038,131 @@ async function readCurrentDesktopSaveText(location) {
     console.warn("Could not read Arcadia Academy desktop save file.", error);
     return { status: "corrupt", fileText: null, payload: null, error };
   }
+}
+
+// Raw text regardless of JSON validity — used only to preserve a corrupt
+// file before it's replaced. Returns null if the file can't be read at all
+// (e.g. permissions), which the caller must treat as "cannot preserve."
+async function readCurrentDesktopSaveRawText(location) {
+  try {
+    const saveExists = await existsInDesktopLocation(
+      location,
+      DESKTOP_SAVE_FILE_NAME
+    );
+
+    if (!saveExists) return null;
+
+    return await readTextFileInDesktopLocation(location, DESKTOP_SAVE_FILE_NAME);
+  } catch (error) {
+    console.warn("Could not read the raw Arcadia Academy desktop save file.", error);
+    return null;
+  }
+}
+
+// Deliberately does NOT start with "arcadia-academy-save-", so it is
+// excluded from pruneDesktopBackups' rotation and is never auto-deleted by
+// the normal 3-backup limit — this is evidence of a problem, not a routine
+// backup.
+function getCorruptDesktopSaveBackupFileName(date = new Date()) {
+  return `CORRUPT-arcadia-academy-save-${getDesktopBackupTimestamp(date)}.json`;
+}
+
+// Copies the unreadable file into Backups/ under a clearly-marked name
+// before anything is allowed to overwrite it. Returns { ok:false } (without
+// touching the original) if the raw file can't be read or the copy can't be
+// written, so the caller can refuse to proceed rather than silently destroy
+// the only copy of the corrupt data.
+async function preserveCorruptDesktopSave(location) {
+  const rawText = await readCurrentDesktopSaveRawText(location);
+
+  if (rawText === null) {
+    return { ok: false, status: "unreadable", backupPath: null };
+  }
+
+  const backupPath = getDesktopBackupPath(getCorruptDesktopSaveBackupFileName());
+
+  try {
+    await mkdirInDesktopLocation(location, DESKTOP_BACKUP_DIR_NAME);
+    await writeTextFileInDesktopLocation(location, backupPath, rawText);
+
+    const preserved = await existsInDesktopLocation(location, backupPath);
+
+    if (!preserved) {
+      return { ok: false, status: "verifyFailed", backupPath: null };
+    }
+
+    return { ok: true, status: "preserved", backupPath };
+  } catch (error) {
+    console.warn("Could not preserve the corrupt Arcadia Academy desktop save.", error);
+    return { ok: false, status: "error", backupPath: null, error };
+  }
+}
+
+// Bare write with none of writeDesktopSavePayload's backup-before-overwrite
+// logic — used only by repairCorruptDesktopSave, after the corrupt file has
+// already been preserved (or explicitly could not be) by the caller.
+async function writeDesktopSaveFileDirect(location, payload) {
+  const newFileText = JSON.stringify(payload, null, 2);
+
+  await mkdirInDesktopLocation(location, ".").catch((error) => {
+    console.warn("Could not ensure Arcadia Academy save directory.", error);
+  });
+  await writeTextFileInDesktopLocation(location, DESKTOP_SAVE_FILE_NAME, newFileText);
+}
+
+// Full repair flow for a corrupt desktop save file: preserve the unreadable
+// original, write a fresh validated payload, then read it back to confirm
+// the write actually succeeded before the caller resumes autosaving.
+// Refuses to overwrite anything if the corrupt file can't be preserved.
+export async function repairCorruptDesktopSave(payload) {
+  if (!isDesktopStorageAvailable()) {
+    return { ok: false, status: "unavailable" };
+  }
+
+  const locationResult = await getDesktopSaveLocation();
+  const location = locationResult.location;
+  const currentSave = await readCurrentDesktopSaveText(location);
+
+  if (currentSave.status === "missing") {
+    return { ok: false, status: "notCorrupt" };
+  }
+
+  if (currentSave.status === "active") {
+    return { ok: false, status: "notCorrupt" };
+  }
+
+  const preserveResult = await preserveCorruptDesktopSave(location);
+
+  if (!preserveResult.ok) {
+    return { ok: false, status: "preserveFailed", preserveStatus: preserveResult.status };
+  }
+
+  try {
+    await writeDesktopSaveFileDirect(location, payload);
+  } catch (error) {
+    console.warn("Could not write the repaired Arcadia Academy desktop save.", error);
+    return { ok: false, status: "writeError", error, backupPath: preserveResult.backupPath };
+  }
+
+  const verifyResult = await readCurrentDesktopSaveText(location);
+
+  if (verifyResult.status !== "active") {
+    return {
+      ok: false,
+      status: "verifyFailed",
+      backupPath: preserveResult.backupPath,
+    };
+  }
+
+  return {
+    ok: true,
+    status: "repaired",
+    backupPath: preserveResult.backupPath,
+    saveLocation: locationResult.status,
+    folderPath: location.kind === "chosen" ? location.folderPath : null,
+    configuredFolderPath: locationResult.configuredFolderPath,
+    fallback: locationResult.fallback,
+  };
 }
 
 async function getUniqueDesktopBackupPath(location) {
