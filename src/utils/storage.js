@@ -1410,3 +1410,18 @@ export function downloadSavePayload(payload, dateKey) {
   downloadLink.click();
   URL.revokeObjectURL(url);
 }
+
+// Same browser download pattern as downloadSavePayload, generalised for any
+// text content (study log TXT, sessions CSV, ...). A plain user-initiated
+// download — never written into the managed save folder, works the same
+// whether or not a desktop save is configured.
+export function downloadTextFile(fileName, content, mimeType = "text/plain;charset=utf-8") {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const downloadLink = document.createElement("a");
+
+  downloadLink.href = url;
+  downloadLink.download = fileName;
+  downloadLink.click();
+  URL.revokeObjectURL(url);
+}

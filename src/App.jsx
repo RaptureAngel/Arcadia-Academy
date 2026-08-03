@@ -32,6 +32,7 @@ import { useDataManagement } from "./hooks/useDataManagement";
 import { useSubjects } from "./hooks/useSubjects";
 import { useStudyProjects } from "./hooks/useStudyProjects";
 import { useFocusSession } from "./hooks/useFocusSession";
+import { useStudyHistoryExport } from "./hooks/useStudyHistoryExport";
 import {
   STORAGE_KEYS,
   loadSavedData,
@@ -244,6 +245,17 @@ function App() {
     characterLibrary,
     setCharacterLibrary,
     getProjectById: getStudyProjectById,
+  });
+
+  const {
+    hasSessions: hasStudySessions,
+    exportStudyLogTxt,
+    exportSessionsCsv,
+  } = useStudyHistoryExport({
+    studySessions,
+    studyProjects,
+    subjects,
+    characterLibrary: characterLibraryForDisplay,
   });
 
   const [subjectFormState, setSubjectFormState] = useState(null);
@@ -829,6 +841,9 @@ function App() {
         <SettingsView
           dataManagementProps={{
             onExportSaveData: exportSaveData,
+            onExportStudyLogTxt: exportStudyLogTxt,
+            onExportSessionsCsv: exportSessionsCsv,
+            hasStudySessions,
             onImportSaveData: handleImportSaveDataGuarded,
             onResetAcademyActivity: openResetAcademyActivityConfirm,
             onNewAcademySeason: openNewAcademySeasonConfirm,

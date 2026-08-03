@@ -1,5 +1,8 @@
 function DataManagementPanel({
   onExportSaveData,
+  onExportStudyLogTxt,
+  onExportSessionsCsv,
+  hasStudySessions,
   onImportSaveData,
   onResetAcademyActivity,
   onNewAcademySeason,
@@ -277,6 +280,41 @@ function DataManagementPanel({
           </div>
         </div>
       )}
+
+      <div className="desktopSaveStatus desktopSaveStatus--active">
+        <div className="desktopSaveStatusText">
+          <p className="desktopSaveStatusLabel">Study History</p>
+          <p>
+            Download readable copies of your completed study sessions. These
+            exports do not replace your Academy save or character-image
+            backup.
+          </p>
+          {!hasStudySessions && (
+            <p className="desktopSavePath">
+              No study sessions have been logged yet — exporting now creates
+              an empty log/CSV with headers only.
+            </p>
+          )}
+        </div>
+
+        <div className="desktopSaveStatusActions">
+          <button
+            className="secondaryButton"
+            type="button"
+            onClick={onExportStudyLogTxt}
+          >
+            Export Study Log
+          </button>
+
+          <button
+            className="secondaryButton"
+            type="button"
+            onClick={onExportSessionsCsv}
+          >
+            Export Sessions CSV
+          </button>
+        </div>
+      </div>
 
       <div className="dataManagementActions">
         <button className="secondaryButton" type="button" onClick={onExportSaveData}>
