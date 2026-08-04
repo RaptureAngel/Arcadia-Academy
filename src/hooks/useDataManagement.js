@@ -55,6 +55,15 @@ function createNewSeasonCharacterLibrary(characters) {
 // The explicit "Retry Save" action always bypasses this.
 const AUTO_RETRY_COOLDOWN_MS = 20 * 1000;
 
+// Upper bound on how long the native close handler waits (in-flight write +
+// final flush combined) before forcing the window closed anyway. A save
+// that never resolves must not trap the app open.
+const CLOSE_FLUSH_TIMEOUT_MS = 2500;
+
+function delay(ms) {
+  return new Promise((resolve) => window.setTimeout(resolve, ms));
+}
+
 const DESKTOP_SAVE_STATUS_COPY = {
   checking: {
     label: "Checking desktop save",
@@ -549,11 +558,12 @@ export function useDataManagement({
   // Best-effort flush on the ways the app can actually go away. pagehide/
   // beforeunload fire the write immediately instead of waiting for the
   // 500ms debounce, but can't delay the process actually exiting. The
-  // Tauri close-request path can and does delay it: it holds the window
-  // open (preventDefault) until any in-flight write finishes and one final
-  // flush completes, then lets the close proceed — so a normal window
-  // close can no longer interrupt a write mid-flight the way a hard kill
-  // still could.
+  // Tauri close-request path can and does delay it, up to
+  // CLOSE_FLUSH_TIMEOUT_MS: it holds the window open (preventDefault) until
+  // any in-flight write finishes and one final flush completes (or the
+  // timeout elapses), then force-closes via destroy() — never close(),
+  // which in Tauri 2 would re-emit closeRequested and re-enter this same
+  // handler instead of actually closing the window.
   useEffect(() => {
     if (!desktopSaveState.isTauri || !desktopSaveState.active) return undefined;
 
@@ -564,32 +574,46 @@ export function useDataManagement({
     window.addEventListener("pagehide", flush);
     window.addEventListener("beforeunload", flush);
 
-    async function waitForNoInFlightWrite() {
-      while (isWritingDesktopSaveRef.current) {
-        await new Promise((resolve) => window.setTimeout(resolve, 50));
+    async function waitForNoInFlightWrite(deadline) {
+      while (isWritingDesktopSaveRef.current && Date.now() < deadline) {
+        await delay(50);
       }
     }
 
     let unlistenCloseRequested = null;
     let cancelled = false;
-    let closeFlushed = false;
+    // Synchronous re-entry guard: checked and set before any await, so a
+    // second closeRequested (or a stray duplicate listener) can never
+    // re-run the flush/preventDefault logic.
+    let closeInProgress = false;
 
     import("@tauri-apps/api/window")
       .then(({ getCurrentWindow }) => {
         const currentWindow = getCurrentWindow();
 
-        return currentWindow.onCloseRequested(async (event) => {
-          if (closeFlushed) return;
+        return currentWindow.onCloseRequested((event) => {
+          if (closeInProgress) return;
+          closeInProgress = true;
 
           event.preventDefault();
 
-          try {
-            await waitForNoInFlightWrite();
-            await attemptDesktopAutosave();
-          } finally {
-            closeFlushed = true;
-            currentWindow.close();
-          }
+          const deadline = Date.now() + CLOSE_FLUSH_TIMEOUT_MS;
+
+          waitForNoInFlightWrite(deadline)
+            .then(() => {
+              const remaining = deadline - Date.now();
+
+              if (remaining <= 0) return null;
+
+              return Promise.race([attemptDesktopAutosave(), delay(remaining)]);
+            })
+            .catch(() => {
+              // A save error here must not block shutdown — localStorage
+              // and the previous desktop save remain the fallback.
+            })
+            .finally(() => {
+              currentWindow.destroy().catch(() => {});
+            });
         });
       })
       .then((unlisten) => {

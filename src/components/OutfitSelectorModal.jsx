@@ -101,7 +101,6 @@ function OutfitSelectorModal({
       [
         {
           src: resolveImageReference?.(selectedOutfit?.imageSlots?.dossier),
-          framing: selectedOutfit?.imageFraming?.dossier,
         },
         {
           src: resolveImageReference?.(selectedOutfit?.imageSlots?.portrait),
@@ -109,11 +108,9 @@ function OutfitSelectorModal({
         },
         {
           src: resolveImageReference?.(selectedOutfit?.imageSlots?.focus),
-          framing: selectedOutfit?.imageFraming?.focus,
         },
         {
           src: resolveImageReference?.(employee?.imageSlots?.dossier),
-          framing: employee?.imageFraming?.dossier,
         },
         {
           src: resolveImageReference?.(employee?.imageSlots?.portrait),

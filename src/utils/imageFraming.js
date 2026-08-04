@@ -7,19 +7,10 @@ export const DEFAULT_IMAGE_FRAMING = Object.freeze({
   zoom: 1,
 });
 
-// Representative destination aspect ratios used by the framing preview.
-// Real usage varies slightly by context (see report), these are the closest
-// fixed-ratio frame for each slot.
+// Destination aspect ratio used by the framing preview. Only the Dashboard
+// portrait slot supports custom framing, so this is the one ratio needed.
 export const IMAGE_FRAMING_ASPECT_RATIOS = {
   portrait: "1 / 1",
-  dossier: "3 / 4",
-  focus: "3 / 4",
-};
-
-export const IMAGE_FRAMING_SLOT_LABELS = {
-  portrait: "Portrait",
-  dossier: "Dossier",
-  focus: "Focus",
 };
 
 function clampNumber(value, min, max, fallback) {

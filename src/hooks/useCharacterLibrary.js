@@ -186,8 +186,6 @@ export function useCharacterLibrary({
           dossierDisplayImage: getDisplayImageUrl(dossierImage) || mainDisplayImage,
           focusDisplayImage: getDisplayImageUrl(focusImage) || mainDisplayImage,
           portraitFraming: getCharacterImageFraming(character, "portrait"),
-          dossierFraming: getCharacterImageFraming(character, "dossier"),
-          focusFraming: getCharacterImageFraming(character, "focus"),
         };
       });
     },

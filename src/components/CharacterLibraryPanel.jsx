@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import { getLevel } from "../utils/xp";
-import { IMAGE_FRAMING_SLOT_LABELS } from "../utils/imageFraming";
 import ImageFramingModal from "./ImageFramingModal";
 
 function CharacterPortrait({ character }) {
@@ -129,32 +128,36 @@ function CharacterLibraryPanel({
   const dossierInformation = dossier.information || {};
   const dossierAttributes = dossier.attributes || {};
   const [previewCharacterId, setPreviewCharacterId] = useState(null);
+  // Only the base/outfit portrait slot supports custom framing — the
+  // Dashboard companion portrait is the only place a saved framing is ever
+  // applied, so the target only needs to track which outfit (if any) it's
+  // for. `null` outfitId means the base (non-outfit) portrait.
   const [framingTarget, setFramingTarget] = useState(null);
 
   function getFramingTargetData() {
     if (!framingTarget) return null;
 
-    const { slot, outfitId } = framingTarget;
+    const { outfitId } = framingTarget;
 
     if (outfitId) {
       const outfit = outfits.find((item) => item.id === outfitId);
 
       return {
-        ref: outfit?.imageSlots?.[slot] || "",
-        framing: outfit?.imageFraming?.[slot],
-        contextLabel: `${outfit?.name || "Untitled Outfit"} — ${IMAGE_FRAMING_SLOT_LABELS[slot]}`,
+        ref: outfit?.imageSlots?.portrait || "",
+        framing: outfit?.imageFraming?.portrait,
+        contextLabel: `${outfit?.name || "Untitled Outfit"} — Portrait`,
       };
     }
 
     const activeOutfit = outfits.find((outfit) => outfit.id === draft.activeOutfitId);
-    const overriddenByActiveOutfit = Boolean(activeOutfit?.imageSlots?.[slot]);
+    const overriddenByActiveOutfit = Boolean(activeOutfit?.imageSlots?.portrait);
 
     return {
-      ref: slot === "portrait" ? draft.image : draft.imageSlots?.[slot] || "",
-      framing: draft.imageFraming?.[slot],
-      contextLabel: `Base ${IMAGE_FRAMING_SLOT_LABELS[slot]}`,
+      ref: draft.image,
+      framing: draft.imageFraming?.portrait,
+      contextLabel: "Base Portrait",
       overrideWarning: overriddenByActiveOutfit
-        ? `The active outfit "${activeOutfit.name || "Untitled Outfit"}" currently supplies its own ${IMAGE_FRAMING_SLOT_LABELS[slot].toLowerCase()} image, so this base framing won't be visible until you switch outfits or edit that outfit's own image.`
+        ? `The active outfit "${activeOutfit.name || "Untitled Outfit"}" currently supplies its own portrait image, so this base framing won't be visible until you switch outfits or edit that outfit's own image.`
         : null,
     };
   }
@@ -163,9 +166,9 @@ function CharacterLibraryPanel({
     if (!framingTarget) return;
 
     if (framingTarget.outfitId) {
-      onSaveOutfitImageFraming?.(framingTarget.outfitId, framingTarget.slot, framing);
+      onSaveOutfitImageFraming?.(framingTarget.outfitId, "portrait", framing);
     } else {
-      onSaveImageFraming?.(framingTarget.slot, framing);
+      onSaveImageFraming?.("portrait", framing);
     }
 
     setFramingTarget(null);
@@ -273,7 +276,7 @@ function CharacterLibraryPanel({
               <button
                 className="detailsButton"
                 type="button"
-                onClick={() => setFramingTarget({ slot: "portrait", outfitId: null })}
+                onClick={() => setFramingTarget({ outfitId: null })}
               >
                 Adjust Framing
               </button>
@@ -301,14 +304,6 @@ function CharacterLibraryPanel({
                   Import Dossier Image
                 </button>
               )}
-
-              <button
-                className="detailsButton"
-                type="button"
-                onClick={() => setFramingTarget({ slot: "dossier", outfitId: null })}
-              >
-                Adjust Framing
-              </button>
             </div>
 
             <div className="characterImageField">
@@ -333,14 +328,6 @@ function CharacterLibraryPanel({
                   Import Focus Image
                 </button>
               )}
-
-              <button
-                className="detailsButton"
-                type="button"
-                onClick={() => setFramingTarget({ slot: "focus", outfitId: null })}
-              >
-                Adjust Framing
-              </button>
             </div>
           </details>
 
@@ -452,15 +439,17 @@ function CharacterLibraryPanel({
                             </button>
                           )}
 
-                          <button
-                            className="detailsButton"
-                            type="button"
-                            onClick={() =>
-                              setFramingTarget({ slot, outfitId: outfit.id })
-                            }
-                          >
-                            Adjust Framing
-                          </button>
+                          {slot === "portrait" && (
+                            <button
+                              className="detailsButton"
+                              type="button"
+                              onClick={() =>
+                                setFramingTarget({ outfitId: outfit.id })
+                              }
+                            >
+                              Adjust Framing
+                            </button>
+                          )}
                         </div>
                       ))}
                     </div>
@@ -678,12 +667,12 @@ function CharacterLibraryPanel({
 
       {framingTarget && (
         <ImageFramingModal
-          key={`${framingTarget.outfitId || "base"}-${framingTarget.slot}`}
+          key={framingTarget.outfitId || "base"}
           imageSrc={
             framingTargetData?.ref ? resolveImageReference?.(framingTargetData.ref) : ""
           }
           characterName={draft.name}
-          slot={framingTarget.slot}
+          slot="portrait"
           contextLabel={framingTargetData?.contextLabel}
           overrideWarning={framingTargetData?.overrideWarning}
           framing={framingTargetData?.framing}

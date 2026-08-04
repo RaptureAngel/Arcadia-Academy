@@ -1015,10 +1015,10 @@
 
 .focusSessionPanel {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(220px, 0.9fr);
+  grid-template-columns: minmax(0, 6fr) minmax(340px, 5fr);
   gap: 0;
-  width: min(920px, 100%);
-  max-height: min(88vh, 720px);
+  width: min(1240px, 92vw);
+  height: min(860px, 90vh);
   overflow: hidden;
   border: 1px solid var(--academy-border);
   border-radius: var(--academy-radius-panel);
@@ -1026,19 +1026,14 @@
   box-shadow: var(--academy-shadow);
 }
 
-@media (max-width: 720px) {
-  .focusSessionPanel {
-    grid-template-columns: 1fr;
-  }
-
-  .focusSessionVisual {
-    display: none;
-  }
-}
-
+/* A full-height flex column: fixed-size items (label/title/timer, the
+   discard confirmation, and the actions row) keep their natural size while
+   the notes editor (the only flex-grow child — see .projectNotesEditor
+   below) absorbs whatever vertical space is left, so End Session/Discard
+   settle near the bottom instead of leaving a gap under a short notes box. */
 .focusSessionContent {
-  display: grid;
-  align-content: start;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
   padding: 26px;
   overflow: auto;
@@ -1046,6 +1041,7 @@
 
 .focusSessionContent h2 {
   margin: 4px 0 0;
+  flex: 0 0 auto;
 }
 
 .focusSessionTimer {
@@ -1053,11 +1049,13 @@
   font-size: 2.4rem;
   font-weight: 700;
   color: var(--academy-sage-strong);
+  flex: 0 0 auto;
 }
 
 .focusSessionActions {
   display: flex;
   gap: 10px;
+  flex: 0 0 auto;
 }
 
 .focusSessionActions .primaryButton,
@@ -1073,6 +1071,35 @@
   border-radius: var(--academy-radius-card);
   background: var(--academy-danger-bg);
   color: var(--academy-danger);
+  flex: 0 0 auto;
+}
+
+/* The notes editor is the one column child that grows, so it soaks up the
+   space the taller panel now has instead of leaving it empty below the
+   actions row. Scoped to the focus overlay so the same editor used in the
+   (non-flex) project detail panel is unaffected. */
+.focusSessionContent .projectNotesEditor {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  gap: 6px;
+}
+
+.focusSessionContent .projectNotesEditor .academyFormField {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.focusSessionContent .projectNotesEditor textarea {
+  min-height: 240px;
+  resize: vertical;
+}
+
+.focusSessionContent .projectNotesEditorActions {
+  flex: 0 0 auto;
 }
 
 .focusSessionResult {
@@ -1081,6 +1108,7 @@
   align-content: center;
   justify-items: start;
   min-height: 260px;
+  flex: 1 1 auto;
 }
 
 .focusSessionLevelUp {
@@ -1108,6 +1136,37 @@
   font-size: 4rem;
   font-weight: 800;
   color: var(--academy-sage-strong);
+}
+
+/* Below this, two side-by-side columns get cramped — stack the character
+   image above the session controls instead, and let the controls column
+   scroll internally so End Session/Discard are never pushed off-screen.
+   Placed after every base .focusSession* rule above so these overrides
+   (equal specificity, same selectors) win the cascade when active. */
+@media (max-width: 960px), (max-height: 640px) {
+  .focusSessionPanel {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(180px, 36vh) minmax(0, 1fr);
+    width: min(560px, 96vw);
+    height: min(92vh, 760px);
+  }
+
+  .focusSessionVisual {
+    grid-row: 1;
+    min-height: 0;
+  }
+
+  .focusSessionContent {
+    grid-row: 2;
+    min-height: 0;
+  }
+
+  /* Less vertical budget here, so the notes floor shrinks too — it still
+     grows to fill whatever space is left, it just doesn't demand as much
+     before the panel falls back to scrolling. */
+  .focusSessionContent .projectNotesEditor textarea {
+    min-height: 120px;
+  }
 }
 
 /* Archive view */

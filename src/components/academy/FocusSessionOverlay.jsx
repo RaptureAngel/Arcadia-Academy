@@ -161,7 +161,6 @@ function FocusSessionOverlay({
             <FramedCharacterImage
               src={imageSrc}
               alt={character?.name || "Focus companion"}
-              framing={character?.focusFraming}
             />
           ) : (
             <span className="focusSessionVisualFallback">
